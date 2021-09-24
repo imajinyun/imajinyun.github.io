@@ -2,65 +2,128 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://imajinyun.xyz/2021/07/14/go-random-number/</loc>
-    
-    <lastmod>2021-09-23T14:05:34.481Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://imajinyun.xyz/2021/07/16/go-unit-test/</loc>
     
-    <lastmod>2021-09-23T14:05:34.481Z</lastmod>
+    <lastmod>2021-09-24T02:24:52.922Z</lastmod>
     
   </url>
   
   <url>
-    <loc>https://imajinyun.xyz/2021/07/24/go-correct-posture/</loc>
+    <loc>https://imajinyun.xyz/2021/07/14/go-random-number/</loc>
     
-    <lastmod>2021-09-23T14:05:34.480Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2021/07/11/go-date-time/</loc>
-    
-    <lastmod>2021-09-23T14:05:34.480Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2021/06/26/go-get-started/</loc>
-    
-    <lastmod>2021-09-23T14:05:34.480Z</lastmod>
+    <lastmod>2021-09-24T02:24:39.968Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://imajinyun.xyz/2021/07/22/go-other-test/</loc>
     
-    <lastmod>2021-09-23T14:05:34.480Z</lastmod>
+    <lastmod>2021-09-24T02:24:33.087Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2021/06/26/go-get-started/</loc>
+    
+    <lastmod>2021-09-24T02:24:25.344Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2021/07/11/go-date-time/</loc>
+    
+    <lastmod>2021-09-24T02:24:19.941Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://imajinyun.xyz/2021/07/02/go-data-type/</loc>
     
-    <lastmod>2021-09-23T14:05:34.480Z</lastmod>
+    <lastmod>2021-09-24T02:24:12.382Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2021/07/24/go-correct-posture/</loc>
+    
+    <lastmod>2021-09-24T02:24:06.780Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://imajinyun.xyz/2021/07/25/go-concat-string/</loc>
     
-    <lastmod>2021-09-23T14:05:34.479Z</lastmod>
+    <lastmod>2021-09-24T02:24:00.361Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://imajinyun.xyz/2021/07/17/go-benchmark-test/</loc>
     
-    <lastmod>2021-09-23T14:05:34.479Z</lastmod>
+    <lastmod>2021-09-24T02:23:51.156Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2019/12/05/basic-technical-terms/</loc>
+    
+    <lastmod>2021-09-24T02:23:31.112Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2019/06/22/composer-satis-private-source/</loc>
+    
+    <lastmod>2021-09-24T02:06:04.160Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2018/05/01/git-workflow/</loc>
+    
+    <lastmod>2021-09-24T02:05:58.097Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2018/01/22/git-started/</loc>
+    
+    <lastmod>2021-09-24T02:04:16.429Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2018/01/27/git-multiple-accounts/</loc>
+    
+    <lastmod>2021-09-24T02:03:23.901Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2018/01/24/git-log/</loc>
+    
+    <lastmod>2021-09-24T02:03:05.067Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2020/09/07/git-collection-command/</loc>
+    
+    <lastmod>2021-09-24T02:02:44.457Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2018/01/25/git-branch/</loc>
+    
+    <lastmod>2021-09-24T02:02:28.792Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://imajinyun.xyz/2018/01/23/git-basic/</loc>
+    
+    <lastmod>2021-09-24T02:02:04.518Z</lastmod>
     
   </url>
   
@@ -68,55 +131,6 @@
     <loc>https://imajinyun.xyz/2021/09/13/php-src-learning2/</loc>
     
     <lastmod>2021-09-23T14:05:34.474Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2018/01/27/git-multiple-accounts/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.136Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2018/01/22/git-started/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.136Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2018/05/01/git-workflow/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.136Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2018/01/25/git-branch/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.135Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2020/09/07/git-collection-command/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.135Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2018/01/24/git-log/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.135Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2018/01/23/git-basic/</loc>
-    
-    <lastmod>2021-09-23T09:04:14.135Z</lastmod>
     
   </url>
   
@@ -171,20 +185,6 @@
   
   <url>
     <loc>https://imajinyun.xyz/2018/01/31/basic-design-pattern-principle/</loc>
-    
-    <lastmod>2021-07-01T02:37:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2019/12/05/basic-technical-terms/</loc>
-    
-    <lastmod>2021-07-01T02:37:02.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://imajinyun.xyz/2019/06/22/composer-satis-private-source/</loc>
     
     <lastmod>2021-07-01T02:37:02.000Z</lastmod>
     
