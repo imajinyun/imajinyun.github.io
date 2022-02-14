@@ -1,3 +1,3 @@
-# 这是我的笔记
+# 🎉🚀🌈 Here are my study notes 🍺🍎🎁
 
-📒 这个笔记仅仅是我在学习和工作中总结摘录整理的，由于水平不够，存在很多纰漏甚至错误的地方，如果您不幸被误导了，那么我表示很遗憾，当然你也可以和我一起探讨改进。
+> 🙏 The purpose of writing notes is to assist my memory. Many things have wasted a lot of time just by memory and repeated search, so I organize these things into something like a log to record, so as to facilitate my rapid retrieval and location, rather than repeating them over and over again. Of course, I must have a lot of mistakes in understanding and recording. If you are accidentally misled, I apologize. Please forgive me for not deliberately.
