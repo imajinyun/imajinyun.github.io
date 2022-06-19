@@ -1,0 +1,558 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Redis 集群搭建 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Redis 集群搭建"><meta property="og:description" content="Redis 是一个 K-V 存储系统，是一个高性能的 K-V 数据库，是目前大规模使用的缓存中间件。单节点的Redis 已经就达到了很高的性能，为了提高可用性我们可以使"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2020-01-16T17:05:02+08:00"><meta property="article:modified_time" content="2020-01-16T17:05:02+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/2019/11/06/redis-%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%E6%93%8D%E4%BD%9C/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Redis 集群搭建"><meta name=twitter:description content="Redis 是一个 K-V 存储系统，是一个高性能的 K-V 数据库，是目前大规模使用的缓存中间件。单节点的Redis 已经就达到了很高的性能，为了提高可用性我们可以使"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/><link rel=prev href=https://imajinyun.xyz/2019/12/29/linux-crontab-%E5%91%BD%E4%BB%A4/><link rel=next href=https://imajinyun.xyz/2020/09/07/git-%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Redis 集群搭建","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2020\/01\/16\/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA\/"},"genre":"posts","keywords":"Redis","wordcount":3065,"url":"https:\/\/imajinyun.xyz\/2020\/01\/16\/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA\/","datePublished":"2020-01-16T17:05:02+08:00","dateModified":"2020-01-16T17:05:02+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Redis 集群搭建</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/redis/><i class="far fa-folder fa-fw" aria-hidden=true></i>Redis</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2020-01-16>2020-01-16</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 3065 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 7 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#集群简介>集群简介</a></li><li><a href=#集群说明>集群说明</a><ul><li><a href=#集群数据共享>集群数据共享</a></li><li><a href=#集群中的每个节点负责处理一部分哈希槽>集群中的每个节点负责处理一部分哈希槽</a></li><li><a href=#集群中的主从复制>集群中的主从复制</a></li><li><a href=#集群-tcp-端口>集群 <code>TCP</code> 端口</a></li></ul></li><li><a href=#安装依赖>安装依赖</a></li><li><a href=#集群配置>集群配置</a><ul><li><a href=#安装-redis>安装 Redis</a></li><li><a href=#创建配置目录>创建配置目录</a></li><li><a href=#创建配置文件>创建配置文件</a></li><li><a href=#复制命令文件>复制命令文件</a></li><li><a href=#修改配置文件>修改配置文件</a></li><li><a href=#复制配置文件>复制配置文件</a></li></ul></li><li><a href=#集群部署>集群部署</a><ul><li><a href=#启动节点>启动节点</a></li><li><a href=#检查服务>检查服务</a></li><li><a href=#停止节点>停止节点</a></li><li><a href=#节点加入集群>节点加入集群</a></li><li><a href=#查看信息>查看信息</a></li><li><a href=#相关命令>相关命令</a></li></ul></li><li><a href=#实例操作>实例操作</a><ul><li><a href=#客户端操作>客户端操作</a></li><li><a href=#程序操作>程序操作</a><ul><li><a href=#下载安装>下载安装</a></li><li><a href=#测试代码>测试代码</a></li><li><a href=#测试结果>测试结果</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><p><code>Redis</code> 是一个 <code>K-V</code> 存储系统，是一个高性能的 <code>K-V</code> 数据库，是目前大规模使用的缓存中间件。单节点的<code>Redis</code> 已经就达到了很高的性能，为了提高可用性我们可以使用 <code>Redis</code> 集群。</p><blockquote><p><a href=https://redis.io/ target=_blank rel="noopener noreffer">Redis Website</a></p></blockquote><h2 id=集群简介>集群简介</h2><p><code>Redis</code> 集群是一个可以在多个 <code>Redis</code> 节点之间进行数据共享的设施（<code>installation</code>）。</p><p><code>Redis</code> 集群不支持那些需要同时处理多个键的 <code>Redis</code> 命令， 因为执行这些命令需要在多个 <code>Redis</code> 节点之间移动数据， 并且在高负载的情况下， 这些命令将降低 <code>Redis</code> 集群的性能，并导致不可预测的行为。</p><p><code>Redis</code> 集群通过分区（<code>partition</code>）来提供一定程度的可用性（<code>availability</code>）：即使集群中有一部分节点失效或者无法进行通讯，集群也可以继续处理命令请求。</p><p><code>Redis</code> 集群提供了以下两个好处：</p><ul><li>将数据自动切分（<code>split</code>）到多个节点的能力</li><li>当集群中的一部分节点失效或者无法进行通讯时，仍然可以继续处理命令请求的能力</li></ul><h2 id=集群说明>集群说明</h2><h3 id=集群数据共享>集群数据共享</h3><p><code>Redis</code> 集群使用数据分片（<code>sharding</code>）而非一致性哈希（<code>consistency hashing</code>）来实现：一个 <code>Redis</code> 集群包含 <code>16384</code> 个哈希槽（<code>hash slot</code>），数据库中的每个键都属于这 <code>16384</code> 个哈希槽的其中一个，集群使用公式 <code>CRC16(key) % 16384</code> 来计算键 <code>key</code> 属于哪个槽，其中 <code>CRC16(key)</code> 语句用于计算键 <code>key</code> 的 <code>CRC16</code> 校验和。</p><h3 id=集群中的每个节点负责处理一部分哈希槽>集群中的每个节点负责处理一部分哈希槽</h3><p>一个集群可以有三个哈希槽，其中：</p><ul><li>节点 <code>A</code> 负责处理 <code>0</code> 号至 <code>5500</code> 号哈希槽</li><li>节点 <code>B</code> 负责处理 <code>5501</code> 号至 <code>11000</code> 号哈希槽</li><li>节点 <code>C</code> 负责处理 <code>11001</code> 号至 <code>16384</code> 号哈希槽</li></ul><h3 id=集群中的主从复制>集群中的主从复制</h3><p>为了使得集群在一部分节点下线或者无法与集群的大多数（<code>majority</code>）节点进行通讯的情况下，仍然可以正常运作，<code>Redis</code> 集群对节点使用了主从复制功能：集群中的每个节点都有 <code>1</code> 个至 <code>N</code> 个复制品（<code>replica</code>），其中一个复制品为主节点（<code>master</code>），而其余的 <code>N-1</code> 个复制品为从节点（<code>slave</code>）</p><h3 id=集群-tcp-端口>集群 <code>TCP</code> 端口</h3><p>每个 <code>Redis Cluster</code> 节点都需要 <code>2</code> 个 <code>TCP</code> 连接打开，正常的 <code>Redis TCP</code> 端口被服务于客户端，例如：<code>6379</code>，加上通过增加 <code>10000</code> 到数据端口获取的端口，例如：<code>16379</code>。</p><p>第二个高端口被用来 <code>Redis Cluster Bus</code>，也就是使用二进制协议的一个节点到节点的通信信道。<code>Redis Cluster Bus</code> 被节点用于故障检测，配置更新，故障转移授权等等。客户端不应该尝试与 <code>Redis Cluster Bus</code> 端口进行通信，而是始终使用正常的 <code>Redis</code> 命令端口，然而要确保在防火墙中打开两个端口，否则 <code>Redis Cluster</code> 节点将无法通信。</p><p>命令端口和 <code>Redis Cluster Bus</code> 端口偏移是固定的，始终为 <code>10000</code>。</p><p>注意，为了使 <code>Redis Cluster</code> 正常工作，你需要为每个节点：</p><ul><li>用于客户端进行通信的普通客户端通信端口（通常使用 <code>6379</code>）对所有需要到达集群的客户端，以及所有其它集群节点（使用客户端端口进行密钥迁移）都是开放的</li><li><code>Redis Cluster Bus</code> 端口（客户端端口 <code>+10000</code>）必须可从所有其它集群节点访问</li></ul><p>如果不打开两个 <code>TCP</code> 端口，集群将无法按预期工作</p><p><code>Redis Cluster Bus</code> 使用不同的二进制协议进行节占到节点的数据交换，这更适合于使用少量的带宽和处理时间交换节点之间的信息</p><h2 id=安装依赖>安装依赖</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+</span></span><span class=line><span class=cl>$ sudo curl -sSL https://get.rvm.io <span class=p>|</span> bash -s stable
+</span></span><span class=line><span class=cl>$ sudo <span class=nb>source</span> ~/.rvm/scripts/rvm
+</span></span><span class=line><span class=cl>$ sudo <span class=nb>echo</span> <span class=s2>&#34;ruby_url=https://cache.ruby-china.org/pub/ruby&#34;</span> &gt; ~/.rvm/user/db
+</span></span><span class=line><span class=cl>$ rvm -v
+</span></span><span class=line><span class=cl>$ sudo rvm install 2.4.1
+</span></span><span class=line><span class=cl>$ sudo gem update
+</span></span><span class=line><span class=cl>$ sudo gem install redis
+</span></span></code></pre></td></tr></table></div></div><h2 id=集群配置>集群配置</h2><h3 id=安装-redis>安装 Redis</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~
+</span></span><span class=line><span class=cl>$ wget http://download.redis.io/releases/redis-4.0.9.tar.gz
+</span></span><span class=line><span class=cl>$ tar xzf redis-4.0.9.tar.gz
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> redis-4.0.9
+</span></span><span class=line><span class=cl>$ sudo make
+</span></span></code></pre></td></tr></table></div></div><h3 id=创建配置目录>创建配置目录</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo mkdir -pv /usr/local/redis-cluster/<span class=o>{</span>bin,etc,log,run,var<span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=创建配置文件>创建配置文件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo cp ~/redis-4.0.9/redis.conf /usr/local/redis-cluster/etc/redis-7001.conf
+</span></span></code></pre></td></tr></table></div></div><h3 id=复制命令文件>复制命令文件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~/redis-4.0.9/src/
+</span></span><span class=line><span class=cl>$ sudo cp mkreleasehdr.sh redis-benchmark redis-check-aof redis-check-rdb redis-sentinel redis-cli redis-server /usr/local/redis-cluster/bin
+</span></span></code></pre></td></tr></table></div></div><h3 id=修改配置文件>修改配置文件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo vim /usr/local/redis-cluster/etc/redis-7001.conf
+</span></span><span class=line><span class=cl><span class=nb>bind</span> 192.168.33.110
+</span></span><span class=line><span class=cl>port <span class=m>7001</span>
+</span></span><span class=line><span class=cl>daemonize yes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>pidfile /user/local/redis-cluster/run/7001.pid
+</span></span><span class=line><span class=cl>logfile /usr/local/redis-cluster/log/7001.log
+</span></span><span class=line><span class=cl>dbfilename dump-7001.rdb
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>dir /usr/local/redis-cluster/var
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>appendonly yes
+</span></span><span class=line><span class=cl>appendfilename <span class=s2>&#34;appendonly-7001.aof&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>cluster-enabled yes
+</span></span><span class=line><span class=cl>cluster-config-file nodes-7001.conf
+</span></span><span class=line><span class=cl>cluster-node-timeout <span class=m>15000</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=复制配置文件>复制配置文件</h3><blockquote><p>将复制后的文件中的 <code>7001</code> 换成相应的名称</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo cp /usr/local/redis-cluster/etc/redis-7001.conf /usr/local/redis-cluster/etc/redis-7002.conf
+</span></span><span class=line><span class=cl>$ sudo cp /usr/local/redis-cluster/etc/redis-7001.conf /usr/local/redis-cluster/etc/redis-7003.conf
+</span></span><span class=line><span class=cl>$ sudo cp /usr/local/redis-cluster/etc/redis-7001.conf /usr/local/redis-cluster/etc/redis-7004.conf
+</span></span><span class=line><span class=cl>$ sudo cp /usr/local/redis-cluster/etc/redis-7001.conf /usr/local/redis-cluster/etc/redis-7005.conf
+</span></span><span class=line><span class=cl>$ sudo cp /usr/local/redis-cluster/etc/redis-7001.conf /usr/local/redis-cluster/etc/redis-7006.conf
+</span></span></code></pre></td></tr></table></div></div><h2 id=集群部署>集群部署</h2><h3 id=启动节点>启动节点</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 启动配置的所有节点
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli /usr/local/redis-cluster/etc/redis-7001.conf
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli /usr/local/redis-cluster/etc/redis-7002.conf
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli /usr/local/redis-cluster/etc/redis-7003.conf
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli /usr/local/redis-cluster/etc/redis-7004.conf
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli /usr/local/redis-cluster/etc/redis-7005.conf
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli /usr/local/redis-cluster/etc/redis-7006.conf
+</span></span></code></pre></td></tr></table></div></div><h3 id=检查服务>检查服务</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ ps -ef <span class=p>|</span> grep redis
+</span></span><span class=line><span class=cl>root     <span class=m>20077</span>     <span class=m>1</span>  <span class=m>0</span> May18 ?        00:01:04 /usr/local/bin/redis-server 192.168.33.110:7001 <span class=o>[</span>cluster<span class=o>]</span>
+</span></span><span class=line><span class=cl>root     <span class=m>20079</span>     <span class=m>1</span>  <span class=m>0</span> May18 ?        00:01:03 /usr/local/bin/redis-server 192.168.33.110:7002 <span class=o>[</span>cluster<span class=o>]</span>
+</span></span><span class=line><span class=cl>root     <span class=m>20081</span>     <span class=m>1</span>  <span class=m>0</span> May18 ?        00:01:03 /usr/local/bin/redis-server 192.168.33.110:7003 <span class=o>[</span>cluster<span class=o>]</span>
+</span></span><span class=line><span class=cl>root     <span class=m>20089</span>     <span class=m>1</span>  <span class=m>0</span> May18 ?        00:01:03 /usr/local/bin/redis-server 192.168.33.110:7004 <span class=o>[</span>cluster<span class=o>]</span>
+</span></span><span class=line><span class=cl>root     <span class=m>20091</span>     <span class=m>1</span>  <span class=m>0</span> May18 ?        00:01:03 /usr/local/bin/redis-server 192.168.33.110:7005 <span class=o>[</span>cluster<span class=o>]</span>
+</span></span><span class=line><span class=cl>root     <span class=m>20096</span>     <span class=m>1</span>  <span class=m>0</span> May18 ?        00:01:03 /usr/local/bin/redis-server 192.168.33.110:7006 <span class=o>[</span>cluster<span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=停止节点>停止节点</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7001</span> shutdown
+</span></span></code></pre></td></tr></table></div></div><h3 id=节点加入集群>节点加入集群</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo cp ~/redis-4.0.9/src/redis-trib.rb /usr/local/redis-cluster/bin/redis-trib
+</span></span><span class=line><span class=cl>$ sudo chmod a+x /usr/local/redis-cluster/bin/redis-trib
+</span></span><span class=line><span class=cl>$ sudo /usr/local/redis-cluster/bin/redis-trib create --replicas <span class=m>1</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt; 192.168.33.110:7001 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt; 192.168.33.110:7002 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt; 192.168.33.110:7003 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt; 192.168.33.110:7004 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt; 192.168.33.110:7005 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt; 192.168.33.110:7006 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>&gt;&gt;&gt; Creating cluster
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Performing <span class=nb>hash</span> slots allocation on <span class=m>6</span> nodes...
+</span></span><span class=line><span class=cl>Using <span class=m>3</span> masters:
+</span></span><span class=line><span class=cl>127.0.0.1:7001
+</span></span><span class=line><span class=cl>127.0.0.1:7002
+</span></span><span class=line><span class=cl>127.0.0.1:7003
+</span></span><span class=line><span class=cl>Adding replica 127.0.0.1:7005 to 127.0.0.1:7001
+</span></span><span class=line><span class=cl>Adding replica 127.0.0.1:7006 to 127.0.0.1:7002
+</span></span><span class=line><span class=cl>Adding replica 127.0.0.1:7004 to 127.0.0.1:7003
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Trying to optimize slaves allocation <span class=k>for</span> anti-affinity
+</span></span><span class=line><span class=cl><span class=o>[</span>WARNING<span class=o>]</span> Some slaves are in the same host as their master
+</span></span><span class=line><span class=cl>M: 4ed7d8f54311fb883431c1c5a4715c1ae59d5215 127.0.0.1:7001
+</span></span><span class=line><span class=cl>   slots:0-5460 <span class=o>(</span><span class=m>5461</span> slots<span class=o>)</span> master
+</span></span><span class=line><span class=cl>M: 31030e4c35659d5de1146941a2d1f2c1524b53e9 127.0.0.1:7002
+</span></span><span class=line><span class=cl>   slots:5461-10922 <span class=o>(</span><span class=m>5462</span> slots<span class=o>)</span> master
+</span></span><span class=line><span class=cl>M: 573752b8b0747bc2c7bb3e4a1edb0e467cfdef0e 127.0.0.1:7003
+</span></span><span class=line><span class=cl>   slots:10923-16383 <span class=o>(</span><span class=m>5461</span> slots<span class=o>)</span> master
+</span></span><span class=line><span class=cl>S: 11f577639b081c1514f28a74764c9330d819dcb8 127.0.0.1:7004
+</span></span><span class=line><span class=cl>   replicates 573752b8b0747bc2c7bb3e4a1edb0e467cfdef0e
+</span></span><span class=line><span class=cl>S: ff6d7ca3ea29036385c89a5dc93f807f91307871 127.0.0.1:7005
+</span></span><span class=line><span class=cl>   replicates 4ed7d8f54311fb883431c1c5a4715c1ae59d5215
+</span></span><span class=line><span class=cl>S: a6f79f4d1de8d7bef4911e934b802829ed29a2d3 127.0.0.1:7006
+</span></span><span class=line><span class=cl>   replicates 31030e4c35659d5de1146941a2d1f2c1524b53e9
+</span></span><span class=line><span class=cl>Can I <span class=nb>set</span> the above configuration? <span class=o>(</span><span class=nb>type</span> <span class=s1>&#39;yes&#39;</span> to accept<span class=o>)</span>: yes
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Nodes configuration updated
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Assign a different config epoch to each node
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Sending CLUSTER MEET messages to join the cluster
+</span></span><span class=line><span class=cl>Waiting <span class=k>for</span> the cluster to join..
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Performing Cluster Check <span class=o>(</span>using node 127.0.0.1:7001<span class=o>)</span>
+</span></span><span class=line><span class=cl>M: 4ed7d8f54311fb883431c1c5a4715c1ae59d5215 127.0.0.1:7001
+</span></span><span class=line><span class=cl>   slots:0-5460 <span class=o>(</span><span class=m>5461</span> slots<span class=o>)</span> master
+</span></span><span class=line><span class=cl>   <span class=m>1</span> additional replica<span class=o>(</span>s<span class=o>)</span>
+</span></span><span class=line><span class=cl>S: 11f577639b081c1514f28a74764c9330d819dcb8 127.0.0.1:7004
+</span></span><span class=line><span class=cl>   slots: <span class=o>(</span><span class=m>0</span> slots<span class=o>)</span> slave
+</span></span><span class=line><span class=cl>   replicates 573752b8b0747bc2c7bb3e4a1edb0e467cfdef0e
+</span></span><span class=line><span class=cl>S: a6f79f4d1de8d7bef4911e934b802829ed29a2d3 127.0.0.1:7006
+</span></span><span class=line><span class=cl>   slots: <span class=o>(</span><span class=m>0</span> slots<span class=o>)</span> slave
+</span></span><span class=line><span class=cl>   replicates 31030e4c35659d5de1146941a2d1f2c1524b53e9
+</span></span><span class=line><span class=cl>S: ff6d7ca3ea29036385c89a5dc93f807f91307871 127.0.0.1:7005
+</span></span><span class=line><span class=cl>   slots: <span class=o>(</span><span class=m>0</span> slots<span class=o>)</span> slave
+</span></span><span class=line><span class=cl>   replicates 4ed7d8f54311fb883431c1c5a4715c1ae59d5215
+</span></span><span class=line><span class=cl>M: 31030e4c35659d5de1146941a2d1f2c1524b53e9 127.0.0.1:7002
+</span></span><span class=line><span class=cl>   slots:5461-10922 <span class=o>(</span><span class=m>5462</span> slots<span class=o>)</span> master
+</span></span><span class=line><span class=cl>   <span class=m>1</span> additional replica<span class=o>(</span>s<span class=o>)</span>
+</span></span><span class=line><span class=cl>M: 573752b8b0747bc2c7bb3e4a1edb0e467cfdef0e 127.0.0.1:7003
+</span></span><span class=line><span class=cl>   slots:10923-16383 <span class=o>(</span><span class=m>5461</span> slots<span class=o>)</span> master
+</span></span><span class=line><span class=cl>   <span class=m>1</span> additional replica<span class=o>(</span>s<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>OK<span class=o>]</span> All nodes agree about slots configuration.
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Check <span class=k>for</span> open slots...
+</span></span><span class=line><span class=cl>&gt;&gt;&gt; Check slots coverage...
+</span></span><span class=line><span class=cl><span class=o>[</span>OK<span class=o>]</span> All <span class=m>16384</span> slots covered.
+</span></span></code></pre></td></tr></table></div></div><p>可以看到，创建集群这个过程比较繁琐，可以创建脚本来完成这些操作</p><ul><li>启动脚本</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo vim /usr/local/redis-cluster/bin/start.sh
+</span></span><span class=line><span class=cl><span class=c1>#!/usr/bin/env bash</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>RedisServerPath</span><span class=o>=</span>/usr/local/redis-cluster/bin
+</span></span><span class=line><span class=cl><span class=nv>RedisConfPath</span><span class=o>=</span>/usr/local/redis-cluster/etc
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> i in <span class=m>1</span> <span class=m>2</span> <span class=m>3</span> <span class=m>4</span> <span class=m>5</span> 6<span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$RedisServerPath</span>/redis-server <span class=nv>$RedisConfPath</span>/redis-700<span class=nv>$i</span>.conf
+</span></span><span class=line><span class=cl><span class=k>done</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>/usr/local/redis-cluster/bin/redis-trib.rb create --replicas <span class=m>1</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>192.168.33.110:7001 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>192.168.33.110:7002 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>192.168.33.110:7003 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>192.168.33.110:7004 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>192.168.33.110:7005 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>192.168.33.110:7006 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>$ sudo chmod a+x /usr/local/redis-cluster/bin/start.sh
+</span></span></code></pre></td></tr></table></div></div><ul><li>停止脚本</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo vim /usr/local/redis-cluster/bin/stop.sh
+</span></span><span class=line><span class=cl><span class=c1>#!/usr/bin/env bash</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>RedisClusterPath</span><span class=o>=</span>/usr/local/redis-cluster
+</span></span><span class=line><span class=cl><span class=nv>RedisCliPath</span><span class=o>=</span>/usr/local/redis-cluster/bin
+</span></span><span class=line><span class=cl><span class=nv>ip</span><span class=o>=</span>192.168.33.110
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> i in <span class=m>1</span> <span class=m>2</span> <span class=m>3</span> <span class=m>4</span> <span class=m>5</span> 6<span class=p>;</span> <span class=k>do</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$RedisCliPath</span>/redis-cli -c -h <span class=nv>$ip</span> -p 700<span class=nv>$i</span> shutdown
+</span></span><span class=line><span class=cl><span class=k>done</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>rm -rf <span class=nv>$RedisClusterPath</span>/log/*
+</span></span><span class=line><span class=cl>rm -rf <span class=nv>$RedisClusterPath</span>/run/*
+</span></span><span class=line><span class=cl>rm -rf <span class=nv>$RedisClusterPath</span>/var/*
+</span></span><span class=line><span class=cl>$ sudo chmod a+x /usr/local/redis-cluster/bin/stop.sh
+</span></span></code></pre></td></tr></table></div></div><h3 id=查看信息>查看信息</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7001</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; cluster nodes <span class=c1># 查看节点信息</span>
+</span></span><span class=line><span class=cl>5521b06a46910c873e7ee8a274f2cb9fc41ffed1 192.168.33.110:7003@17003 master - <span class=m>0</span> <span class=m>1526681994008</span> <span class=m>3</span> connected 10923-16383
+</span></span><span class=line><span class=cl>8153a1b35e0fab1e48f0171653f6cffd82cbc5a6 192.168.33.110:7004@17004 slave d7e0395152496f41fe73fbbdabc8499c79f6632e <span class=m>0</span> <span class=m>1526681996033</span> <span class=m>4</span> connected
+</span></span><span class=line><span class=cl>a2ff29661185f6ad17c99232d0490b3814ba0164 192.168.33.110:7006@17006 slave affc237bf177fd4ac591314736a1358e16545d0c <span class=m>0</span> <span class=m>1526681995020</span> <span class=m>6</span> connected
+</span></span><span class=line><span class=cl>d7e0395152496f41fe73fbbdabc8499c79f6632e 192.168.33.110:7002@17002 master - <span class=m>0</span> <span class=m>1526681993000</span> <span class=m>2</span> connected 5461-10922
+</span></span><span class=line><span class=cl>8b613e4b5abbdf3c2486dfcb8bc1e9dde1897820 192.168.33.110:7005@17005 slave 5521b06a46910c873e7ee8a274f2cb9fc41ffed1 <span class=m>0</span> <span class=m>1526681993000</span> <span class=m>5</span> connected
+</span></span><span class=line><span class=cl>affc237bf177fd4ac591314736a1358e16545d0c 192.168.33.110:7001@17001 myself,master - <span class=m>0</span> <span class=m>1526681994000</span> <span class=m>1</span> connected 0-5460
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; cluster info <span class=c1># 查看集群信息</span>
+</span></span><span class=line><span class=cl>cluster_state:ok
+</span></span><span class=line><span class=cl>cluster_slots_assigned:16384
+</span></span><span class=line><span class=cl>cluster_slots_ok:16384
+</span></span><span class=line><span class=cl>cluster_slots_pfail:0
+</span></span><span class=line><span class=cl>cluster_slots_fail:0
+</span></span><span class=line><span class=cl>cluster_known_nodes:6
+</span></span><span class=line><span class=cl>cluster_size:3
+</span></span><span class=line><span class=cl>cluster_current_epoch:6
+</span></span><span class=line><span class=cl>cluster_my_epoch:1
+</span></span><span class=line><span class=cl>cluster_stats_messages_ping_sent:59501
+</span></span><span class=line><span class=cl>cluster_stats_messages_pong_sent:61755
+</span></span><span class=line><span class=cl>cluster_stats_messages_sent:121256
+</span></span><span class=line><span class=cl>cluster_stats_messages_ping_received:61750
+</span></span><span class=line><span class=cl>cluster_stats_messages_pong_received:59501
+</span></span><span class=line><span class=cl>cluster_stats_messages_meet_received:5
+</span></span><span class=line><span class=cl>cluster_stats_messages_received:121256
+</span></span></code></pre></td></tr></table></div></div><h3 id=相关命令>相关命令</h3><table><thead><tr><th>命令</th><th>说明</th></tr></thead><tbody><tr><td><code>CLUSTER INFO</code></td><td>打印集群信息</td></tr><tr><td><code>CLUSTER NODES</code></td><td>列出集群当前已知的所有节点信息</td></tr><tr><td><code>CLUSTER MEET &lt;ip> &lt;port></code></td><td>将 <code>ip</code> 和 <code>port</code> 所指定的节点添加到集群当中</td></tr><tr><td><code>CLUSTER FORGET &lt;node_id></code></td><td>从集群中移除 <code>node_id</code> 指定的节点</td></tr><tr><td><code>CLUSTER REPLICATE &lt;node_id></code></td><td>将当前节点设置为 <code>node_id</code> 指定的节点的从节点</td></tr><tr><td><code>CLUSTER SAVECONFIG</code></td><td>将节点的配置文件保存到硬盘里面</td></tr><tr><td><code>CLUSTER ADDSLOTS &lt;slot> [slot ...]</code></td><td>将一个或多个槽（<code>slot</code>）指派（<code>assign</code>）给当前节点</td></tr><tr><td><code>CLUSTER DELSLOTS &lt;slot> [slot ...]</code></td><td>移除一个或多个槽对当前节点的指派</td></tr><tr><td><code>CLUSTER FLUSHSLOTS</code></td><td>移除指派给当前节点的所有槽，让当前节点变成一个没有指派任何槽的节点</td></tr><tr><td><code>CLUSTER SETSLOT &lt;slot> NODE &lt;node_id></code></td><td>将槽 <code>slot</code> 指派给 <code>node_id</code> 指定的节点，如果槽已经指派给另一个节点，那么先让另一个节点删除该槽，然后再进行指派</td></tr><tr><td><code>CLUSTER SETSLOT &lt;slot> MIGRATING &lt;node_id></code></td><td>将本节点的槽 <code>slot</code> 迁移到 <code>node_id</code> 指定的节点中</td></tr><tr><td><code>CLUSTER SETSLOT &lt;slot> IMPORTING &lt;node_id></code></td><td>从 <code>node_id</code> 指定的节点中导入槽 <code>slot</code> 到本节点</td></tr><tr><td><code>CLUSTER SETSLOT &lt;slot> STABLE</code></td><td>取消对槽 <code>slot</code> 的导入（<code>import</code>）或者迁移（<code>migrate</code>）</td></tr><tr><td><code>CLUSTER KEYSLOT &lt;key></code></td><td>计算键 <code>key</code> 应该被放置在哪个槽上</td></tr><tr><td><code>CLUSTER COUNTKEYSINSLOT &lt;slot></code></td><td>返回槽 <code>slot</code> 目前包含的键值对数量</td></tr><tr><td><code>CLUSTER GETKEYSINSLOT &lt;slot> &lt;count></code></td><td>返回 <code>count</code> 个 <code>slot</code> 槽中的键</td></tr></tbody></table><h2 id=实例操作>实例操作</h2><h3 id=客户端操作>客户端操作</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 从某个节点设置值后，去不同的节点获取设置的值
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7001</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; <span class=nb>set</span> foo bar
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12182<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl>OK
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7001</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; get foo
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12182<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7002</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7002&gt; get foo
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12182<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7003</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7003&gt; get foo
+</span></span><span class=line><span class=cl><span class=s2>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7004</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7004&gt; get foo
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12182<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7005</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7005&gt; get foo
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12182<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;bar&#34;</span>
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7006</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7006&gt; get foo
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12182<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;bar&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=程序操作>程序操作</h3><h4 id=下载安装>下载安装</h4><blockquote><ul><li><a href=https://github.com/nrk/predis target=_blank rel="noopener noreffer">Flexible and feature-complete Redis client for PHP and HHVM</a></li><li><a href=https://github.com/nrk/predis/wiki/Quick-tour target=_blank rel="noopener noreffer">Quick tour</a></li></ul></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~
+</span></span><span class=line><span class=cl>$ mkdir <span class=nb>test</span>
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> <span class=nb>test</span>
+</span></span><span class=line><span class=cl>$ composer init
+</span></span><span class=line><span class=cl>$ composer install
+</span></span><span class=line><span class=cl>$ composer require predis/predis
+</span></span></code></pre></td></tr></table></div></div><h4 id=测试代码>测试代码</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>require</span> <span class=no>__DIR__</span> <span class=o>.</span> <span class=s1>&#39;/vendor/autoload.php&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=mi>6</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$parameters</span><span class=p>[]</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;host&#39;</span>               <span class=o>=&gt;</span> <span class=s1>&#39;192.168.33.110&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;port&#39;</span>               <span class=o>=&gt;</span> <span class=s1>&#39;700&#39;</span> <span class=o>.</span> <span class=nv>$i</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;password&#39;</span>           <span class=o>=&gt;</span> <span class=k>null</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;database&#39;</span>           <span class=o>=&gt;</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;timeout&#39;</span>            <span class=o>=&gt;</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;read_write_timeout&#39;</span> <span class=o>=&gt;</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nv>$options</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;cluster&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;redis&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$cluster</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>\Predis\Client</span><span class=p>(</span><span class=nv>$parameters</span><span class=p>,</span> <span class=nv>$options</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>\Predis\PredisException</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nv>$e</span><span class=o>-&gt;</span><span class=na>getMessage</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>exit</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=mi>100</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$format</span> <span class=o>=</span> <span class=s1>&#39;No.%s is a RedisCluster test.&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$cluster</span><span class=o>-&gt;</span><span class=na>set</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>$i</span><span class=s2>&#34;</span><span class=p>,</span> <span class=nx>sprintf</span><span class=p>(</span><span class=nv>$format</span><span class=p>,</span> <span class=nv>$i</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nv>$cluster</span><span class=o>-&gt;</span><span class=na>get</span><span class=p>(</span><span class=s2>&#34;</span><span class=si>$i</span><span class=s2>&#34;</span><span class=p>)</span> <span class=o>.</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=测试结果>测试结果</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ php cluster.php
+</span></span><span class=line><span class=cl>No.1 is a Redis cluster test.
+</span></span><span class=line><span class=cl>No.2 is a Redis cluster test.
+</span></span><span class=line><span class=cl>No.3 is a Redis cluster test.
+</span></span><span class=line><span class=cl>...
+</span></span><span class=line><span class=cl>No.99 is a Redis cluster test.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>$ /usr/local/redis-cluster/bin/redis-cli -c -h 192.168.33.110 -p <span class=m>7001</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; get <span class=m>11</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.11 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; get <span class=m>23</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>9671<span class=o>]</span> located at 192.168.33.110:7002
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.23 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7002&gt; get <span class=m>33</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.33 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7002&gt; get <span class=m>67</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.67 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7002&gt; get <span class=m>88</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>15207<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.88 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7003&gt; get <span class=m>99</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>6263<span class=o>]</span> located at 192.168.33.110:7002
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.99 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7002&gt; get <span class=m>100</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>339<span class=o>]</span> located at 192.168.33.110:7001
+</span></span><span class=line><span class=cl><span class=o>(</span>nil<span class=o>)</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7001&gt; get <span class=m>17</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>12304<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.17 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7003&gt; get <span class=m>42</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>8000<span class=o>]</span> located at 192.168.33.110:7002
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.42 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7002&gt; get <span class=m>56</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>11509<span class=o>]</span> located at 192.168.33.110:7003
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.56 is a RedisCluster test.&#34;</span>
+</span></span><span class=line><span class=cl>192.168.33.110:7003&gt; get <span class=m>61</span>
+</span></span><span class=line><span class=cl>-&gt; Redirected to slot <span class=o>[</span>2369<span class=o>]</span> located at 192.168.33.110:7001
+</span></span><span class=line><span class=cl><span class=s2>&#34;No.61 is a RedisCluster test.&#34;</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2020-01-16</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ data-title="Redis 集群搭建" data-hashtags=Redis><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ data-hashtag=Redis><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ data-title="Redis 集群搭建"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ data-title="Redis 集群搭建"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2020/01/16/redis-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA/ data-title="Redis 集群搭建"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/redis/>Redis</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2019/12/29/linux-crontab-%E5%91%BD%E4%BB%A4/ class=prev rel=prev title="Linux crontab 命令"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Linux crontab 命令</a>
+<a href=https://imajinyun.xyz/2020/09/07/git-%E5%91%BD%E4%BB%A4%E5%A4%A7%E5%85%A8/ class=next rel=next title="Git 命令大全">Git 命令大全<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

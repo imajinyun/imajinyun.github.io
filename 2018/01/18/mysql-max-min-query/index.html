@@ -1,0 +1,512 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>MySQL 最值查询 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="MySQL 最值查询"><meta property="og:description" content="在实际的查询过程中会经常查询一些最值的情况，看着那些六亲不认的 SQL，我诚惶诚恐的先记录一下。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/01/18/mysql-max-min-query/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-18T19:04:28+08:00"><meta property="article:modified_time" content="2018-01-18T19:04:28+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/2019/11/17/mysql-data-types/"><meta property="og:see_also" content="https://imajinyun.xyz/2019/11/07/mysql-isolation-level/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/04/15/mysql-reset-root-password/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/01/21/mysql-support-emoji/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/01/20/mysql-storage-engine/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/01/20/mysql-string-functions/"><meta name=twitter:card content="summary"><meta name=twitter:title content="MySQL 最值查询"><meta name=twitter:description content="在实际的查询过程中会经常查询一些最值的情况，看着那些六亲不认的 SQL，我诚惶诚恐的先记录一下。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/01/18/mysql-max-min-query/><link rel=prev href=https://imajinyun.xyz/2018/01/18/php-composer/><link rel=next href=https://imajinyun.xyz/2018/01/19/php-php7-new-features/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"MySQL 最值查询","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/01\/18\/mysql-max-min-query\/"},"genre":"posts","keywords":"MySQL","wordcount":1240,"url":"https:\/\/imajinyun.xyz\/2018\/01\/18\/mysql-max-min-query\/","datePublished":"2018-01-18T19:04:28+08:00","dateModified":"2018-01-18T19:04:28+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">MySQL 最值查询</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/mysql/><i class="far fa-folder fa-fw" aria-hidden=true></i>MySQL</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-18>2018-01-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 1240 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#数据准备>数据准备</a></li><li><a href=#按-key-分组取-val-最大的值所在行的记录>按 key 分组取 val 最大的值所在行的记录</a><ul><li><a href=#方法一>方法一</a></li><li><a href=#方法二>方法二</a></li><li><a href=#方法三>方法三</a></li><li><a href=#方法四>方法四</a></li><li><a href=#方法五>方法五</a></li><li><a href=#方法六>方法六</a></li></ul></li><li><a href=#按-key-分组取-val-最小的值所在行的数据>按 key 分组取 val 最小的值所在行的数据</a><ul><li><a href=#方法一-1>方法一</a></li><li><a href=#方法二-1>方法二</a></li><li><a href=#方法三-1>方法三</a></li><li><a href=#方法四-1>方法四</a></li><li><a href=#方法五-1>方法五</a></li><li><a href=#方法六-1>方法六</a></li></ul></li><li><a href=#按-key-分组取最大的两个-val-所在行的数据>按 key 分组取最大的两个 val 所在行的数据</a><ul><li><a href=#方法一-2>方法一</a></li><li><a href=#方法二-2>方法二</a></li></ul></li><li><a href=#按-key-分组取最小的两个-val-所在行的数据>按 key 分组取最小的两个 val 所在行的数据</a><ul><li><a href=#方法一-3>方法一</a></li><li><a href=#方法二-3>方法二</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>在实际的查询过程中会经常查询一些最值的情况，看着那些六亲不认的 SQL，我诚惶诚恐的先记录一下。</p><ul><li><a href=https://imajinyun.xyz/2019/11/17/mysql-data-types/ target=_blank rel="noopener noreffer">MySQL 数据类型</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-user-manager/ target=_blank rel="noopener noreffer">MySQL 用户管理</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-keywords-query/ target=_blank rel="noopener noreffer">MySQL 关键字查询</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-string-functions/ target=_blank rel="noopener noreffer">MySQL 字符串函数</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-string-concat-functions/ target=_blank rel="noopener noreffer">MySQL 字符串连接函数</a></li><li><a href=https://imajinyun.xyz/2018/04/15/mysql-reset-root-password/ target=_blank rel="noopener noreffer">MySQL 忘记 root 密码后重置</a></li><li>MySQL 最值查询</li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-datetime-functions/ target=_blank rel="noopener noreffer">MySQL 日期时间函数</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-join-query/ target=_blank rel="noopener noreffer">MySQL 联合查询</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-year-quarter-month-week-query/ target=_blank rel="noopener noreffer">MySQL 查询当前年、季、月、周的第一天和最后一天</a></li><li><a href=https://imajinyun.xyz/2018/01/21/mysql-support-emoji/ target=_blank rel="noopener noreffer">MySQL 支持 emoji 图标的设置</a></li><li><a href=https://imajinyun.xyz/2018/01/20/mysql-storage-engine/ target=_blank rel="noopener noreffer">MySQL 存储引擎</a></li><li><a href=https://imajinyun.xyz/2019/11/07/mysql-isolation-level/ target=_blank rel="noopener noreffer">MySQL 隔离级别及其脏读不可重复读幻读</a></li></ul><h2 id=数据准备>数据准备</h2><blockquote><p>查询前请先导入实例数据，此实例数据由 <code>Navicat</code> 客户端导出。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm> Navicat Premium Data Transfer
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm> Source Server         : localhost
+</span></span></span><span class=line><span class=cl><span class=cm> Source Server Type    : MySQL
+</span></span></span><span class=line><span class=cl><span class=cm> Source Server Version : 50714
+</span></span></span><span class=line><span class=cl><span class=cm> Source Host           : 127.0.0.1
+</span></span></span><span class=line><span class=cl><span class=cm> Source Database       : test
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm> Target Server Type    : MySQL
+</span></span></span><span class=line><span class=cl><span class=cm> Target Server Version : 50714
+</span></span></span><span class=line><span class=cl><span class=cm> File Encoding         : utf-8
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm> Date: 03/07/2017 21:29:35 PM
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SET</span><span class=w> </span><span class=k>NAMES</span><span class=w> </span><span class=n>utf8mb4</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SET</span><span class=w> </span><span class=n>FOREIGN_KEY_CHECKS</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>0</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>-- ----------------------------
+</span></span></span><span class=line><span class=cl><span class=c1>--  Table structure for `test`
+</span></span></span><span class=line><span class=cl><span class=c1>-- ----------------------------
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>DROP</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=k>IF</span><span class=w> </span><span class=k>EXISTS</span><span class=w> </span><span class=o>`</span><span class=n>test</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>CREATE</span><span class=w> </span><span class=k>TABLE</span><span class=w> </span><span class=o>`</span><span class=n>test</span><span class=o>`</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=w> </span><span class=nb>int</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span><span class=w> </span><span class=n>unsigned</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=w> </span><span class=n>AUTO_INCREMENT</span><span class=w> </span><span class=k>COMMENT</span><span class=w> </span><span class=s1>&#39;主键 Id&#39;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=nb>varchar</span><span class=p>(</span><span class=mi>45</span><span class=p>)</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=w> </span><span class=k>COMMENT</span><span class=w> </span><span class=s1>&#39;键名&#39;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=nb>varchar</span><span class=p>(</span><span class=mi>45</span><span class=p>)</span><span class=w> </span><span class=k>NOT</span><span class=w> </span><span class=k>NULL</span><span class=w> </span><span class=k>COMMENT</span><span class=w> </span><span class=s1>&#39;键值&#39;</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>PRIMARY</span><span class=w> </span><span class=k>KEY</span><span class=w> </span><span class=p>(</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>)</span><span class=w> </span><span class=n>ENGINE</span><span class=o>=</span><span class=n>InnoDB</span><span class=w> </span><span class=n>AUTO_INCREMENT</span><span class=o>=</span><span class=mi>33</span><span class=w> </span><span class=k>DEFAULT</span><span class=w> </span><span class=n>CHARSET</span><span class=o>=</span><span class=n>utf8</span><span class=w> </span><span class=k>COMMENT</span><span class=o>=</span><span class=s1>&#39;测试表&#39;</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c1>-- ----------------------------
+</span></span></span><span class=line><span class=cl><span class=c1>--  Records of `test`
+</span></span></span><span class=line><span class=cl><span class=c1>-- ----------------------------
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>BEGIN</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>INSERT</span><span class=w> </span><span class=k>INTO</span><span class=w> </span><span class=o>`</span><span class=n>test</span><span class=o>`</span><span class=w> </span><span class=k>VALUES</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;1&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;10&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;2&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;11&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;3&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;12&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;4&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;13&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;5&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;14&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;6&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;15&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;7&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;16&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;8&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;17&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;9&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;18&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;10&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;a&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;19&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;11&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;20&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;12&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;21&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;13&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;22&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;14&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;23&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;15&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;24&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;16&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;25&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;17&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;26&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;18&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;27&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;19&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;28&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;20&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;b&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;29&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;21&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;c&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;30&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;22&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;c&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;31&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;23&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;c&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;32&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;24&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;c&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;33&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;25&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;c&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;34&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;26&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;c&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;35&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;27&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;d&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;40&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;28&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;d&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;41&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;29&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;d&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;42&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;30&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;d&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;43&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;31&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;d&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;44&#39;</span><span class=p>),</span><span class=w> </span><span class=p>(</span><span class=s1>&#39;32&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;d&#39;</span><span class=p>,</span><span class=w> </span><span class=s1>&#39;45&#39;</span><span class=p>);</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>COMMIT</span><span class=p>;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>SET</span><span class=w> </span><span class=n>FOREIGN_KEY_CHECKS</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=mi>1</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=按-key-分组取-val-最大的值所在行的记录>按 key 分组取 val 最大的值所在行的记录</h2><h3 id=方法一>方法一</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>MAX</span><span class=p>(</span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>val</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法二>方法二</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>MAX</span><span class=p>(</span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法三>方法三</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>NOT</span><span class=w> </span><span class=k>EXISTS</span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法四>方法四</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>(</span><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>     </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>     </span><span class=k>MAX</span><span class=p>(</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>val</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法五>方法五</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>MAX</span><span class=p>(</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                                      </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法六>方法六</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=mi>1</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>       </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>       </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=按-key-分组取-val-最小的值所在行的数据>按 key 分组取 val 最小的值所在行的数据</h2><h3 id=方法一-1>方法一</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>MIN</span><span class=p>(</span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>val</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法二-1>方法二</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>MIN</span><span class=p>(</span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法三-1>方法三</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>NOT</span><span class=w> </span><span class=k>EXISTS</span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=mi>1</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>             </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>);</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法四-1>方法四</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>(</span><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>     </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>     </span><span class=k>MIN</span><span class=p>(</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>val</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>AND</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法五-1>方法五</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>INNER</span><span class=w> </span><span class=k>JOIN</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                </span><span class=k>MIN</span><span class=p>(</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>val</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>              </span><span class=k>GROUP</span><span class=w> </span><span class=k>BY</span><span class=w> </span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>)</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w> </span><span class=k>ON</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                                      </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法六-1>方法六</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=mi>1</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>       </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>       </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=按-key-分组取最大的两个-val-所在行的数据>按 key 分组取最大的两个 val 所在行的数据</h2><h3 id=方法一-2>方法一</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=mi>2</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>       </span><span class=k>FROM</span><span class=w> </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>       </span><span class=k>WHERE</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法二-2>方法二</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>EXISTS</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>HAVING</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=mi>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=按-key-分组取最小的两个-val-所在行的数据>按 key 分组取最小的两个 val 所在行的数据</h2><h3 id=方法一-3>方法一</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=mi>2</span><span class=w> </span><span class=o>&gt;</span><span class=w> </span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=方法二-3>方法二</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-sql data-lang=sql><span class=line><span class=cl><span class=k>SELECT</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>id</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>,</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>a</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=k>EXISTS</span><span class=p>(</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>SELECT</span><span class=w> </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>FROM</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>test</span><span class=p>.</span><span class=n>test</span><span class=w> </span><span class=k>AS</span><span class=w> </span><span class=n>b</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>WHERE</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w> </span><span class=o>=</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>AND</span><span class=w> </span><span class=n>b</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=n>val</span><span class=o>`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=k>HAVING</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=k>COUNT</span><span class=p>(</span><span class=o>*</span><span class=p>)</span><span class=w> </span><span class=o>&lt;</span><span class=w> </span><span class=mi>2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=p>)</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=k>ORDER</span><span class=w> </span><span class=k>BY</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=n>a</span><span class=p>.</span><span class=o>`</span><span class=k>key</span><span class=o>`</span><span class=p>;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-18</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/01/18/mysql-max-min-query/ data-title="MySQL 最值查询" data-hashtags=MySQL><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/01/18/mysql-max-min-query/ data-hashtag=MySQL><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/01/18/mysql-max-min-query/ data-title="MySQL 最值查询"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/01/18/mysql-max-min-query/ data-title="MySQL 最值查询"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/01/18/mysql-max-min-query/ data-title="MySQL 最值查询"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/mysql/>MySQL</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/01/18/php-composer/ class=prev rel=prev title="PHP 依赖管理器"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>PHP 依赖管理器</a>
+<a href=https://imajinyun.xyz/2018/01/19/php-php7-new-features/ class=next rel=next title="PHP7 新特性">PHP7 新特性<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

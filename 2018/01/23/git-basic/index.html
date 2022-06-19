@@ -1,0 +1,1012 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Git 基本操作 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Git 基本操作"><meta property="og:description" content="通过一顿操作来熟悉 Git 是不二法门。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/01/23/git-basic/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-23T10:39:29+08:00"><meta property="article:modified_time" content="2018-01-23T10:39:29+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Git 基本操作"><meta name=twitter:description content="通过一顿操作来熟悉 Git 是不二法门。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/01/23/git-basic/><link rel=prev href=https://imajinyun.xyz/2018/01/22/git-get-started/><link rel=next href=https://imajinyun.xyz/2018/01/24/git-log/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Git 基本操作","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/01\/23\/git-basic\/"},"genre":"posts","keywords":"Git","wordcount":4203,"url":"https:\/\/imajinyun.xyz\/2018\/01\/23\/git-basic\/","datePublished":"2018-01-23T10:39:29+08:00","dateModified":"2018-01-23T10:39:29+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Git 基本操作</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/git/><i class="far fa-folder fa-fw" aria-hidden=true></i>Git</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-23>2018-01-23</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 4203 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 9 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#创建服务器裸仓库>创建服务器裸仓库</a></li><li><a href=#创建本地仓库>创建本地仓库</a><ul><li><a href=#初始化本地仓库>初始化本地仓库</a></li><li><a href=#关联远程仓库>关联远程仓库</a></li><li><a href=#分支跟踪远程分支>分支跟踪远程分支</a></li><li><a href=#克隆远程仓库>克隆远程仓库</a></li></ul></li></ul><ul><li><a href=#初始化仓库>初始化仓库</a></li><li><a href=#忽略文件>忽略文件</a></li><li><a href=#添加文件>添加文件</a></li><li><a href=#仓库状态>仓库状态</a></li><li><a href=#提交文件>提交文件</a></li><li><a href=#修改最后一次提交日志信息>修改最后一次提交日志信息</a></li><li><a href=#修改最后一次提交记录时的用户信息>修改最后一次提交记录时的用户信息</a></li><li><a href=#撤销对文件内容的更改>撤销对文件内容的更改</a></li><li><a href=#提交文件变更到仓库>提交文件变更到仓库</a></li><li><a href=#回滚仓库到某个提交>回滚仓库到某个提交</a></li><li><a href=#撤销工作区和暂存区>撤销工作区和暂存区</a></li><li><a href=#查看已暂存和未暂存的更新>查看已暂存和未暂存的更新</a></li><li><a href=#移除文件>移除文件</a></li><li><a href=#移动或者重命名文件>移动或者重命名文件</a></li><li><a href=#差异比较>差异比较</a></li><li><a href=#储藏>储藏</a><ul><li><a href=#储藏任务>储藏任务</a></li><li><a href=#查看储藏任务列表>查看储藏任务列表</a></li><li><a href=#应用最近的储藏>应用最近的储藏</a></li><li><a href=#删除储藏>删除储藏</a></li><li><a href=#取消储藏>取消储藏</a></li><li><a href=#从储藏中创建分支>从储藏中创建分支</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>通过一顿操作来熟悉 Git 是不二法门。</p><ul><li><a href=https://imajinyun.xyz/2018/01/22/git-started/ target=_blank rel="noopener noreffer"><code>Git 起步</code></a></li><li><strong>Git 基本操作</strong></li><li><a href=https://imajinyun.xyz/2018/01/24/git-log/ target=_blank rel="noopener noreffer"><code>Git 查看日志</code></a></li><li><a href=https://imajinyun.xyz/2018/01/25/git-branch/ target=_blank rel="noopener noreffer"><code>Git 分支</code></a></li><li><a href=https://imajinyun.xyz/2018/01/27/git-multiple-accounts/ target=_blank rel="noopener noreffer"><code>Git 中一个客户端设置多个账号</code></a></li><li><a href=https://imajinyun.xyz/2018/05/01/git-workflow/ target=_blank rel="noopener noreffer"><code>Git Workflow</code></a></li><li><a href=https://imajinyun.xyz/2020/09/07/git-collection-command/ target=_blank rel="noopener noreffer"><code>Git 命令大全</code></a></li></ul><h1 id=创建仓库>创建仓库</h1><blockquote><p>请自行准备好 <code>git</code> 环境。</p></blockquote><h2 id=创建服务器裸仓库>创建服务器裸仓库</h2><blockquote><ul><li><code>git init</code>: 将当前的目录转换成一个 <code>git</code> 仓库</li><li><code>git init &lt;directory></code>: 在指定目录创建一个空的 <code>git</code> 仓库</li><li><code>git init --bare &lt;project-name>.git</code>: 裸库往往被创建用于作为大家一起工作的共享库，每一个人都可以往里面 <code>push</code> 自己的本地修改。服务器上 <code>bare</code> 创建的仓库，主要用来连接，同步，协调。记录每个人本地仓库的记录，而不存放项目源代码。而每个开发人员自己电脑上分别有个小仓库，存放源代码及自己的改动</li></ul></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 登录远程服务器
+</span></span><span class=line><span class=cl>$ ssh &lt;user&gt;@&lt;host&gt;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 进入操作目录
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> /path/to/repository
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 创建祼仓库
+</span></span><span class=line><span class=cl>$ git init --bare &lt;project-name&gt;.git
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 退出远程服务器，进入本地终端
+</span></span><span class=line><span class=cl>$ git init &lt;directory&gt;
+</span></span><span class=line><span class=cl>$ touch README.md
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Initial commit&#34;</span>
+</span></span><span class=line><span class=cl>$ git remote add origin &lt;user&gt;@&lt;host&gt;:/path/to/repository/&lt;project-name&gt;.git
+</span></span><span class=line><span class=cl>$ git push -u origin master
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 其它成员克隆仓库
+</span></span><span class=line><span class=cl>$ git clone &lt;user&gt;@&lt;host&gt;:/path/to/repository/&lt;project-name&gt;.git
+</span></span></code></pre></td></tr></table></div></div><h2 id=创建本地仓库>创建本地仓库</h2><h3 id=初始化本地仓库>初始化本地仓库</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 创建本地仓库
+</span></span><span class=line><span class=cl>$ mkdir example
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> example
+</span></span><span class=line><span class=cl>$ git init
+</span></span><span class=line><span class=cl>$ touch README.md
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Initial commit&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=关联远程仓库>关联远程仓库</h3><blockquote><p>关联多个仓库需要给不同的远程仓库起一个别名，请自行在 gitee 和 github 上创建空仓库。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git remote add gitee git@gitee.com:user/project.git
+</span></span><span class=line><span class=cl>$ git push -u gitee master
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ git remote add github https://github.com/user/project.git
+</span></span><span class=line><span class=cl>$ git push -u github master
+</span></span></code></pre></td></tr></table></div></div><h3 id=分支跟踪远程分支>分支跟踪远程分支</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 设置让本地某个分支跟踪远程的某个分支
+</span></span><span class=line><span class=cl>$ git branch --set-upstream-to<span class=o>=</span>origin/&lt;branch&gt; &lt;branch&gt;
+</span></span></code></pre></td></tr></table></div></div><h3 id=克隆远程仓库>克隆远程仓库</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git clone &lt;user&gt;@&lt;host&gt;:/path/to/repository/&lt;project&gt;.git
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ git clone https://gitee.com/user/&lt;project&gt;.git
+</span></span></code></pre></td></tr></table></div></div><h1 id=基本操作>基本操作</h1><h2 id=初始化仓库>初始化仓库</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~/Desktop <span class=o>&amp;&amp;</span> mkdir example <span class=o>&amp;&amp;</span> <span class=nb>cd</span> example
+</span></span><span class=line><span class=cl>$ git init
+</span></span><span class=line><span class=cl>Initialized empty Git repository in /Users/majinyun/Desktop/example/.git/
+</span></span></code></pre></td></tr></table></div></div><h2 id=忽略文件>忽略文件</h2><p>GitHub 官方提供的 <strong><a href=https://github.com/github/gitignore target=_blank rel="noopener noreffer">忽略文件模版</a></strong></p><p><code>.gitignore</code> 文件格式：</p><ul><li>所有空行或者以注释符号 <code>#</code> 开头的行都会被 <code>git</code> 忽略</li><li>可以使用标准的 <code>glob</code> 模式匹配</li><li>匹配模式最后跟反斜杠 <code>/</code> 说明要忽略的是目录</li><li>要忽略指定模式以外的文件或目录，可以在模式前加上惊叹号 <code>!</code> 取反</li></ul><h2 id=添加文件>添加文件</h2><blockquote><p>空目录是不能提交到仓库中的，至少要保证目录中有一个文件。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 创建一个 README.md 文件
+</span></span><span class=line><span class=cl>$ touch README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看仓库状态
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>No commits yet
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Untracked files:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to include in what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nothing added to commit but untracked files present <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> to track<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 如果这个阶段你发现文件创建错误了（本不应该放置在此目录中或不需要此文件或者其它任何原因），直接删除掉即可，否则继续以下操作
+</span></span><span class=line><span class=cl>$ rm -f README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 添加 README.md 文件到暂存区
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看仓库状态
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>No commits yet
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git rm --cached &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    new file:   README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 如果这个阶段你发现此文件不应该被添加到暂存区，请不要粗暴的 rm 掉，而是使用 git rm 命令干掉它
+</span></span><span class=line><span class=cl>$ git rm --cached README.md
+</span></span></code></pre></td></tr></table></div></div><h2 id=仓库状态>仓库状态</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>nothing to commit, working tree clean
+</span></span></code></pre></td></tr></table></div></div><h2 id=提交文件>提交文件</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 将暂存区的文件提交到仓库，正常情况下会如下面的操作一样，显示文件已经被加入到版本库中，但也有不正常的情况
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Add README.md&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master <span class=o>(</span>root-commit<span class=o>)</span> a384a2b<span class=o>]</span> Add README.md
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>0</span> insertions<span class=o>(</span>+<span class=o>)</span>, <span class=m>0</span> deletions<span class=o>(</span>-<span class=o>)</span>
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 这个就是提交时的不正常情况，什么意思呢？第一种说法的意思是需要你配置一下仓库的用户名称和邮箱地址，这个小意思，我们直接来个全局配置和局部配置就搞定了。第二种说法的意思是你在完成上面的操作之后，可以修复用于此提交的标识，说白了就是你提交到仓库后还可以进行编辑提交记录的注释信息（就是就对万一将本次提交记录的注释信息写错的情况），它会弹出你所配置的编辑器让你修改提交记录的注释信息，很遗憾这个只修改最后一个提交记录的注释信息，那么问题来了，怎么修改前 N 次的的某个提交记录的注释信息呢，这里暂时先不探究，这个涉及到 rebase 操作，足以让我再折腾一篇来专门说这种情况
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Add README.md&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master <span class=o>(</span>root-commit<span class=o>)</span> a384a2b<span class=o>]</span> Add README.md
+</span></span><span class=line><span class=cl> Committer: user &lt;user@user.com&gt;
+</span></span><span class=line><span class=cl>Your name and email address were configured automatically based
+</span></span><span class=line><span class=cl>on your username and hostname. Please check that they are accurate.
+</span></span><span class=line><span class=cl>You can suppress this message by setting them explicitly:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    git config --global user.name <span class=s2>&#34;Your Name&#34;</span>
+</span></span><span class=line><span class=cl>    git config --global user.email you@example.com
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>After doing this, you may fix the identity used <span class=k>for</span> this commit with:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    git commit --amend --reset-author
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>0</span> insertions<span class=o>(</span>+<span class=o>)</span>, <span class=m>0</span> deletions<span class=o>(</span>-<span class=o>)</span>
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 配置用户和邮箱交提交到仓库，将用户和邮箱换成你自己的，这个时间代码已经被提交到仓库
+</span></span><span class=line><span class=cl>$ git config user.name <span class=s2>&#34;yourname&#34;</span>
+</span></span><span class=line><span class=cl>$ git config user.email <span class=s2>&#34;yourname@email.com&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看仓库状态
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>nothing to commit, working tree clean
+</span></span></code></pre></td></tr></table></div></div><h2 id=修改最后一次提交日志信息>修改最后一次提交日志信息</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vim README.md
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Add symfony link&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master 98a19c3<span class=o>]</span> Add symfony link
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span><span class=line><span class=cl>$ git commit --amend
+</span></span><span class=line><span class=cl>Add symfony website link <span class=c1># 编辑此信息</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Please enter the commit message for your changes. Lines starting</span>
+</span></span><span class=line><span class=cl><span class=c1># with &#39;#&#39; will be ignored, and an empty message aborts the commit.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Date:      Sun Dec 30 19:22:08 2018 +0800</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># On branch master</span>
+</span></span><span class=line><span class=cl><span class=c1># Changes to be committed:</span>
+</span></span><span class=line><span class=cl><span class=c1>#  modified:   README.md</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master abe0281<span class=o>]</span> Add symfony website link
+</span></span><span class=line><span class=cl> Date: Sun Dec <span class=m>30</span> 19:22:08 <span class=m>2018</span> +0800
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=修改最后一次提交记录时的用户信息>修改最后一次提交记录时的用户信息</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git commit --amend --author<span class=o>=</span><span class=s2>&#34;peter &lt;peter@dot.org&gt;&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master facc111<span class=o>]</span> Add symfony website link
+</span></span><span class=line><span class=cl> Author: peter &lt;peter@dot.org&gt;
+</span></span><span class=line><span class=cl> Date: Sun Dec <span class=m>30</span> 19:22:08 <span class=m>2018</span> +0800
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=撤销对文件内容的更改>撤销对文件内容的更改</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vim README.md
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl><span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    modified:   README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>no changes added to commit <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> and/or <span class=s2>&#34;git commit -a&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>$ git checkout -- README.md
+</span></span></code></pre></td></tr></table></div></div><h2 id=提交文件变更到仓库>提交文件变更到仓库</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vim README.md
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl><span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    modified:   README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>no changes added to commit <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> and/or <span class=s2>&#34;git commit -a&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Add projects link&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master 7d8fcb9<span class=o>]</span> Add projects link
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=回滚仓库到某个提交>回滚仓库到某个提交</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git log --oneline
+</span></span><span class=line><span class=cl>7d8fcb9 <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Add projects link
+</span></span><span class=line><span class=cl>facc111 Add symfony website link
+</span></span><span class=line><span class=cl>a384a2b Add README.md
+</span></span><span class=line><span class=cl>$ git reset --hard facc111
+</span></span><span class=line><span class=cl>HEAD is now at facc111 Add symfony website link
+</span></span><span class=line><span class=cl>$ git log --oneline
+</span></span><span class=line><span class=cl>facc111 <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Add symfony website link
+</span></span><span class=line><span class=cl>a384a2b Add README.md
+</span></span></code></pre></td></tr></table></div></div><h2 id=撤销工作区和暂存区>撤销工作区和暂存区</h2><blockquote><ul><li><code>--soft</code>：当前分支重置到指定 commit 记录位置，索引和工作树不变</li><li><code>--mixed</code>：当前分支重置到指定 commit 记录位置，索引被更新，工作树不变</li><li><code>--hard</code>：当前分支重置到指定 commit 记录位置，索引和工作树都更新</li></ul></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ touch index.<span class=o>{</span>html,js,css<span class=o>}</span>
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Untracked files:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to include in what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    index.css
+</span></span><span class=line><span class=cl>    index.html
+</span></span><span class=line><span class=cl>    index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nothing added to commit but untracked files present <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> to track<span class=o>)</span>
+</span></span><span class=line><span class=cl>$ $ git add .
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    new file:   index.css
+</span></span><span class=line><span class=cl>    new file:   index.html
+</span></span><span class=line><span class=cl>    new file:   index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 只撤销暂存区
+</span></span><span class=line><span class=cl>$ git reset HEAD
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 全部撤销
+</span></span><span class=line><span class=cl>$ git reset --hard HEAD
+</span></span><span class=line><span class=cl>HEAD is now at facc111 Add symfony website lin
+</span></span></code></pre></td></tr></table></div></div><h2 id=查看已暂存和未暂存的更新>查看已暂存和未暂存的更新</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vim README.md
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl><span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ vim README.md
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl><span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl><span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 比较工作目录中当前文件和暂存区域快照之间的差异，也就是修改之后还没有暂存起来的变化内容
+</span></span><span class=line><span class=cl>$ git diff
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 56737ed..4a93303 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -1,2 +1,3 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl> <span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl>+<span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看已经暂存起来的文件和上次提交时的快照之间的差异
+</span></span><span class=line><span class=cl>$ git diff --cached
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 55c6709..56737ed <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -1 +1,2 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl>+<span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>或者
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看已经暂存起来的文件和上次提交时的快照之间的差异
+</span></span><span class=line><span class=cl>$ git diff --staged
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index 55c6709..56737ed <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -1 +1,2 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl>+<span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 跳过使用暂存区域，git 会自动把所有已经跟踪过的文件暂存起来一并提交，从而跳过 git add 步骤
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    modified:   README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    modified:   README.md
+</span></span><span class=line><span class=cl>$ git commit -am <span class=s2>&#34;Add projects and requirements link&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master 7778db8<span class=o>]</span> Add projects and requirements link
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>2</span> insertions<span class=o>(</span>+<span class=o>)</span>
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>nothing to commit, working tree clean
+</span></span></code></pre></td></tr></table></div></div><h2 id=移除文件>移除文件</h2><p><img class=lazyload src=https://imajinyun.xyz/svg/loading.min.svg data-src=https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/git-remove-file.webp data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/git-remove-file.webp, https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/git-remove-file.webp 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/git-remove-file.webp 2x" data-sizes=auto alt=https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/git-remove-file.webp title=git-remove-file.webp></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 误删了文件，期望不产生提交记录就把文件干掉（此文件从来没提交到仓库中），通过以下的操作就可以看到此文件恢复到之前创建时的状态，此时你可以考虑删除或者做其它更改
+</span></span><span class=line><span class=cl>$ touch index.html <span class=o>&amp;&amp;</span> git add index.html <span class=o>&amp;&amp;</span> rm index.html
+</span></span><span class=line><span class=cl>remove index.html? y
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    new file:   index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add/rm &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    deleted:    index.html
+</span></span><span class=line><span class=cl>$ git checkout -- index.html
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    new file:   index.html
+</span></span><span class=line><span class=cl>$ git reset HEAD index.html
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Untracked files:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to include in what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nothing added to commit but untracked files present <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> to track<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 把文件从暂存区域移除，但仍然希望保留在当前工作区
+</span></span><span class=line><span class=cl>$ git add index.html
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    new file:   index.html
+</span></span><span class=line><span class=cl>$ git rm --cached index.html
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Untracked files:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to include in what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nothing added to commit but untracked files present <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> to track<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 将未加入暂存区的文件全部清理掉，即将工作区的变更全部清理掉，需要谨慎操作
+</span></span><span class=line><span class=cl>$ git clean -df
+</span></span><span class=line><span class=cl>Removing index.html
+</span></span></code></pre></td></tr></table></div></div><h2 id=移动或者重命名文件>移动或者重命名文件</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ touch index.php
+</span></span><span class=line><span class=cl>$ git add index.php
+</span></span><span class=line><span class=cl>$ git commit -m <span class=s2>&#34;Add index.php&#34;</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>master da3c74c<span class=o>]</span> Add index.php
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>0</span> insertions<span class=o>(</span>+<span class=o>)</span>, <span class=m>0</span> deletions<span class=o>(</span>-<span class=o>)</span>
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> index.php
+</span></span><span class=line><span class=cl>$ git mv index.php index.html
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  renamed:    index.php -&gt; index.html
+</span></span></code></pre></td></tr></table></div></div><h2 id=差异比较>差异比较</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 比较两个分支的所有差异
+</span></span><span class=line><span class=cl>$ git diff master develop
+</span></span><span class=line><span class=cl>diff --git a/.editorconfig b/.editorconfig
+</span></span><span class=line><span class=cl>deleted file mode <span class=m>100644</span>
+</span></span><span class=line><span class=cl>index e69de29..0000000
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index f6f24a8..c0cd272 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -3,4 +3,3 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>4<span class=o>]</span>: https://symfony.com/doc/current/setup.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>5<span class=o>]</span>: http://semver.org
+</span></span><span class=line><span class=cl>-<span class=o>[</span>6<span class=o>]</span>: https://symfony.com/doc/current/contributing/community/releases.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 比较两个提交记录的所有差异
+</span></span><span class=line><span class=cl>$ git diff fe3b3cf 688088f
+</span></span><span class=line><span class=cl>diff --git a/.editorconfig b/.editorconfig
+</span></span><span class=line><span class=cl>deleted file mode <span class=m>100644</span>
+</span></span><span class=line><span class=cl>index e69de29..0000000
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index f6f24a8..c0cd272 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -3,4 +3,3 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>4<span class=o>]</span>: https://symfony.com/doc/current/setup.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>5<span class=o>]</span>: http://semver.org
+</span></span><span class=line><span class=cl>-<span class=o>[</span>6<span class=o>]</span>: https://symfony.com/doc/current/contributing/community/releases.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 比较两个提交中的某个文件的差异
+</span></span><span class=line><span class=cl>$ git diff fe3b3cf 688088f -- README.md
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index f6f24a8..c0cd272 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -3,4 +3,3 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>4<span class=o>]</span>: https://symfony.com/doc/current/setup.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>5<span class=o>]</span>: http://semver.org
+</span></span><span class=line><span class=cl>-<span class=o>[</span>6<span class=o>]</span>: https://symfony.com/doc/current/contributing/community/releases.html
+</span></span></code></pre></td></tr></table></div></div><h2 id=储藏>储藏</h2><p>当你正在进行项目中某一部分的工作，里面的东西处于一个比较杂乱的状态，而你想转到其他分支上进行一些工作。问题是，你不想提交进行了一半的工作，否则以后你无法回到这个工作点。<code>git stash</code> 就是解决这种问题的。</p><h3 id=储藏任务>储藏任务</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 假设目前工作进行了一段时间后，仓库的目前的状态
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.css
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>  modified:   index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 此时由于紧急的任务或者 bug 需要解决，暂时将之前做的任务暂存起来
+</span></span><span class=line><span class=cl>$ git stash
+</span></span><span class=line><span class=cl>Saved working directory and index state WIP on master: fe3b3cf Integrating submission logs
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 获取一个干净的工作目录
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>nothing to commit, working tree clean
+</span></span></code></pre></td></tr></table></div></div><h3 id=查看储藏任务列表>查看储藏任务列表</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git stash list
+</span></span><span class=line><span class=cl>stash@<span class=o>{</span>0<span class=o>}</span>: WIP on master: fe3b3cf Integrating submission logs
+</span></span><span class=line><span class=cl>stash@<span class=o>{</span>1<span class=o>}</span>: WIP on master: fe3b3cf Integrating submission logs
+</span></span></code></pre></td></tr></table></div></div><h3 id=应用最近的储藏>应用最近的储藏</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// apply 选项并不会删除储藏
+</span></span><span class=line><span class=cl>$ git stash apply
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ git stash apply stash@<span class=o>{</span>0<span class=o>}</span>
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>no changes added to commit <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> and/or <span class=s2>&#34;git commit -a&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 此时应用储藏时与之前储藏时的文件状态不一致
+</span></span><span class=line><span class=cl>$ git stash apply stash@<span class=o>{</span>1<span class=o>}</span>
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.css
+</span></span><span class=line><span class=cl>  modified:   index.html <span class=c1># 看这个文件之前储藏时的状态</span>
+</span></span><span class=line><span class=cl>  modified:   index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 带上一个 --index 的选项来告诉命令重新应用被暂存的变更
+</span></span><span class=line><span class=cl>$ git stash apply stash@<span class=o>{</span>0<span class=o>}</span> --index
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.css
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>  modified:   index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.html <span class=c1># 文件暂存状态恢复了</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 应用储藏后立即删除储藏
+</span></span><span class=line><span class=cl>$ git stash pop --index
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.css
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>  modified:   index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Dropped refs/stash@<span class=o>{</span>0<span class=o>}</span> <span class=o>(</span>5c5c3fe5374020b5d4a1b0d5303b0cb932227134<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=删除储藏>删除储藏</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git stash drop stash@<span class=o>{</span>0<span class=o>}</span>
+</span></span><span class=line><span class=cl>Dropped stash@<span class=o>{</span>0<span class=o>}</span> <span class=o>(</span>e2ffa6a2b49d31703266cf6668f2b51f94e9d62f<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=取消储藏>取消储藏</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 在某些情况下，你可能想应用储藏的修改，在进行了一些其他的修改后，又要取消之前所应用储藏的修改
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>no changes added to commit <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> and/or <span class=s2>&#34;git commit -a&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>$ git stash
+</span></span><span class=line><span class=cl>Saved working directory and index state WIP on master: fe3b3cf Integrating submission logs
+</span></span><span class=line><span class=cl>$ git stash list
+</span></span><span class=line><span class=cl>stash@<span class=o>{</span>0<span class=o>}</span>: WIP on master: fe3b3cf Integrating submission logs
+</span></span><span class=line><span class=cl>$ git stash apply stash@<span class=o>{</span>0<span class=o>}</span> --index
+</span></span><span class=line><span class=cl>On branch master
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>no changes added to commit <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> and/or <span class=s2>&#34;git commit -a&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 取消应用的储藏，没有指定默认为最近一次储藏
+</span></span><span class=line><span class=cl>$ git stash show -p stash@<span class=o>{</span>0<span class=o>}</span> <span class=p>|</span> git apply -R
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ git stash show -p <span class=p>|</span> git apply -R
+</span></span></code></pre></td></tr></table></div></div><h3 id=从储藏中创建分支>从储藏中创建分支</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git stash branch testchanges
+</span></span><span class=line><span class=cl>Switched to a new branch <span class=s1>&#39;testchanges&#39;</span>
+</span></span><span class=line><span class=cl>On branch testchanges
+</span></span><span class=line><span class=cl>Changes to be committed:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.css
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>  modified:   index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Changes not staged <span class=k>for</span> commit:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to update what will be committed<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  modified:   index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Dropped refs/stash@<span class=o>{</span>0<span class=o>}</span> <span class=o>(</span>9d514109f5cf6c23c75297af595189d5af839693<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-23</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/01/23/git-basic/ data-title="Git 基本操作" data-hashtags=Git><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/01/23/git-basic/ data-hashtag=Git><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/01/23/git-basic/ data-title="Git 基本操作"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/01/23/git-basic/ data-title="Git 基本操作"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/01/23/git-basic/ data-title="Git 基本操作"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/git/>Git</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/01/22/git-get-started/ class=prev rel=prev title="Git 起步"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Git 起步</a>
+<a href=https://imajinyun.xyz/2018/01/24/git-log/ class=next rel=next title="Git 查看日志">Git 查看日志<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

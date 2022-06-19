@@ -1,0 +1,151 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Git 中一个客户端设置多个账号 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Git 中一个客户端设置多个账号"><meta property="og:description" content="最近遇到这样的需求，需要在一台电脑上同时使用两个 github 账号，负责不同的用途，比如：一个用来写个人项目，一个用来写公司的项目。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-27T10:15:52+08:00"><meta property="article:modified_time" content="2018-01-27T10:15:52+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Git 中一个客户端设置多个账号"><meta name=twitter:description content="最近遇到这样的需求，需要在一台电脑上同时使用两个 github 账号，负责不同的用途，比如：一个用来写个人项目，一个用来写公司的项目。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/><link rel=prev href=https://imajinyun.xyz/2018/01/26/mac-%E7%BC%BA%E5%A4%B1%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86-homebrew/><link rel=next href=https://imajinyun.xyz/2018/01/30/php-%E5%AE%89%E8%A3%85-xdebug-%E6%89%A9%E5%B1%95%E6%9D%A5%E8%B0%83%E8%AF%95%E7%A8%8B%E5%BA%8F/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Git 中一个客户端设置多个账号","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/01\/27\/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7\/"},"genre":"posts","keywords":"Git","wordcount":869,"url":"https:\/\/imajinyun.xyz\/2018\/01\/27\/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7\/","datePublished":"2018-01-27T10:15:52+08:00","dateModified":"2018-01-27T10:15:52+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Git 中一个客户端设置多个账号</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/git/><i class="far fa-folder fa-fw" aria-hidden=true></i>Git</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-27>2018-01-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 869 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 2 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#配置>配置</a><ul><li><a href=#注册两个-git-账号>注册两个 git 账号</a></li><li><a href=#取消全局设置的用户名和邮箱>取消全局设置的用户名和邮箱</a></li></ul></li><li><a href=#ssh-配置>SSH 配置</a><ul><li><a href=#生成私钥和公钥>生成私钥和公钥</a><ul><li><a href=#分别配置两个账号的-ssh-and-gpg-keys>分别配置两个账号的 SSH and GPG keys</a></li></ul></li><li><a href=#将密钥添加到-ssh-agent-的会话中>将密钥添加到 ssh-agent 的会话中</a></li><li><a href=#查看-ssh-key-的设置>查看 ssh key 的设置</a></li><li><a href=#修改-ssh-config-文件>修改 ssh config 文件</a></li><li><a href=#测试连通性>测试连通性</a></li></ul></li><li><a href=#项目测试>项目测试</a><ul><li><a href=#创建两个项目目录>创建两个项目目录</a></li><li><a href=#初始化项目-a>初始化项目 a</a></li><li><a href=#初始化项目-b>初始化项目 b</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>最近遇到这样的需求，需要在一台电脑上同时使用两个 <code>github</code> 账号，负责不同的用途，比如：一个用来写个人项目，一个用来写公司的项目。</p><ul><li><a href=https://imajinyun.xyz/2018/01/22/git-started/ target=_blank rel="noopener noreffer"><code>Git 起步</code></a></li><li><a href=https://imajinyun.xyz/2018/01/23/git-basic/ target=_blank rel="noopener noreffer"><code>Git 基本操作</code></a></li><li><a href=https://imajinyun.xyz/2018/01/24/git-log/ target=_blank rel="noopener noreffer"><code>Git 查看日志</code></a></li><li><a href=https://imajinyun.xyz/2018/01/25/git-branch/ target=_blank rel="noopener noreffer"><code>Git 分支</code></a></li><li><strong>Git 中一个客户端设置多个账号</strong></li><li><a href=https://imajinyun.xyz/2018/05/01/git-workflow/ target=_blank rel="noopener noreffer"><code>Git Workflow</code></a></li><li><a href=https://imajinyun.xyz/2020/09/07/git-collection-command/ target=_blank rel="noopener noreffer"><code>Git 命令大全</code></a></li></ul><h2 id=配置>配置</h2><h3 id=注册两个-git-账号>注册两个 git 账号</h3><blockquote><p>选择一个平台注册两个账号即可。</p></blockquote><ul><li><a href=https://github.com/ target=_blank rel="noopener noreffer"><code>GitHub</code></a></li><li><a href=https://gitee.com/ target=_blank rel="noopener noreffer"><code>Gitee</code></a></li><li><a href=https://coding.net/ target=_blank rel="noopener noreffer"><code>Coding</code></a></li><li><a href=https://bitbucket.org/ target=_blank rel="noopener noreffer"><code>Bitbucket</code></a></li><li><a href=https://gitlab.com/explore target=_blank rel="noopener noreffer"><code>GitLab</code></a></li></ul><h3 id=取消全局设置的用户名和邮箱>取消全局设置的用户名和邮箱</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 取消全局用户名和邮箱
+</span></span><span class=line><span class=cl>$ git config --global --unset user.name
+</span></span><span class=line><span class=cl>$ git config --global --unset user.email
+</span></span></code></pre></td></tr></table></div></div><h2 id=ssh-配置>SSH 配置</h2><h3 id=生成私钥和公钥>生成私钥和公钥</h3><blockquote><p>如果用户家目录下没有 <code>.ssh</code> 目录，请自行创建
+由于我注册多家平台的 <code>git</code> 账号，所以对其进行了一个文件目录分类</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ mkdir -pv ~/.ssh/github <span class=c1># gitee|coding|bitbucket|gitlab</span>
+</span></span><span class=line><span class=cl>$ ssh-keygen -t rsa -C <span class=s2>&#34;myfirst@gmail.com&#34;</span> <span class=c1># 在回车提示中输入完整路径，如：/path/to/user/.ssh/github/id_myfirst_rsa</span>
+</span></span><span class=line><span class=cl>Generating public/private rsa key pair.
+</span></span><span class=line><span class=cl>Enter file in which to save the key <span class=o>(</span>/path/to/user/.ssh/id_rsa<span class=o>)</span>:/path/to/user/.ssh/github/id_myfirst_rsa
+</span></span><span class=line><span class=cl>$ ssh-keygen -t rsa -C <span class=s2>&#34;mysecond@gmail.com&#34;</span> <span class=c1># 在回车提示中输入完整路径，如：/path/to/user/.ssh/github/id_mysecond_rsa</span>
+</span></span><span class=line><span class=cl>Generating public/private rsa key pair.
+</span></span><span class=line><span class=cl>Enter file in which to save the key <span class=o>(</span>/path/to/user/.ssh/id_rsa<span class=o>)</span>:/path/to/user/.ssh/github/id_mysecond_rsa
+</span></span></code></pre></td></tr></table></div></div><h4 id=分别配置两个账号的-ssh-and-gpg-keys>分别配置两个账号的 SSH and GPG keys</h4><p>在 <code>Settings</code> 控制面板中找到 <code>SSH and GPG keys</code>，点击 <code>New SSH Key</code> 进行添加，<code>Title</code> 请自行决定。</p><p><img class=lazyload src=https://imajinyun.xyz/svg/loading.min.svg data-src=https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/github-new-ssh-key.jpg data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/github-new-ssh-key.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/github-new-ssh-key.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/github-new-ssh-key.jpg 2x" data-sizes=auto alt=https://inotes.oss-cn-beijing.aliyuncs.com/git/201901/github-new-ssh-key.jpg title=github-new-ssh-key.jpg></p><h3 id=将密钥添加到-ssh-agent-的会话中>将密钥添加到 ssh-agent 的会话中</h3><blockquote><p>如果执行 <code>ssh-add</code> 时显示错误 <code>Could not open a connection to your authentication agent.</code> 那么执行 <code>eval ssh-agent -s</code>。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ ssh-add -K ~/.ssh/github/id_myfirst_rsa
+</span></span><span class=line><span class=cl>Identity added: /path/to/.ssh/github/id_myfirst_rsa <span class=o>(</span>/path/to/.ssh/github/id_myfirst_rsa<span class=o>)</span>
+</span></span><span class=line><span class=cl>$ ssh-add -K ~/.ssh/github/id_mysecond_rsa
+</span></span><span class=line><span class=cl>Identity added: /path/to/.ssh/github/id_mysecond_rsa <span class=o>(</span>/path/to/.ssh/github/id_mysecond_rsa<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=查看-ssh-key-的设置>查看 ssh key 的设置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ ssh-add -l
+</span></span><span class=line><span class=cl><span class=m>2048</span> SHA256:ai3jRoAfkqgB2LYtJuQR8QZN1F5XXXXXXXXXXXXXXXX /path/to/.ssh/github/id_myfirst_rsa <span class=o>(</span>RSA<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=m>2048</span> SHA256:AL2jRoAfkqgB2LYtJuQR8QZN1F5XXXXXXXXXXXXXXXX /path/to/.ssh/github/id_mysecond_rsa <span class=o>(</span>RSA<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=修改-ssh-config-文件>修改 ssh config 文件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vim ~/.ssh/config
+</span></span><span class=line><span class=cl>Host *
+</span></span><span class=line><span class=cl>    KexAlgorithms +diffie-hellman-group1-sha1
+</span></span><span class=line><span class=cl><span class=c1># default: myfirst</span>
+</span></span><span class=line><span class=cl>Host github.com
+</span></span><span class=line><span class=cl>    HostName github.com
+</span></span><span class=line><span class=cl>    User myfirst
+</span></span><span class=line><span class=cl>    PreferredAuthentications publickey
+</span></span><span class=line><span class=cl>    IdentityFile ~/.ssh/github/id_myfirst_rsa
+</span></span><span class=line><span class=cl><span class=c1># mysecond</span>
+</span></span><span class=line><span class=cl>Host mysecond.github.com
+</span></span><span class=line><span class=cl>    HostName github.com
+</span></span><span class=line><span class=cl>    User mysecond
+</span></span><span class=line><span class=cl>    PreferredAuthentications publickey
+</span></span><span class=line><span class=cl>    IdentityFile ~/.ssh/github/id_mysecond_rsa
+</span></span></code></pre></td></tr></table></div></div><h3 id=测试连通性>测试连通性</h3><blockquote><p><code>mysecond.github.com</code> 需要配置 <code>GitHub</code> 的 <code>Host</code>。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 测试默认用户 myfirst 的连接性
+</span></span><span class=line><span class=cl>$ ssh -T git@github.com
+</span></span><span class=line><span class=cl>Hi myfirst! You<span class=se>\&#39;</span>ve successfully authenticated, but GitHub does not provide shell access.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 测试另一个用户 mysecond 的连接性
+</span></span><span class=line><span class=cl>$ ssh -T git@mysecond.github.com
+</span></span><span class=line><span class=cl>Hi mysecond! You<span class=se>\&#39;</span>ve successfully authenticated, but GitHub does not provide shell access.
+</span></span></code></pre></td></tr></table></div></div><h2 id=项目测试>项目测试</h2><h3 id=创建两个项目目录>创建两个项目目录</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~/ <span class=o>&amp;&amp;</span> mkdir -pv <span class=o>{</span>a,b<span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=初始化项目-a>初始化项目 a</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~/a
+</span></span><span class=line><span class=cl>$ git init
+</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=s2>&#34;myfirst&#34;</span> &gt; README.md
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git config user.name <span class=s2>&#34;myfirst&#34;</span>
+</span></span><span class=line><span class=cl>$ git config user.email <span class=s2>&#34;myfirst@gmail.com&#34;</span>
+</span></span><span class=line><span class=cl>$ git remote add github git@github.com:myfirst/test.git
+</span></span><span class=line><span class=cl>$ git push -u github master
+</span></span><span class=line><span class=cl>Counting objects: 3, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>Writing objects: 100% <span class=o>(</span>3/3<span class=o>)</span>, <span class=m>213</span> bytes <span class=p>|</span> 213.00 KiB/s, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>Total <span class=m>3</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>To github.com:myfirst/test.git
+</span></span><span class=line><span class=cl> * <span class=o>[</span>new branch<span class=o>]</span>      master -&gt; master
+</span></span><span class=line><span class=cl>Branch master <span class=nb>set</span> up to track remote branch master from github.
+</span></span></code></pre></td></tr></table></div></div><h3 id=初始化项目-b>初始化项目 b</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~/b
+</span></span><span class=line><span class=cl>$ git init
+</span></span><span class=line><span class=cl>$ <span class=nb>echo</span> <span class=s2>&#34;mysecond&#34;</span> &gt; README.md
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git config user.name <span class=s2>&#34;mysecond&#34;</span>
+</span></span><span class=line><span class=cl>$ git config user.email <span class=s2>&#34;mysecond@gmail.com&#34;</span>
+</span></span><span class=line><span class=cl>$ git remote add github git@mysecond.github.com:mysecond/test.git
+</span></span><span class=line><span class=cl>$ git push -u github master
+</span></span><span class=line><span class=cl>Counting objects: 3, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>Writing objects: 100% <span class=o>(</span>3/3<span class=o>)</span>, <span class=m>218</span> bytes <span class=p>|</span> 218.00 KiB/s, <span class=k>done</span>.
+</span></span><span class=line><span class=cl>Total <span class=m>3</span> <span class=o>(</span>delta 0<span class=o>)</span>, reused <span class=m>0</span> <span class=o>(</span>delta 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>To mysecond.github.com:mysecond/test.git
+</span></span><span class=line><span class=cl> * <span class=o>[</span>new branch<span class=o>]</span>      master -&gt; master
+</span></span><span class=line><span class=cl>Branch master <span class=nb>set</span> up to track remote branch master from github.
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-27</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/ data-title="Git 中一个客户端设置多个账号" data-hashtags=Git><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/ data-hashtag=Git><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/ data-title="Git 中一个客户端设置多个账号"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/ data-title="Git 中一个客户端设置多个账号"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/01/27/git-%E4%B8%AD%E4%B8%80%E4%B8%AA%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AE%BE%E7%BD%AE%E5%A4%9A%E4%B8%AA%E8%B4%A6%E5%8F%B7/ data-title="Git 中一个客户端设置多个账号"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/git/>Git</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/01/26/mac-%E7%BC%BA%E5%A4%B1%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86-homebrew/ class=prev rel=prev title="Mac 缺失的包管理 Homebrew"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Mac 缺失的包管理 Homebrew</a>
+<a href=https://imajinyun.xyz/2018/01/30/php-%E5%AE%89%E8%A3%85-xdebug-%E6%89%A9%E5%B1%95%E6%9D%A5%E8%B0%83%E8%AF%95%E7%A8%8B%E5%BA%8F/ class=next rel=next title="PHP 安装 Xdebug 扩展来调试程序">PHP 安装 Xdebug 扩展来调试程序<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

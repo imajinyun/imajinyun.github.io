@@ -1,0 +1,824 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Git 分支 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Git 分支"><meta property="og:description" content="分支几乎是 Git 的必杀技，倒不是说其他的版本控制没有分支这个特性，而是 Git 分支早已把其它的版本控制系统分支功能甩了好几条街。这么说不是夸张，因为 Git 的实现与项目复杂度无关，它永远可以在几毫秒的时间内完成分支的创建和切换。同时，因为每次提交时都记录了祖先信息，将来要合并分支时，寻找恰当的合并基础的工作其实已经很显然的摆在那里，所以实现起来非常容易。Git 鼓励开发者频繁使用分支，正是仗着这些特性作保障。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-25T08:01:32+08:00"><meta property="article:modified_time" content="2018-01-25T08:01:32+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Git 分支"><meta name=twitter:description content="分支几乎是 Git 的必杀技，倒不是说其他的版本控制没有分支这个特性，而是 Git 分支早已把其它的版本控制系统分支功能甩了好几条街。这么说不是夸张，因为 Git 的实现与项目复杂度无关，它永远可以在几毫秒的时间内完成分支的创建和切换。同时，因为每次提交时都记录了祖先信息，将来要合并分支时，寻找恰当的合并基础的工作其实已经很显然的摆在那里，所以实现起来非常容易。Git 鼓励开发者频繁使用分支，正是仗着这些特性作保障。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/><link rel=prev href=https://imajinyun.xyz/2018/01/24/git-%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97/><link rel=next href=https://imajinyun.xyz/2018/01/26/mac-%E7%BC%BA%E5%A4%B1%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86-homebrew/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Git 分支","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/01\/25\/git-%E5%88%86%E6%94%AF\/"},"genre":"posts","keywords":"Git","wordcount":2797,"url":"https:\/\/imajinyun.xyz\/2018\/01\/25\/git-%E5%88%86%E6%94%AF\/","datePublished":"2018-01-25T08:01:32+08:00","dateModified":"2018-01-25T08:01:32+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Git 分支</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/git/><i class="far fa-folder fa-fw" aria-hidden=true></i>Git</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-25>2018-01-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 2797 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 6 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#创建分支>创建分支</a></li><li><a href=#删除分支>删除分支</a></li><li><a href=#查看分支>查看分支</a></li><li><a href=#合并分支>合并分支</a></li><li><a href=#分支变基>分支变基</a></li></ul><ul><li><a href=#整合连续多次提交>整合连续多次提交</a></li><li><a href=#整合间歇多次提交>整合间歇多次提交</a></li></ul></nav></div></div><div class=content id=content><p>分支几乎是 Git 的必杀技，倒不是说其他的版本控制没有分支这个特性，而是 Git 分支早已把其它的版本控制系统分支功能甩了好几条街。这么说不是夸张，因为 Git 的实现与项目复杂度无关，它永远可以在几毫秒的时间内完成分支的创建和切换。同时，因为每次提交时都记录了祖先信息，将来要合并分支时，寻找恰当的合并基础的工作其实已经很显然的摆在那里，所以实现起来非常容易。Git 鼓励开发者频繁使用分支，正是仗着这些特性作保障。</p><ul><li><a href=https://imajinyun.xyz/2018/01/22/git-started/ target=_blank rel="noopener noreffer"><code>Git 起步</code></a></li><li><a href=https://imajinyun.xyz/2018/01/23/git-basic/ target=_blank rel="noopener noreffer"><code>Git 基本操作</code></a></li><li><a href=https://imajinyun.xyz/2018/01/24/git-log/ target=_blank rel="noopener noreffer"><code>Git 查看日志</code></a></li><li><strong>Git 分支</strong></li><li><a href=https://imajinyun.xyz/2018/01/27/git-multiple-accounts/ target=_blank rel="noopener noreffer"><code>Git 中一个客户端设置多个账号</code></a></li><li><a href=https://imajinyun.xyz/2018/05/01/git-workflow/ target=_blank rel="noopener noreffer"><code>Git Workflow</code></a></li><li><a href=https://imajinyun.xyz/2020/09/07/git-collection-command/ target=_blank rel="noopener noreffer"><code>Git 命令大全</code></a></li></ul><h1 id=本地分支>本地分支</h1><h2 id=创建分支>创建分支</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 创建一个名称为 develop 的分支
+</span></span><span class=line><span class=cl>$ git checkout -b develop
+</span></span><span class=line><span class=cl>Switched to a new branch <span class=s1>&#39;develop&#39;</span>
+</span></span><span class=line><span class=cl>等价于
+</span></span><span class=line><span class=cl>$ git branch develop
+</span></span><span class=line><span class=cl>$ git checkout develop
+</span></span></code></pre></td></tr></table></div></div><h2 id=删除分支>删除分支</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 删除一个已经有提交记录但还没有合并到 master 的分支
+</span></span><span class=line><span class=cl>$ git branch -d develop
+</span></span><span class=line><span class=cl>error: The branch <span class=s1>&#39;develop&#39;</span> is not fully merged.
+</span></span><span class=line><span class=cl>If you are sure you want to delete it, run <span class=s1>&#39;git branch -D develop&#39;</span>.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 确定不合并 develop 分支的任何提交并删除此分支
+</span></span><span class=line><span class=cl>$ git branch -D develop
+</span></span><span class=line><span class=cl>Deleted branch develop <span class=o>(</span>was 833b688<span class=o>)</span>.
+</span></span></code></pre></td></tr></table></div></div><h2 id=查看分支>查看分支</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看分支列表
+</span></span><span class=line><span class=cl>$ git branch
+</span></span><span class=line><span class=cl>* develop
+</span></span><span class=line><span class=cl>  feature
+</span></span><span class=line><span class=cl>  master
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看每一个分支的最后一次提交
+</span></span><span class=line><span class=cl>$ git branch -v
+</span></span><span class=line><span class=cl>* develop 9ad35ee Add index.js
+</span></span><span class=line><span class=cl>  feature 992122d Add .editorconfig
+</span></span><span class=line><span class=cl>  master  23a0a9e Rename index.php to index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看哪些分支已经合并到当前分支
+</span></span><span class=line><span class=cl>$ git branch --merged
+</span></span><span class=line><span class=cl>  develop
+</span></span><span class=line><span class=cl>* master
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看所有包含未合并工作的分支
+</span></span><span class=line><span class=cl>$ git branch --no-merged
+</span></span><span class=line><span class=cl>  feature
+</span></span></code></pre></td></tr></table></div></div><h2 id=合并分支>合并分支</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git checkout master
+</span></span><span class=line><span class=cl>$ git merge --no-ff develop
+</span></span><span class=line><span class=cl>Merge made by the <span class=s1>&#39;recursive&#39;</span> strategy.
+</span></span><span class=line><span class=cl> README.md <span class=p>|</span> <span class=m>1</span> +
+</span></span><span class=line><span class=cl> <span class=m>1</span> file changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=分支变基>分支变基</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 切换到要变基的分支
+</span></span><span class=line><span class=cl>$ git checkout feature
+</span></span><span class=line><span class=cl>Switched to branch <span class=s1>&#39;feature&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 进行变基
+</span></span><span class=line><span class=cl>$ git rebase master
+</span></span><span class=line><span class=cl>$ git rebase master
+</span></span><span class=line><span class=cl>First, rewinding head to replay your work on top of it...
+</span></span><span class=line><span class=cl>Applying: Add .editorconfig
+</span></span><span class=line><span class=cl>Applying: Add releases link
+</span></span><span class=line><span class=cl>Using index info to reconstruct a base tree...
+</span></span><span class=line><span class=cl>M  README.md
+</span></span><span class=line><span class=cl>Falling back to patching base and 3-way merge...
+</span></span><span class=line><span class=cl>Auto-merging README.md
+</span></span><span class=line><span class=cl>CONFLICT <span class=o>(</span>content<span class=o>)</span>: Merge conflict in README.md
+</span></span><span class=line><span class=cl>error: Failed to merge in the changes.
+</span></span><span class=line><span class=cl>Patch failed at <span class=m>0002</span> Add releases link
+</span></span><span class=line><span class=cl>Use <span class=s1>&#39;git am --show-current-patch&#39;</span> to see the failed patch
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Resolve all conflicts manually, mark them as resolved with
+</span></span><span class=line><span class=cl><span class=s2>&#34;git add/rm &lt;conflicted_files&gt;&#34;</span>, <span class=k>then</span> run <span class=s2>&#34;git rebase --continue&#34;</span>.
+</span></span><span class=line><span class=cl>You can instead skip this commit: run <span class=s2>&#34;git rebase --skip&#34;</span>.
+</span></span><span class=line><span class=cl>To abort and get back to the state before <span class=s2>&#34;git rebase&#34;</span>, run <span class=s2>&#34;git rebase --abort&#34;</span>.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看当前的补丁
+</span></span><span class=line><span class=cl>$ git am --show-current-patch
+</span></span><span class=line><span class=cl>commit 15539736e18fe133f5916a55e8f38ce7b734113a <span class=o>(</span>feature<span class=o>)</span>
+</span></span><span class=line><span class=cl>Author: imajinyun &lt;imajinyun@gmail.com&gt;
+</span></span><span class=line><span class=cl>Date:   Mon Dec <span class=m>31</span> 21:24:59 <span class=m>2018</span> +0800
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    Add releases link
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>diff --git a/README.md b/README.md
+</span></span><span class=line><span class=cl>index d467b4f..8ec2025 <span class=m>100644</span>
+</span></span><span class=line><span class=cl>--- a/README.md
+</span></span><span class=line><span class=cl>+++ b/README.md
+</span></span><span class=line><span class=cl>@@ -2,3 +2,4 @@
+</span></span><span class=line><span class=cl> <span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl> <span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl> <span class=o>[</span>4<span class=o>]</span>: https://symfony.com/doc/current/setup.html
+</span></span><span class=line><span class=cl>+<span class=o>[</span>5<span class=o>]</span>: https://symfony.com/doc/current/contributing/community/releases.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 解决冲突完成变基
+</span></span><span class=line><span class=cl>$ vim README.md
+</span></span><span class=line><span class=cl>冲突的文件内容：
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl><span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl><span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl><span class=o>[</span>4<span class=o>]</span>: https://symfony.com/doc/current/setup.html
+</span></span><span class=line><span class=cl><span class=o>&lt;&lt;&lt;&lt;&lt;&lt;</span>&lt; HEAD
+</span></span><span class=line><span class=cl><span class=o>[</span>5<span class=o>]</span>: http://semver.org
+</span></span><span class=line><span class=cl><span class=o>=======</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>5<span class=o>]</span>: https://symfony.com/doc/current/contributing/community/releases.html
+</span></span><span class=line><span class=cl>&gt;&gt;&gt;&gt;&gt;&gt;&gt; Add releases link
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>修复后的文件内容：
+</span></span><span class=line><span class=cl><span class=o>[</span>1<span class=o>]</span>: https://symfony.com
+</span></span><span class=line><span class=cl><span class=o>[</span>2<span class=o>]</span>: https://symfony.com/projects
+</span></span><span class=line><span class=cl><span class=o>[</span>3<span class=o>]</span>: https://symfony.com/doc/current/reference/requirements.html
+</span></span><span class=line><span class=cl><span class=o>[</span>4<span class=o>]</span>: https://symfony.com/doc/current/setup.html
+</span></span><span class=line><span class=cl><span class=o>[</span>5<span class=o>]</span>: http://semver.org
+</span></span><span class=line><span class=cl><span class=o>[</span>6<span class=o>]</span>: https://symfony.com/doc/current/contributing/community/releases.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看仓库状态
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>rebase in progress<span class=p>;</span> onto <span class=m>4830059</span>
+</span></span><span class=line><span class=cl>You are currently rebasing branch <span class=s1>&#39;feature&#39;</span> on <span class=s1>&#39;4830059&#39;</span>.
+</span></span><span class=line><span class=cl>  <span class=o>(</span>fix conflicts and <span class=k>then</span> run <span class=s2>&#34;git rebase --continue&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git rebase --skip&#34;</span> to skip this patch<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git rebase --abort&#34;</span> to check out the original branch<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Unmerged paths:
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git reset HEAD &lt;file&gt;...&#34;</span> to unstage<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git add &lt;file&gt;...&#34;</span> to mark resolution<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    both modified:   README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>no changes added to commit <span class=o>(</span>use <span class=s2>&#34;git add&#34;</span> and/or <span class=s2>&#34;git commit -a&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>$ git add README.md
+</span></span><span class=line><span class=cl>$ git rebase --continue
+</span></span><span class=line><span class=cl>Applying: Add releases link
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 合并此分支代码到 master 分支
+</span></span><span class=line><span class=cl>$ git checkout master
+</span></span><span class=line><span class=cl>$ git merge --no-ff feature
+</span></span><span class=line><span class=cl>Merge made by the <span class=s1>&#39;recursive&#39;</span> strategy.
+</span></span><span class=line><span class=cl> .editorconfig <span class=p>|</span> <span class=m>0</span>
+</span></span><span class=line><span class=cl> README.md     <span class=p>|</span> <span class=m>1</span> +
+</span></span><span class=line><span class=cl> <span class=m>2</span> files changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> .editorconfig
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 变基后的历史记录，可以看到变基使得提交历史更加整洁，日志就像是串行一样
+</span></span><span class=line><span class=cl>$ git log --oneline --graph
+</span></span><span class=line><span class=cl>*   f686948 <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Merge branch <span class=s1>&#39;feature&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 78a6bfc <span class=o>(</span>feature<span class=o>)</span> Add releases link
+</span></span><span class=line><span class=cl><span class=p>|</span> * 34f8649 Add .editorconfig
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>*   <span class=m>4830059</span> <span class=o>(</span>develop<span class=o>)</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 04a75c1 Add semver link
+</span></span><span class=line><span class=cl>* <span class=p>|</span>   3bdd3fc Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\ \
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> <span class=p>|</span>/
+</span></span><span class=line><span class=cl><span class=p>|</span> * d48ea11 Add setup link
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>*   <span class=m>3513802</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 9ad35ee Add index.js
+</span></span><span class=line><span class=cl><span class=p>|</span> * 0bc04c2 Add index.css
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>* 23a0a9e Rename index.php to index.html
+</span></span><span class=line><span class=cl>* da3c74c Add index.php
+</span></span><span class=line><span class=cl>* 7778db8 Add projects and requirements link
+</span></span><span class=line><span class=cl>* facc111 Add symfony website link
+</span></span><span class=line><span class=cl>* a384a2b Add README.md
+</span></span></code></pre></td></tr></table></div></div><h1 id=其它操作>其它操作</h1><h2 id=整合连续多次提交>整合连续多次提交</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看提交日志
+</span></span><span class=line><span class=cl>$ git log --oneline --graph --all
+</span></span><span class=line><span class=cl>*   f686948 <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Merge branch <span class=s1>&#39;feature&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 78a6bfc <span class=o>(</span>feature<span class=o>)</span> Add releases link
+</span></span><span class=line><span class=cl><span class=p>|</span> * 34f8649 Add .editorconfig
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>*   <span class=m>4830059</span> <span class=o>(</span>develop<span class=o>)</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 04a75c1 Add semver link
+</span></span><span class=line><span class=cl>* <span class=p>|</span>   3bdd3fc Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\ \
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> <span class=p>|</span>/
+</span></span><span class=line><span class=cl><span class=p>|</span> * d48ea11 Add setup link
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>*   <span class=m>3513802</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 9ad35ee Add index.js
+</span></span><span class=line><span class=cl><span class=p>|</span> * 0bc04c2 Add index.css
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>* 23a0a9e Rename index.php to index.html
+</span></span><span class=line><span class=cl>* da3c74c Add index.php
+</span></span><span class=line><span class=cl>* 7778db8 Add projects and requirements link
+</span></span><span class=line><span class=cl>* facc111 Add symfony website link
+</span></span><span class=line><span class=cl>* a384a2b Add README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 整合最近提交的 <span class=m>2</span> 次记录，commit-id 使用第二次之前的
+</span></span><span class=line><span class=cl>$ git rebase -i <span class=m>4830059</span>
+</span></span><span class=line><span class=cl>弹出的编辑界面内容为：
+</span></span><span class=line><span class=cl>pick 34f8649 Add .editorconfig
+</span></span><span class=line><span class=cl>s 78a6bfc Add releases link <span class=c1># 修改 pick 为 squash 或者 s</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Rebase 4830059..f686948 onto 4830059 (2 commands)</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Commands:</span>
+</span></span><span class=line><span class=cl><span class=c1># p, pick = use commit</span>
+</span></span><span class=line><span class=cl><span class=c1># r, reword = use commit, but edit the commit message</span>
+</span></span><span class=line><span class=cl><span class=c1># e, edit = use commit, but stop for amending</span>
+</span></span><span class=line><span class=cl><span class=c1># s, squash = use commit, but meld into previous commit</span>
+</span></span><span class=line><span class=cl><span class=c1># f, fixup = like &#34;squash&#34;, but discard this commit&#39;s log message</span>
+</span></span><span class=line><span class=cl><span class=c1># x, exec = run command (the rest of the line) using shell</span>
+</span></span><span class=line><span class=cl><span class=c1># d, drop = remove commit</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># These lines can be re-ordered; they are executed from top to bottom.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># If you remove a line here THAT COMMIT WILL BE LOST.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># However, if you remove everything, the rebase will be aborted.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Note that empty commits are commented out</span>
+</span></span><span class=line><span class=cl>保存后会弹出另一个编辑界面，内容为：
+</span></span><span class=line><span class=cl><span class=c1># This is a combination of 2 commits.</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Integrating submission logs <span class=c1># 添加本次的提交日志信息</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the 1st commit message:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Add .editorconfig
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the commit message #2:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Add releases link
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Please enter the commit message for your changes. Lines starting</span>
+</span></span><span class=line><span class=cl><span class=c1># with &#39;#&#39; will be ignored, and an empty message aborts the commit.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Date:      Mon Dec 31 20:39:09 2018 +0800</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># interactive rebase in progress; onto 4830059</span>
+</span></span><span class=line><span class=cl><span class=c1># Last commands done (2 commands done):</span>
+</span></span><span class=line><span class=cl><span class=c1>#    pick 34f8649 Add .editorconfig</span>
+</span></span><span class=line><span class=cl><span class=c1>#    squash 78a6bfc Add releases link</span>
+</span></span><span class=line><span class=cl><span class=c1># No commands remaining.</span>
+</span></span><span class=line><span class=cl><span class=c1># You are currently rebasing branch &#39;master&#39; on &#39;4830059&#39;.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Changes to be committed:</span>
+</span></span><span class=line><span class=cl><span class=c1>#    new file:   .editorconfig</span>
+</span></span><span class=line><span class=cl><span class=c1>#    modified:   README.md</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>detached HEAD f9fa04a<span class=o>]</span> Integrating submission logs
+</span></span><span class=line><span class=cl> Date: Mon Dec <span class=m>31</span> 20:39:09 <span class=m>2018</span> +0800
+</span></span><span class=line><span class=cl> <span class=m>2</span> files changed, <span class=m>1</span> insertion<span class=o>(</span>+<span class=o>)</span>
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> .editorconfig
+</span></span><span class=line><span class=cl>Successfully rebased and updated refs/heads/master.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看提交日志
+</span></span><span class=line><span class=cl>* f9fa04a <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Integrating submission logs
+</span></span><span class=line><span class=cl>*   <span class=m>4830059</span> <span class=o>(</span>develop<span class=o>)</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 04a75c1 Add semver link
+</span></span><span class=line><span class=cl>* <span class=p>|</span>   3bdd3fc Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\ \
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> <span class=p>|</span>/
+</span></span><span class=line><span class=cl><span class=p>|</span> * d48ea11 Add setup link
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>*   <span class=m>3513802</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 9ad35ee Add index.js
+</span></span><span class=line><span class=cl><span class=p>|</span> * 0bc04c2 Add index.css
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>* 23a0a9e Rename index.php to index.html
+</span></span><span class=line><span class=cl>* da3c74c Add index.php
+</span></span><span class=line><span class=cl>* 7778db8 Add projects and requirements link
+</span></span><span class=line><span class=cl>* facc111 Add symfony website link
+</span></span><span class=line><span class=cl>* a384a2b Add README.md
+</span></span></code></pre></td></tr></table></div></div><h2 id=整合间歇多次提交>整合间歇多次提交</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git log --oneline --graph
+</span></span><span class=line><span class=cl>* f9fa04a <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Integrating submission logs
+</span></span><span class=line><span class=cl>*   <span class=m>4830059</span> <span class=o>(</span>develop<span class=o>)</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 04a75c1 Add semver link
+</span></span><span class=line><span class=cl>* <span class=p>|</span>   3bdd3fc Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\ \
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> <span class=p>|</span>/
+</span></span><span class=line><span class=cl><span class=p>|</span> * d48ea11 Add setup link
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>*   <span class=m>3513802</span> Merge branch <span class=s1>&#39;develop&#39;</span> to master
+</span></span><span class=line><span class=cl><span class=p>|</span><span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span><span class=p>|</span> * 9ad35ee Add index.js
+</span></span><span class=line><span class=cl><span class=p>|</span> * 0bc04c2 Add index.css
+</span></span><span class=line><span class=cl><span class=p>|</span>/
+</span></span><span class=line><span class=cl>* 23a0a9e Rename index.php to index.html
+</span></span><span class=line><span class=cl>* da3c74c Add index.php
+</span></span><span class=line><span class=cl>* 7778db8 Add projects and requirements link
+</span></span><span class=line><span class=cl>* facc111 Add symfony website link
+</span></span><span class=line><span class=cl>* a384a2b Add README.md
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 变基
+</span></span><span class=line><span class=cl>$ git rebase -i 23a0a9e
+</span></span><span class=line><span class=cl>弹出的编辑界面内容为：
+</span></span><span class=line><span class=cl>pick 23a0a9e
+</span></span><span class=line><span class=cl>s 0bc04c2 Add index.css <span class=c1># 修改 pick 为 squash 或 s</span>
+</span></span><span class=line><span class=cl>s 9ad35ee Add index.js <span class=c1># 修改 pick 为 squash 或 s</span>
+</span></span><span class=line><span class=cl>s d48ea11 Add setup link <span class=c1># 修改 pick 为 squash 或 s</span>
+</span></span><span class=line><span class=cl>s 04a75c1 Add semver link <span class=c1># 修改 pick 为 squash 或 s</span>
+</span></span><span class=line><span class=cl>pick f9fa04a Integrating submission logs
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Rebase 23a0a9e..f9fa04a onto 23a0a9e (5 commands)</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Commands:</span>
+</span></span><span class=line><span class=cl><span class=c1># p, pick = use commit</span>
+</span></span><span class=line><span class=cl><span class=c1># r, reword = use commit, but edit the commit message</span>
+</span></span><span class=line><span class=cl><span class=c1># e, edit = use commit, but stop for amending</span>
+</span></span><span class=line><span class=cl><span class=c1># s, squash = use commit, but meld into previous commit</span>
+</span></span><span class=line><span class=cl><span class=c1># f, fixup = like &#34;squash&#34;, but discard this commit&#39;s log message</span>
+</span></span><span class=line><span class=cl><span class=c1># x, exec = run command (the rest of the line) using shell</span>
+</span></span><span class=line><span class=cl><span class=c1># d, drop = remove commit</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># These lines can be re-ordered; they are executed from top to bottom.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># If you remove a line here THAT COMMIT WILL BE LOST.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># However, if you remove everything, the rebase will be aborted.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Note that empty commits are commented out</span>
+</span></span><span class=line><span class=cl>正常情况下会提示成功，否则会出现如下情况：
+</span></span><span class=line><span class=cl>The previous cherry-pick is now empty, possibly due to conflict resolution.
+</span></span><span class=line><span class=cl>If you wish to commit it anyway, use:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    git commit --allow-empty
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Otherwise, please use <span class=s1>&#39;git reset&#39;</span>
+</span></span><span class=line><span class=cl>interactive rebase in progress<span class=p>;</span> onto 23a0a9e
+</span></span><span class=line><span class=cl>Last <span class=nb>command</span> <span class=k>done</span> <span class=o>(</span><span class=m>1</span> <span class=nb>command</span> <span class=k>done</span><span class=o>)</span>:
+</span></span><span class=line><span class=cl>   pick 23a0a9e Add links and static file
+</span></span><span class=line><span class=cl>Next commands to <span class=k>do</span> <span class=o>(</span><span class=m>5</span> remaining commands<span class=o>)</span>:
+</span></span><span class=line><span class=cl>   squash 0bc04c2 Add index.css
+</span></span><span class=line><span class=cl>   squash 9ad35ee Add index.js
+</span></span><span class=line><span class=cl>You are currently rebasing branch <span class=s1>&#39;master&#39;</span> on <span class=s1>&#39;23a0a9e&#39;</span>.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nothing to commit, working tree clean
+</span></span><span class=line><span class=cl>Could not apply 23a0a9e... Add links and static file
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看状态
+</span></span><span class=line><span class=cl>$ git status
+</span></span><span class=line><span class=cl>interactive rebase in progress<span class=p>;</span> onto 23a0a9e
+</span></span><span class=line><span class=cl>Last <span class=nb>command</span> <span class=k>done</span> <span class=o>(</span><span class=m>1</span> <span class=nb>command</span> <span class=k>done</span><span class=o>)</span>:
+</span></span><span class=line><span class=cl>   pick 23a0a9e
+</span></span><span class=line><span class=cl>Next commands to <span class=k>do</span> <span class=o>(</span><span class=m>8</span> remaining commands<span class=o>)</span>:
+</span></span><span class=line><span class=cl>   squash 04a75c1 Add semver link
+</span></span><span class=line><span class=cl>   squash d48ea11 Add setup link
+</span></span><span class=line><span class=cl>   squash 9ad35ee Add index.js
+</span></span><span class=line><span class=cl>   squash 0bc04c2 Add index.css
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git rebase --edit-todo&#34;</span> to view and edit<span class=o>)</span>
+</span></span><span class=line><span class=cl>You are currently editing a commit <span class=k>while</span> rebasing branch <span class=s1>&#39;master&#39;</span> on <span class=s1>&#39;23a0a9e&#39;</span>.
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git commit --amend&#34;</span> to amend the current commit<span class=o>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>(</span>use <span class=s2>&#34;git rebase --continue&#34;</span> once you are satisfied with your changes<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>nothing to commit, working tree clean
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 继续变基
+</span></span><span class=line><span class=cl>$ git rebase --continue
+</span></span><span class=line><span class=cl>继续后弹出的编辑界面内容：
+</span></span><span class=line><span class=cl><span class=c1># This is a combination of 5 commits.</span>
+</span></span><span class=line><span class=cl>Add links and static file <span class=c1># 添加一行日志信息</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the 1st commit message:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Rename index.php to index.html
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the commit message #2:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Add index.css
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the commit message #3:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Add index.js
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the commit message #4:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Add setup link
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># This is the commit message #5:</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Add semver link
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># Please enter the commit message for your changes. Lines starting</span>
+</span></span><span class=line><span class=cl><span class=c1># with &#39;#&#39; will be ignored, and an empty message aborts the commit.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Date:      Mon Dec 31 20:05:25 2018 +0800</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># interactive rebase in progress; onto 23a0a9e</span>
+</span></span><span class=line><span class=cl><span class=c1># Last commands done (5 commands done):</span>
+</span></span><span class=line><span class=cl><span class=c1>#    squash d48ea11 Add setup link</span>
+</span></span><span class=line><span class=cl><span class=c1>#    squash 04a75c1 Add semver link</span>
+</span></span><span class=line><span class=cl><span class=c1># Next command to do (1 remaining command):</span>
+</span></span><span class=line><span class=cl><span class=c1>#    pick f9fa04a Integrating submission logs</span>
+</span></span><span class=line><span class=cl><span class=c1># You are currently rebasing branch &#39;master&#39; on &#39;23a0a9e&#39;.</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=c1># Changes to be committed:</span>
+</span></span><span class=line><span class=cl><span class=c1>#    modified:   README.md</span>
+</span></span><span class=line><span class=cl><span class=c1>#    renamed:    index.php -&gt; index.css</span>
+</span></span><span class=line><span class=cl><span class=c1>#    new file:   index.html</span>
+</span></span><span class=line><span class=cl><span class=c1>#    new file:   index.js</span>
+</span></span><span class=line><span class=cl><span class=c1>#</span>
+</span></span><span class=line><span class=cl><span class=o>[</span>detached HEAD 688088f<span class=o>]</span> Add links and static file
+</span></span><span class=line><span class=cl> Date: Mon Dec <span class=m>31</span> 20:05:25 <span class=m>2018</span> +0800
+</span></span><span class=line><span class=cl> <span class=m>4</span> files changed, <span class=m>2</span> insertions<span class=o>(</span>+<span class=o>)</span>
+</span></span><span class=line><span class=cl> rename index.php <span class=o>=</span>&gt; index.css <span class=o>(</span>100%<span class=o>)</span>
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> index.html
+</span></span><span class=line><span class=cl> create mode <span class=m>100644</span> index.js
+</span></span><span class=line><span class=cl>Successfully rebased and updated refs/heads/master.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看日志信息
+</span></span><span class=line><span class=cl>$ git log --oneline --graph
+</span></span><span class=line><span class=cl>* fe3b3cf <span class=o>(</span>HEAD -&gt; master<span class=o>)</span> Integrating submission logs
+</span></span><span class=line><span class=cl>* 688088f Add links and static file
+</span></span><span class=line><span class=cl>* da3c74c Add index.php
+</span></span><span class=line><span class=cl>* 7778db8 Add projects and requirements link
+</span></span><span class=line><span class=cl>* facc111 Add symfony website link
+</span></span><span class=line><span class=cl>* a384a2b Add README.md
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-25</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/ data-title="Git 分支" data-hashtags=Git><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/ data-hashtag=Git><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/ data-title="Git 分支"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/ data-title="Git 分支"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/01/25/git-%E5%88%86%E6%94%AF/ data-title="Git 分支"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/git/>Git</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/01/24/git-%E6%9F%A5%E7%9C%8B%E6%97%A5%E5%BF%97/ class=prev rel=prev title="Git 查看日志"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Git 查看日志</a>
+<a href=https://imajinyun.xyz/2018/01/26/mac-%E7%BC%BA%E5%A4%B1%E7%9A%84%E5%8C%85%E7%AE%A1%E7%90%86-homebrew/ class=next rel=next title="Mac 缺失的包管理 Homebrew">Mac 缺失的包管理 Homebrew<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

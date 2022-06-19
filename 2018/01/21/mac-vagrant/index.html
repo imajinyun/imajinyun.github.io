@@ -1,0 +1,476 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Mac 中让开发更加容易的 Vagrant - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Mac 中让开发更加容易的 Vagrant"><meta property="og:description" content="Vagrant 是一个基于 Ruby 的工具，用于创建和部署虚拟化开发环境。它使用 Oracle 的开源 VirtualBox 虚拟化系统，使用 Chef 创建自动化虚拟环境。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/01/21/mac-vagrant/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-21T14:11:29+08:00"><meta property="article:modified_time" content="2018-01-21T14:11:29+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/2019/02/05/mac-command-commands-2/"><meta property="og:see_also" content="https://imajinyun.xyz/2019/02/04/mac-command-commands-1/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/05/mac-vscode-snippets/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/04/mac-vscode-extension/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/03/mac-vscode-basic/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/02/mac-vscode-keyboard/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Mac 中让开发更加容易的 Vagrant"><meta name=twitter:description content="Vagrant 是一个基于 Ruby 的工具，用于创建和部署虚拟化开发环境。它使用 Oracle 的开源 VirtualBox 虚拟化系统，使用 Chef 创建自动化虚拟环境。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/01/21/mac-vagrant/><link rel=prev href=https://imajinyun.xyz/2018/01/21/php-phpstorm/><link rel=next href=https://imajinyun.xyz/2018/01/21/mac-mnmp/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Mac 中让开发更加容易的 Vagrant","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/01\/21\/mac-vagrant\/"},"genre":"posts","keywords":"Mac","wordcount":1640,"url":"https:\/\/imajinyun.xyz\/2018\/01\/21\/mac-vagrant\/","datePublished":"2018-01-21T14:11:29+08:00","dateModified":"2018-01-21T14:11:29+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Mac 中让开发更加容易的 Vagrant</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/mac/><i class="far fa-folder fa-fw" aria-hidden=true></i>Mac</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-21>2018-01-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 1640 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 4 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#安装>安装</a><ul><li><a href=#安装-virtualbox>安装 VirtualBox</a></li><li><a href=#安装-parallels>安装 Parallels</a></li><li><a href=#安装-vagrant>安装 Vagrant</a></li></ul></li><li><a href=#命令>命令</a><ul><li><a href=#基本操作>基本操作</a></li><li><a href=#其它命令>其它命令</a></li></ul></li><li><a href=#virtualbox>VirtualBox</a></li><li><a href=#问题>问题</a><ul><li><a href=#解决系统更新后不能挂载共享目录>解决系统更新后不能挂载共享目录</a></li><li><a href=#解决-vboxmanage-error-failed-to-create-the-host-only-adapter>解决 VBoxManage: error: Failed to create the host-only adapter</a></li><li><a href=#解决-sbinmountvboxsf-mounting-failed-with-the-error-no-such-device>解决 /sbin/mount.vboxsf: mounting failed with the error: No such device</a></li><li><a href=#增加-vagrant-磁盘空间>增加 Vagrant 磁盘空间</a></li><li><a href=#更新-virtualbox-和-vagrant-后无法启动>更新 VirtualBox 和 Vagrant 后无法启动</a></li><li><a href=#更新-virtualbox-后-vagrant-提示需要更新版本>更新 VirtualBox 后 Vagrant 提示需要更新版本</a></li></ul></li><li><a href=#参考>参考</a></li></ul></nav></div></div><div class=content id=content><p>Vagrant 是一个基于 Ruby 的工具，用于创建和部署虚拟化开发环境。它使用 Oracle 的开源 VirtualBox 虚拟化系统，使用 Chef 创建自动化虚拟环境。</p><h2 id=安装>安装</h2><h3 id=安装-virtualbox>安装 VirtualBox</h3><blockquote><ul><li><a href=https://www.virtualbox.org/ target=_blank rel="noopener noreffer">VirtualBox</a> 或者 <a href=https://www.parallels.com/uk/ target=_blank rel="noopener noreffer">Parallels</a> 安装其一就可以了</li><li><a href=https://www.virtualbox.org/wiki/Downloads target=_blank rel="noopener noreffer">Download VirtualBox</a></li></ul></blockquote><h3 id=安装-parallels>安装 Parallels</h3><p><a href=https://github.com/Parallels/vagrant-parallels target=_blank rel="noopener noreffer">Vagrant Parallels Plugin</a></p><h3 id=安装-vagrant>安装 Vagrant</h3><blockquote><ul><li><a href=https://www.vagrantup.com/ target=_blank rel="noopener noreffer">官网</a></li><li><a href=https://github.com/mitchellh/vagrant target=_blank rel="noopener noreffer">GitHub</a></li></ul></blockquote><h2 id=命令>命令</h2><h3 id=基本操作>基本操作</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 添加镜像到 Vagrant
+</span></span><span class=line><span class=cl>vagrant box add centos ~/.vagrant.d/boxes/vagrant-centos-7.1.box
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 创建开发目录, 切换目录
+</span></span><span class=line><span class=cl>mkdir -pv ~/Vagrant/centos
+</span></span><span class=line><span class=cl><span class=nb>cd</span> ~/Vagrant/centos
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 初始化
+</span></span><span class=line><span class=cl>vagrant init centos
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 启动环境
+</span></span><span class=line><span class=cl>vagrant up
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 登录虚拟机
+</span></span><span class=line><span class=cl>vagrant ssh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 将虚拟机挂起, 虚拟机内存都保存到硬盘上, 下次可以快速恢复
+</span></span><span class=line><span class=cl>vagrant <span class=nb>suspend</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 将虚拟机关闭, 虚拟机内存释放, 下次启动要慢一点
+</span></span><span class=line><span class=cl>vagrant halt
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 将虚拟机删除, 所有变更都丢失, 下次启动要重新克隆一个 VagrantBox
+</span></span><span class=line><span class=cl>vagrant destroy
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 移除虚拟机
+</span></span><span class=line><span class=cl>vagrant box remove centos
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 虚拟机打包之前删除下面的文件
+</span></span><span class=line><span class=cl>sudo rm -rf /etc/udev/rules.d/70-persistent-ipoib<span class=o>(</span>net<span class=o>)</span>.rules
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 虚拟机打包
+</span></span><span class=line><span class=cl>vagrant package --base centos --output centos.box
+</span></span></code></pre></td></tr></table></div></div><h3 id=其它命令>其它命令</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 添加别名为 centos 的镜像
+</span></span><span class=line><span class=cl>vagrant box add centos ~/.vagrant.d/boxes/vagrant-centos-7.1.box
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看所有添加的镜像
+</span></span><span class=line><span class=cl>vagrant box list
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 移除别名为 centos 的镜像
+</span></span><span class=line><span class=cl>vagrant box remove centos
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 移除名称为 bento/centos-7.2，版本为 2.3.0 的镜像
+</span></span><span class=line><span class=cl>vagrant box remove bento/centos-7.2 --box-version 2.3.0
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 重载虚拟机
+</span></span><span class=line><span class=cl>vagrant reload
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 重启虚拟机并应用对 Vagrantfile 的更改
+</span></span><span class=line><span class=cl>vagrant reload --provision
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 恢复虚拟机状态
+</span></span><span class=line><span class=cl>vagrant resume
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 登录虚拟机
+</span></span><span class=line><span class=cl>vagrant ssh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看虚拟机状态
+</span></span><span class=line><span class=cl>vagrant status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 暂停虚拟机, 保存状态
+</span></span><span class=line><span class=cl>vagrant <span class=nb>suspend</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看全局状态
+</span></span><span class=line><span class=cl>vagrant global-status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 销毁指定的虚拟机（慎用，一旦执行，创建的虚拟机就灰飞烟灭了）
+</span></span><span class=line><span class=cl>vagrant destroy 1a2b3c4d
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 升级所有 Box
+</span></span><span class=line><span class=cl>vagrant box update
+</span></span></code></pre></td></tr></table></div></div><h2 id=virtualbox>VirtualBox</h2><p><a href=https://docs.oracle.com/en/virtualization/virtualbox/6.1/user/vboxmanage.html target=_blank rel="noopener noreffer">VBoxManage User Manual</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span><span class=lnt>97
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 列出当前系统中所有可用的虚拟机
+</span></span><span class=line><span class=cl>VBoxManage list vms
+</span></span><span class=line><span class=cl><span class=s2>&#34;&lt;inaccessible&gt;&#34;</span> <span class=o>{</span>b457c29d-3eaf-4d19-8f38-7991c85aa43a<span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;ubuntu_default_1588584023862_25557&#34;</span> <span class=o>{</span>eee17f07-35dc-4c48-bff9-8006bf3df55c<span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=s2>&#34;centos_default_1588597614517_34912&#34;</span> <span class=o>{</span>3c640794-da30-40b2-a155-c76b42c5cac7<span class=o>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 克隆虚拟机
+</span></span><span class=line><span class=cl>VBoxManage clonevm --register ubuntu_default_1588584023862_25557 --name Ubuntu
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span><span class=line><span class=cl>Machine has been successfully cloned as <span class=s2>&#34;Ubuntu&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 将本地虚拟机导出为一个使用开放虚拟化格式（OVF - Open Virtualization Format）文件
+</span></span><span class=line><span class=cl>VBoxManage <span class=nb>export</span> ubuntu_default_1588584023862_25557 -o Ubuntu.ova
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span><span class=line><span class=cl>Successfully exported <span class=m>1</span> machine<span class=o>(</span>s<span class=o>)</span>.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 删除克隆的虚拟机
+</span></span><span class=line><span class=cl>VBoxManage unregistervm --delete <span class=s2>&#34;Ubuntu&#34;</span>
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 导入虚拟机
+</span></span><span class=line><span class=cl>VBoxManage import Ubuntu.ova --vsys <span class=m>0</span> --vmname Ubuntu18
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span><span class=line><span class=cl>Interpreting /Users/majinyun/Downloads/qiniu/Ubuntu.ova...
+</span></span><span class=line><span class=cl>OK.
+</span></span><span class=line><span class=cl>Disks:
+</span></span><span class=line><span class=cl>  vmdisk1 <span class=m>10737418240</span> -1 http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized Ubuntu-disk001.vmdk -1 -1
+</span></span><span class=line><span class=cl>  vmdisk2 <span class=m>10485760</span> -1 http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized Ubuntu-disk002.vmdk -1 -1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Virtual system 0:
+</span></span><span class=line><span class=cl> 0: Suggested OS type: <span class=s2>&#34;Ubuntu_64&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --ostype &lt;type&gt;&#34;</span><span class=p>;</span> use <span class=s2>&#34;list ostypes&#34;</span> to list all possible values<span class=o>)</span>
+</span></span><span class=line><span class=cl> 1: VM name specified with --vmname: <span class=s2>&#34;Ubuntu18&#34;</span>
+</span></span><span class=line><span class=cl> 2: Suggested VM group <span class=s2>&#34;/&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --group &lt;group&gt;&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> 3: Suggested VM settings file name <span class=s2>&#34;/Users/majinyun/VirtualBoxVMs/ubuntu_default_1588584023862_25557 2/ubuntu_default_1588584023862_25557 2.vbox&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --settingsfile &lt;filename&gt;&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> 4: Suggested VM base folder <span class=s2>&#34;/Users/majinyun/VirtualBoxVMs&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --basefolder &lt;path&gt;&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> 5: Number of CPUs: <span class=m>2</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --cpus &lt;n&gt;&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> 6: Guest memory: <span class=m>1024</span> MB
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --memory &lt;MB&gt;&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> 7: Sound card <span class=o>(</span>appliance expects <span class=s2>&#34;&#34;</span>, can change on import<span class=o>)</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>disable with <span class=s2>&#34;--vsys 0 --unit 7 --ignore&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl> 8: Network adapter: orig NAT, config 3, extra <span class=nv>slot</span><span class=o>=</span>0<span class=p>;</span><span class=nv>type</span><span class=o>=</span>NAT
+</span></span><span class=line><span class=cl> 9: Network adapter: orig HostOnly, config 3, extra <span class=nv>slot</span><span class=o>=</span>1<span class=p>;</span><span class=nv>type</span><span class=o>=</span>HostOnly
+</span></span><span class=line><span class=cl>10: IDE controller, <span class=nb>type</span> PIIX4
+</span></span><span class=line><span class=cl>    <span class=o>(</span>disable with <span class=s2>&#34;--vsys 0 --unit 10 --ignore&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>11: IDE controller, <span class=nb>type</span> PIIX4
+</span></span><span class=line><span class=cl>    <span class=o>(</span>disable with <span class=s2>&#34;--vsys 0 --unit 11 --ignore&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>12: SCSI controller, <span class=nb>type</span> LsiLogic
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change with <span class=s2>&#34;--vsys 0 --unit 12 --scsitype {BusLogic|LsiLogic}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    disable with <span class=s2>&#34;--vsys 0 --unit 12 --ignore&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>13: Hard disk image: <span class=nb>source</span> <span class=nv>image</span><span class=o>=</span>Ubuntu-disk001.vmdk, target <span class=nv>path</span><span class=o>=</span>Ubuntu-disk001.vmdk, <span class=nv>controller</span><span class=o>=</span>12<span class=p>;</span><span class=nv>channel</span><span class=o>=</span><span class=m>0</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change target path with <span class=s2>&#34;--vsys 0 --unit 13 --disk path&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    disable with <span class=s2>&#34;--vsys 0 --unit 13 --ignore&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>14: Hard disk image: <span class=nb>source</span> <span class=nv>image</span><span class=o>=</span>Ubuntu-disk002.vmdk, target <span class=nv>path</span><span class=o>=</span>Ubuntu-disk002.vmdk, <span class=nv>controller</span><span class=o>=</span>12<span class=p>;</span><span class=nv>channel</span><span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span>change target path with <span class=s2>&#34;--vsys 0 --unit 14 --disk path&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    disable with <span class=s2>&#34;--vsys 0 --unit 14 --ignore&#34;</span><span class=o>)</span>
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span><span class=line><span class=cl>Successfully imported the appliance.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示指定虚拟机的详细信息
+</span></span><span class=line><span class=cl>VBoxManage showvminfo <span class=s2>&#34;Ubuntu18&#34;</span>
+</span></span><span class=line><span class=cl>Name:                        Ubuntu18
+</span></span><span class=line><span class=cl>Groups:                      /
+</span></span><span class=line><span class=cl>Guest OS:                    Ubuntu <span class=o>(</span>64-bit<span class=o>)</span>
+</span></span><span class=line><span class=cl>UUID:                        03d737bc-2e47-4130-aa0b-b6a80767b474
+</span></span><span class=line><span class=cl>Config file:                 /Users/majinyun/VirtualBoxVMs/Ubuntu18/Ubuntu18.vbox
+</span></span><span class=line><span class=cl>Snapshot folder:             /Users/majinyun/VirtualBoxVMs/Ubuntu18/Snapshots
+</span></span><span class=line><span class=cl>Log folder:                  /Users/majinyun/VirtualBoxVMs/Ubuntu18/Logs
+</span></span><span class=line><span class=cl>Hardware UUID:               03d737bc-2e47-4130-aa0b-b6a80767b474
+</span></span><span class=line><span class=cl>Memory size                  1024MB
+</span></span><span class=line><span class=cl>Page Fusion:                 disabled
+</span></span><span class=line><span class=cl>VRAM size:                   16MB
+</span></span><span class=line><span class=cl>CPU <span class=nb>exec</span> cap:                100%
+</span></span><span class=line><span class=cl>HPET:                        disabled
+</span></span><span class=line><span class=cl>CPUProfile:                  host
+</span></span><span class=line><span class=cl>Chipset:                     piix3
+</span></span><span class=line><span class=cl>Firmware:                    BIOS
+</span></span><span class=line><span class=cl>.
+</span></span><span class=line><span class=cl>.
+</span></span><span class=line><span class=cl>.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 启动虚拟机
+</span></span><span class=line><span class=cl>VBoxManage startvm Ubuntu18
+</span></span><span class=line><span class=cl>Waiting <span class=k>for</span> VM <span class=s2>&#34;Ubuntu18&#34;</span> to power on...
+</span></span><span class=line><span class=cl>VM <span class=s2>&#34;Ubuntu18&#34;</span> has been successfully started.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 关闭虚拟机
+</span></span><span class=line><span class=cl>VBoxManage controlvm Ubuntu18 poweroff
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 删除导入的虚拟机
+</span></span><span class=line><span class=cl>VBoxManage unregistervm --delete <span class=s2>&#34;Ubuntu18&#34;</span>
+</span></span><span class=line><span class=cl>0%...10%...20%...30%...40%...50%...60%...70%...80%...90%...100%
+</span></span></code></pre></td></tr></table></div></div><h2 id=问题>问题</h2><h3 id=解决系统更新后不能挂载共享目录>解决系统更新后不能挂载共享目录</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 解决 yum update 更新后 vagrant reload 不能挂载共享目录
+</span></span><span class=line><span class=cl>sudo /etc/init.d/vboxadd setup
+</span></span></code></pre></td></tr></table></div></div><blockquote><ul><li><a href=http://www.iamle.com/archives/1908.html target=_blank rel="noopener noreffer">共享目录不能挂载到 vagrant 目录</a></li><li><a href=https://github.com/LKI/Blogs/issues/2 target=_blank rel="noopener noreffer">vagrant up 遇到 mount no such device 的问题</a></li><li><a href=http://able.cd/b/2012/04/09/vagrant-broken-networking-when-packaging-ubuntu-boxes/ target=_blank rel="noopener noreffer">broken networking when packaging ubuntu boxes</a></li></ul></blockquote><h3 id=解决-vboxmanage-error-failed-to-create-the-host-only-adapter>解决 VBoxManage: error: Failed to create the host-only adapter</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 解决 CleanMyMacX 智能清理后不能启动 vagrant 虚拟机
+</span></span><span class=line><span class=cl>sudo /Library/Application<span class=se>\ </span>Support/VirtualBox/LaunchDaemons/VirtualBoxStartup.sh restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=解决-sbinmountvboxsf-mounting-failed-with-the-error-no-such-device>解决 /sbin/mount.vboxsf: mounting failed with the error: No such device</h3><blockquote><p><a href=https://github.com/CentOS/sig-cloud-instance-build/issues/27#issuecomment-166960158 target=_blank rel="noopener noreffer"><code>VirtualBox Guest Additions in Vagrant image</code></a></p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>vagrant plugin install vagrant-vbguest
+</span></span><span class=line><span class=cl>vagrant vbguest
+</span></span><span class=line><span class=cl>vagrant ssh
+</span></span><span class=line><span class=cl><span class=nb>cd</span> /opt/VBoxGuestAdditions-5.2.4/init/
+</span></span><span class=line><span class=cl>sudo ./vboxadd setup
+</span></span><span class=line><span class=cl>sudo yum -y install kernel kernel-devel
+</span></span><span class=line><span class=cl><span class=nb>exit</span>
+</span></span><span class=line><span class=cl>vagrant reload
+</span></span></code></pre></td></tr></table></div></div><h3 id=增加-vagrant-磁盘空间>增加 Vagrant 磁盘空间</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>VBoxManage clonehd centos-vm-disk1.vmdk centos-vm-disk1.vdi --format VDI
+</span></span><span class=line><span class=cl>VBoxManage modifyhd centos-vm-disk1.vdi --resize <span class=m>20480</span>
+</span></span><span class=line><span class=cl>VBoxManage clonehd centos-vm-disk1.vdi centos-vm-disk.vmdk --format VMDK
+</span></span></code></pre></td></tr></table></div></div><blockquote><ul><li><a href=http://blog.lenss.nl/2012/09/resize-a-vagrant-vmdk-drive/ target=_blank rel="noopener noreffer">RESIZE A VAGRANT VMDK DRIVE</a></li><li><a href=https://github.com/mitchellh/vagrant/issues/2339# target=_blank rel="noopener noreffer">Add some way to increase disk space from Vagrantfile</a></li><li><a href=http://www.digitesters.com/manage-a-virtualbox-headless-system-stop-and-remove-a-vm/ target=_blank rel="noopener noreffer">Manage a VirtualBox-headless system: stop and remove a VM</a></li></ul></blockquote><h3 id=更新-virtualbox-和-vagrant-后无法启动>更新 VirtualBox 和 Vagrant 后无法启动</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>vagrant up
+</span></span><span class=line><span class=cl>Vagrant failed to initialize at a very early stage:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>The plugins failed to initialize correctly. This may be due to manual
+</span></span><span class=line><span class=cl>modifications made within the Vagrant home directory. Vagrant can
+</span></span><span class=line><span class=cl>attempt to automatically correct this issue by running:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>vagrant plugin repair
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>If Vagrant was recently updated, this error may be due to incompatible
+</span></span><span class=line><span class=cl>versions of dependencies. To fix this problem please remove and re-install
+</span></span><span class=line><span class=cl>all plugins. Vagrant can attempt to <span class=k>do</span> this automatically by running:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>vagrant plugin expunge --reinstall
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Or you may want to try updating the installed plugins to their latest
+</span></span><span class=line><span class=cl>versions:
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>vagrant plugin update
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Error message given during initialization: Unable to resolve dependency: user requested <span class=s1>&#39;vagrant-parallels (&gt; 0)&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=更新-virtualbox-后-vagrant-提示需要更新版本>更新 VirtualBox 后 Vagrant 提示需要更新版本</h3><p><a href=https://github.com/hashicorp/vagrant/issues/11249#issuecomment-565736894 target=_blank rel="noopener noreffer">I patched Vagrant on macOS with this script</a></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>vagrant up
+</span></span><span class=line><span class=cl>The provider <span class=s1>&#39;virtualbox&#39;</span> that was requested to back the machine
+</span></span><span class=line><span class=cl><span class=s1>&#39;default&#39;</span> is reporting that it isn<span class=s1>&#39;t usable on this system. The
+</span></span></span><span class=line><span class=cl><span class=s1>reason is shown below:
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>Vagrant has detected that you have a version of VirtualBox installed
+</span></span></span><span class=line><span class=cl><span class=s1>that is not supported by this version of Vagrant. Please install one of
+</span></span></span><span class=line><span class=cl><span class=s1>the supported versions listed below to use Vagrant:
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>4.0, 4.1, 4.2, 4.3, 5.0, 5.1, 5.2, 6.0
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>A Vagrant update may also be available that adds support for the version
+</span></span></span><span class=line><span class=cl><span class=s1>you specified. Please check www.vagrantup.com/downloads.html to download
+</span></span></span><span class=line><span class=cl><span class=s1>the latest version.
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>curl https://github.com/briancain/vagrant/commit/fb4e6985e142da56bad143d70600cd3695c91757.patch &gt; /tmp/vagrant_226_virtualbox_610.patch
+</span></span></span><span class=line><span class=cl><span class=s1>cd /opt/vagrant/embedded/gems/2.2.6/gems/vagrant-2.2.6
+</span></span></span><span class=line><span class=cl><span class=s1>sudo git apply --verbose --exclude=&#39;</span>website/*<span class=s1>&#39; /tmp/vagrant_226_virtualbox_610.patch
+</span></span></span><span class=line><span class=cl><span class=s1>
+</span></span></span><span class=line><span class=cl><span class=s1>Password:
+</span></span></span><span class=line><span class=cl><span class=s1>Skipped patch &#39;</span>website/source/docs/virtualbox/index.html.md<span class=err>&#39;</span>.
+</span></span><span class=line><span class=cl>Checking patch plugins/providers/virtualbox/driver/meta.rb...
+</span></span><span class=line><span class=cl>Checking patch plugins/providers/virtualbox/driver/version_6_1.rb...
+</span></span><span class=line><span class=cl>Checking patch plugins/providers/virtualbox/plugin.rb...
+</span></span><span class=line><span class=cl>Applied patch plugins/providers/virtualbox/driver/meta.rb cleanly.
+</span></span><span class=line><span class=cl>Applied patch plugins/providers/virtualbox/driver/version_6_1.rb cleanly.
+</span></span><span class=line><span class=cl>Applied patch plugins/providers/virtualbox/plugin.rb cleanly.
+</span></span></code></pre></td></tr></table></div></div><h2 id=参考>参考</h2><blockquote><ul><li><a href=https://www.vagrantup.com/ target=_blank rel="noopener noreffer">Vagrant 官网</a></li><li><a href="https://atlas.hashicorp.com/boxes/search?utm_source=vagrantcloud.com&vagrantcloud=1" target=_blank rel="noopener noreffer">About Vagrant Cloud and Atlas</a></li></ul></blockquote></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-21</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/01/21/mac-vagrant/ data-title="Mac 中让开发更加容易的 Vagrant" data-hashtags=Mac><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/01/21/mac-vagrant/ data-hashtag=Mac><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/01/21/mac-vagrant/ data-title="Mac 中让开发更加容易的 Vagrant"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/01/21/mac-vagrant/ data-title="Mac 中让开发更加容易的 Vagrant"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/01/21/mac-vagrant/ data-title="Mac 中让开发更加容易的 Vagrant"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/mac/>Mac</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/01/21/php-phpstorm/ class=prev rel=prev title="PHP 开发利器之 PhpStorm"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>PHP 开发利器之 PhpStorm</a>
+<a href=https://imajinyun.xyz/2018/01/21/mac-mnmp/ class=next rel=next title="Mac 打造 PHP 开发环境">Mac 打造 PHP 开发环境<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

@@ -1,0 +1,492 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Mac 搭建 Homestead 集成开发环境 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Mac 搭建 Homestead 集成开发环境"><meta property="og:description" content="Homestead 英文官网 HomeStead 中文网站 HomeStead GitHub 介绍 Laravel 致力于使整个 PHP 开发体验变得愉快，包括你的本地开发环境。Vagrant 提供了一个简单、优雅的方式来管理和配置虚拟"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-21T16:11:29+08:00"><meta property="article:modified_time" content="2018-01-21T16:11:29+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/2019/02/05/mac-%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4%E6%94%B6%E9%9B%86%E4%BA%8C/"><meta property="og:see_also" content="https://imajinyun.xyz/2019/02/04/mac-%E5%AE%9E%E7%94%A8%E5%91%BD%E4%BB%A4%E6%94%B6%E9%9B%86%E4%B8%80/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/05/mac-vscode-%E4%BB%A3%E7%A0%81%E7%89%87%E6%AE%B5/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/04/mac-vscode-%E6%95%88%E7%8E%87%E6%89%A9%E5%B1%95/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/03/mac-vscode-%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C/"><meta property="og:see_also" content="https://imajinyun.xyz/2018/12/02/mac-vscode-%E5%BF%AB%E6%8D%B7%E9%94%AE/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Mac 搭建 Homestead 集成开发环境"><meta name=twitter:description content="Homestead 英文官网 HomeStead 中文网站 HomeStead GitHub 介绍 Laravel 致力于使整个 PHP 开发体验变得愉快，包括你的本地开发环境。Vagrant 提供了一个简单、优雅的方式来管理和配置虚拟"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/><link rel=prev href=https://imajinyun.xyz/2018/01/21/mac-%E6%89%93%E9%80%A0-php-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/><link rel=next href=https://imajinyun.xyz/2018/01/22/git-%E8%B5%B7%E6%AD%A5/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Mac 搭建 Homestead 集成开发环境","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/01\/21\/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83\/"},"genre":"posts","keywords":"Mac","wordcount":6779,"url":"https:\/\/imajinyun.xyz\/2018\/01\/21\/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83\/","datePublished":"2018-01-21T16:11:29+08:00","dateModified":"2018-01-21T16:11:29+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Mac 搭建 Homestead 集成开发环境</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/mac/><i class="far fa-folder fa-fw" aria-hidden=true></i>Mac</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-21>2018-01-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 6779 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 14 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#介绍>介绍</a><ul><li><a href=#内置软件>内置软件</a></li></ul></li><li><a href=#安装与配置>安装与配置</a><ul><li><a href=#起步>起步</a><ul><li><a href=#安装-homestead-vagrant-盒子>安装 Homestead Vagrant 盒子</a></li><li><a href=#安装-homestead>安装 Homestead</a></li></ul></li><li><a href=#配置-homestead>配置 Homestead</a><ul><li><a href=#设置你的提供者>设置你的提供者</a></li><li><a href=#配置共享文件夹>配置共享文件夹</a></li><li><a href=#配置-nginx-站点>配置 Nginx 站点</a></li><li><a href=#主机文件>主机文件</a></li></ul></li><li><a href=#启动-vagrant-盒子>启动 Vagrant 盒子</a></li><li><a href=#按项目安装>按项目安装</a></li><li><a href=#安装-mariadb>安装 MariaDB</a></li><li><a href=#安装-mongodb>安装 MongoDB</a></li><li><a href=#安装-elasticsearch>安装 Elasticsearch</a></li><li><a href=#安装-neo4j>安装 Neo4j</a></li><li><a href=#别名>别名</a></li><li><a href=#踩过的坑>踩过的坑</a><ul><li><a href=#装载-homestead-镜像>装载 Homestead 镜像</a></li><li><a href=#生成-key>生成 key</a></li><li><a href=#配置>配置</a></li><li><a href=#启动并进入虚拟机>启动并进入虚拟机</a></li></ul></li></ul></li><li><a href=#日常操作>日常操作</a><ul><li><a href=#全局访问-homestead>全局访问 Homestead</a><ul><li><a href=#mac--linux>Mac / Linux</a></li><li><a href=#windows>Windows</a></li></ul></li><li><a href=#通过-ssh-连接>通过 SSH 连接</a></li><li><a href=#数据库连接>数据库连接</a></li><li><a href=#数据库备份>数据库备份</a></li><li><a href=#添加额外的站点>添加额外的站点</a><ul><li><a href=#站点类型>站点类型</a></li><li><a href=#站点参数>站点参数</a></li></ul></li><li><a href=#环境变量>环境变量</a></li><li><a href=#配置定时计划>配置定时计划</a></li><li><a href=#配置-mailhog>配置 Mailhog</a></li><li><a href=#配置-minio>配置 Minio</a></li><li><a href=#端口>端口</a><ul><li><a href=#转发额外的端口>转发额外的端口</a></li></ul></li><li><a href=#共享你的环境>共享你的环境</a></li><li><a href=#多版本-php>多版本 PHP</a></li><li><a href=#web-服务器>Web 服务器</a></li><li><a href=#邮件>邮件</a></li></ul></li><li><a href=#网络接口>网络接口</a></li><li><a href=#更新-homestead>更新 Homestead</a></li><li><a href=#提供指定的设置>提供指定的设置</a><ul><li><a href=#virtualbox>VirtualBox</a></li><li><a href=#符号链接在-windows>符号链接在 Windows</a></li></ul></li></ul></nav></div></div><div class=content id=content><blockquote><ul><li><a href=https://laravel.com/docs/master/homestead target=_blank rel="noopener noreffer">Homestead 英文官网</a></li><li><a href=https://docs.golaravel.com/docs/5.0/homestead/ target=_blank rel="noopener noreffer">HomeStead 中文网站</a></li><li><a href=https://github.com/laravel/homestead target=_blank rel="noopener noreffer">HomeStead GitHub</a></li></ul></blockquote><h2 id=介绍>介绍</h2><p>Laravel 致力于使整个 PHP 开发体验变得愉快，包括你的本地开发环境。<a href=https://www.vagrantup.com/ target=_blank rel="noopener noreffer"><code>Vagrant</code></a> 提供了一个简单、优雅的方式来管理和配置虚拟机。</p><p>Laravel Homestead 是一个官方预载的 <code>Vagrant</code> 盒子，旨在提供你一个美好的开发环境，而不需要在你的本地机器 中去安装 PHP，Web 服务器和其它任何服务软件。再也不用担心会搞乱你的操作系统！Vagrant 盒子完全是一次性的。如果出现问题，你可以在几分钟内销毁并重新创建它！</p><p>Homestead 运行在任何 Windows，Mac，或者 Linux 系统上，并包含 Nginx Web 服务器，PHP 7.2，PHP 7.1，PHP 5.6，MySQL，Redis，Memcached，Node，以及开发令人惊叹的 Laravel 应用程序所需的所有其他好东西。</p><p>{% note danger %}</p><p>如果你使用 Windows，你需要开启硬件虚拟化（<code>VT-x</code>）。它通常是通过你的 BIOS 去开启。如果你在一个 UEFI 系统上使用 Hyper-V，为了访问 VT-x，你可能还需要去禁用 Hyper-V。</p><p>{% endnote %}</p><h3 id=内置软件>内置软件</h3><ul><li>Ubuntu 18.04</li><li>Git</li><li>PHP 7.2</li><li>PHP 7.1</li><li>PHP 7.0</li><li>PHP 5.6</li><li>Nginx</li><li>Apache（可选）</li><li>MySQL</li><li>MariaDB（可选）</li><li>Sqlite3</li><li>PostgreSQL</li><li>Composer</li><li>Node（Yarn，Bower，Grunt 和 Gulp）</li><li>Redis</li><li>Memcached</li><li>Beanstalkd</li><li>Mailhog</li><li>Neo4j（可选）</li><li>MongoDB（可选）</li><li>Elasticsearch（可选）</li><li>ngrok</li><li>wp-cli</li><li>Zend Z-Ray</li><li>Go</li><li>Minio</li></ul><p>总之一句话，巨牛逼。如果这些东西让你自己折腾，怎么着也得大半天吧。想想我朝这个网络，你能顺利的搞定那简直就是牛逼中的战斗机。</p><h2 id=安装与配置>安装与配置</h2><h3 id=起步>起步</h3><p>在启动 Homestead 环境之前，你必须安装 <a href=https://www.virtualbox.org/wiki/Downloads target=_blank rel="noopener noreffer"><code>VirtualBox 5.2</code></a>，<a href=https://www.vmware.com/ target=_blank rel="noopener noreffer"><code>VMWare</code></a>，<a href=https://www.parallels.com/products/desktop/ target=_blank rel="noopener noreffer"><code>Parallels</code></a> 或者 <a href=https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v target=_blank rel="noopener noreffer"><code>Hyper-V</code></a> 以及 <a href=https://www.vagrantup.com/downloads.jhtml target=_blank rel="noopener noreffer"><code>Vagrant</code></a>。所有这些软件包都为所有流行的操作系统提供了易于使用的可视化安装程序。</p><p>为了使用 VMware 提供者，你将需要去购买 VMware Fusion / Workstation 和 <a href=https://www.vagrantup.com/vmware/ target=_blank rel="noopener noreffer"><code>VMware Vagrant plug-in</code></a>。尽管它不是免费的，VMware 比其它盒子能提供更快的共享文件夹性能。</p><p>为了使用 Parallels 提供者，你将需要安装 <a href=https://github.com/Parallels/vagrant-parallels target=_blank rel="noopener noreffer"><code>Parallels Vagrant plug-in</code></a>，它是免费的。</p><p>因为 <a href=https://www.vagrantup.com/docs/hyperv/limitations.html target=_blank rel="noopener noreffer"><code>Vagrant limitations</code></a>，Hyper-V 提供者将忽略所有的网络设置。</p><h4 id=安装-homestead-vagrant-盒子>安装 Homestead Vagrant 盒子</h4><p>一旦 VirtualBox / VMware 和 Vagrant 被安装，你应当在你的终端中使用如下的命令将 <code>laravel/homestead</code> 添加到你的 Vagrant 安装中。下载盒子耗费的时间取决于你的网速：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vagrant box add laravel/homestead
+</span></span><span class=line><span class=cl><span class=o>==</span>&gt; vagrant: A new version of Vagrant is available: 2.1.4!
+</span></span><span class=line><span class=cl><span class=o>==</span>&gt; vagrant: To upgrade visit: https://www.vagrantup.com/downloads.html
+</span></span></code></pre></td></tr></table></div></div><p>如果此命令失败，确保你安装的 Vagrant 是最新的。</p><h4 id=安装-homestead>安装 Homestead</h4><p>你可以安装 Homestead 通过克隆仓库。考虑克隆仓库到你的『home』目录下的一个 <code>Homestead</code> 文件夹下，这样 Homestead 盒子服务将作为你的所有 Laravel 项目的主机：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ git clone https://github.com/laravel/homestead.git ~/Homestead
+</span></span><span class=line><span class=cl>Cloning into <span class=s1>&#39;Homestead&#39;</span>...
+</span></span></code></pre></td></tr></table></div></div><p>你应当检查 Homestead 的标记版本，因为 <code>master</code> 分支不总是稳定的。你能在 <a href=https://github.com/laravel/homestead/releases target=_blank rel="noopener noreffer"><code>GitHub Release Page</code></a> 找到最新的稳定版：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>cd</span> ~/Homestead
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// Clone the desired release...
+</span></span><span class=line><span class=cl>$ git checkout v7.14.2
+</span></span></code></pre></td></tr></table></div></div><p>一旦你克隆克隆了 Homestead 仓库，从 Homestead 目录运行 <code>bash init.sh</code> 命令去创建 <code>Homestead.yaml</code> 配置文件。此 <code>Homestead.yaml</code> 文件将位于 Homestead 目录中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// Mac / Linux...
+</span></span><span class=line><span class=cl>$ bash init.sh
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// Windows...
+</span></span><span class=line><span class=cl>&gt; init.bat
+</span></span></code></pre></td></tr></table></div></div><h3 id=配置-homestead>配置 Homestead</h3><h4 id=设置你的提供者>设置你的提供者</h4><p>在你的 <code>Homestead.yaml</code> 文件中的 <code>provider</code> 键名表示哪个 Vagrant 提供者应当被使用：<code>virtualbox</code>，<code>vmware_fusion</code>，<code>vmware_workstation</code>，<code>parallels</code> 或者 <code>hyperv</code>。你可以设置你偏好的提供者：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>provider: virtualbox
+</span></span></code></pre></td></tr></table></div></div><h4 id=配置共享文件夹>配置共享文件夹</h4><p><code>Homestead.yaml</code> 文件中的 <code>folders</code> 属性列出了你希望与你的 Homestead 环境共享的所有文件夹。在这些文件夹下的文件发生改变时，他们将在你的本地机器和 Homestead 环境之间保持同步。你可以根据需要去配置任意数量的共享文件夹。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>folders:
+</span></span><span class=line><span class=cl>    - map: ~/code
+</span></span><span class=line><span class=cl>        to: /home/vagrant/code
+</span></span></code></pre></td></tr></table></div></div><p>如果你仅仅创建一些站点，这个能用的映射将正常工作。然而，随着站点数量的不断增加，你可能会遇到性能问题。在包含大量文件的低端机器或者项目中，这个问题可能非常明显。如果你遇到这个问题，尝试将每个项目映射到其自己的 Vagrant 文件夹下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>folders:
+</span></span><span class=line><span class=cl>    - map: ~/code/project1
+</span></span><span class=line><span class=cl>        to: /home/vagrant/code/project1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    - map: ~/code/project2
+</span></span><span class=line><span class=cl>        to: /home/vagrant/code/project2
+</span></span></code></pre></td></tr></table></div></div><p>要开启 <a href=https://www.vagrantup.com/docs/synced-folders/nfs.html target=_blank rel="noopener noreffer"><code>NFS</code></a>，你仅仅需要增加一个简单的标志到你的同步文件配置中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>folders:
+</span></span><span class=line><span class=cl>    - map: ~/code
+</span></span><span class=line><span class=cl>        to: /home/vagrant/code
+</span></span><span class=line><span class=cl>        type: <span class=s2>&#34;nfs&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>{% note danger %}</p><p>当使用 NFS 时，你应当考虑安装 <a href=https://github.com/gael-ian/vagrant-bindfs target=_blank rel="noopener noreffer"><code>vagrant-bindfs</code></a> 插件。这个插件将为 Homestead 盒子中的文件和目录维护正确的 user / group 权限。</p><p>{% endnote %}</p><p>你也可以传递通过 <code>options</code> 键下列出它们的 Vagrant 的 <a href=https://www.vagrantup.com/docs/synced-folders/basic_usage.html target=_blank rel="noopener noreffer"><code>Synced Folders</code></a> 所支持的任何选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>folders:
+</span></span><span class=line><span class=cl>    - map: ~/code
+</span></span><span class=line><span class=cl>    to: /home/vagrant/code
+</span></span><span class=line><span class=cl>    type: <span class=s2>&#34;rsync&#34;</span>
+</span></span><span class=line><span class=cl>    options:
+</span></span><span class=line><span class=cl>        rsync__args: <span class=o>[</span><span class=s2>&#34;--verbose&#34;</span>, <span class=s2>&#34;--archive&#34;</span>, <span class=s2>&#34;--delete&#34;</span>, <span class=s2>&#34;-zz&#34;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl>        rsync__exclude: <span class=o>[</span><span class=s2>&#34;node_modules&#34;</span><span class=o>]</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=配置-nginx-站点>配置 Nginx 站点</h4><p>不熟悉 Nginx？没问题。<code>sites</code> 属性允许你轻松映射一个『domain』到你的 Homestead 环境的一个文件夹。在 <code>Homestead.yaml</code> 文件中包含一个示例站点配置，你可以根据需要添加许多站点到你的 Homestead 环境。Homestead 能作为一个方便的，虚拟化的环境为你工作的每一个 Laravel 项目服务：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: homestead.test
+</span></span><span class=line><span class=cl>        to: /home/vagrant/code/Laravel/public
+</span></span></code></pre></td></tr></table></div></div><p>如果你改变 <code>sites</code> 属性在配置 Homestead 盒子后，你应当重新运行 <code>vagrant reload --provision</code> 去更新虚拟机中的 Nginx 配置。</p><h4 id=主机文件>主机文件</h4><p>你必须在你机器的 <code>hosts</code> 文件中为 Nginx 站点添加『domains』。<code>hosts</code> 文件将把你的 Homestead 站点请求重定向到你的 Homestead 机器。在 Mac 和 Linux 中，这个文件位于 <code>/etc/hosts</code>。在 Windows 中，位于 <code>C:\Windows\System32\drivers\etc\hosts</code>。你添加到此文件中的行看起来像如下这样：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>192.168.10.10  homestead.test
+</span></span></code></pre></td></tr></table></div></div><p>确保列出的 IP 地址是 <code>Homestead.yaml</code> 文件中设置的 IP 地址。一旦你添加域名到你的 <code>hosts</code> 文件，启动 Vagrant 盒子后你能在你的 Web 浏览器中访问它：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>http://homestead.test
+</span></span></code></pre></td></tr></table></div></div><h3 id=启动-vagrant-盒子>启动 Vagrant 盒子</h3><p>一旦你根据你的喜好编辑 <code>Homestead.yaml</code> 后，从你的 Homestead 目录运行 <code>vagrant up</code> 命令。Vagrant 将启动虚拟机并自动配置你的共享文件夹和 Nginx 站点。</p><p>在销毁虚拟机，你可以使用 <code>vagrant destroy --force</code> 命令。</p><h3 id=按项目安装>按项目安装</h3><p>你可以为你所管理的每个项目配置配置一个 Homestead 实例，而不是在全局范围内安装 Homestead 并在所有的项目中共享相同的 Homestead 盒子。如果你希望随项目一起发送一个 <code>Vagrantfile</code>，那么为每个项目安装 Homestead 可能是大有裨益的，允许其它人在项目中 <code>vagrant up</code> 进行工作。</p><p>要直接将 Homestead 安装到你的项目，需要使用 Composer：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ composer require laravel/homestead --dev
+</span></span></code></pre></td></tr></table></div></div><p>一旦 Homestead 被安装，使用 <code>make</code> 命令去生成 <code>Vagrantfile</code> 和 <code>Homestead.yaml</code> 文件在你的项目根目录。<code>make</code> 命令将自动配置 <code>site</code> 和 <code>folders</code> 指令在 <code>Homestead.yaml</code> 文件中。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// Mac / Linux
+</span></span><span class=line><span class=cl>$ php vendor/bin/homestead make
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// Windows
+</span></span><span class=line><span class=cl>$ vendor<span class=se>\\</span>bin<span class=se>\\</span>homestead make
+</span></span></code></pre></td></tr></table></div></div><p>接下来，在终端中运行 <code>vagrant up</code> 命令并在浏览器中输入 <code>http://homestead.test</code> 去访问你的项目。记住，你将需要添加一个 <code>homestead.test</code> 到 <code>/etc/hosts</code> 文件中或者你自定义的域名。</p><h3 id=安装-mariadb>安装 MariaDB</h3><p>如果你偏好使用 MariaDB 而不是 MySQL，你可以在 <code>Homestead.yaml</code> 文件中添加 <code>mariadb</code> 选项。这个选项将移除 MySQL 并安装 MariaDB。MariaDB 服务作为 MySQL 的一个替代品，因此你仍然在你的应用程序数据库配置中使用 <code>mysql</code> 数据库驱动：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>box: laravel/homestead
+</span></span><span class=line><span class=cl>ip: <span class=s2>&#34;192.168.10.10&#34;</span>
+</span></span><span class=line><span class=cl>memory: <span class=m>2048</span>
+</span></span><span class=line><span class=cl>cpus: <span class=m>4</span>
+</span></span><span class=line><span class=cl>provider: virtualbox
+</span></span><span class=line><span class=cl>mariadb: <span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=安装-mongodb>安装 MongoDB</h3><p>要安装 MongoDB 社区版，更新你的 <code>Homestead.yaml</code> 文件用如下的配置选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>mongodb: <span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><p>默认的 MongoDB 安装将设置数据库用户名为 <code>homestead</code>，相应地密码为 <code>secret</code>。</p><h3 id=安装-elasticsearch>安装 Elasticsearch</h3><p>要安装 Elasticsearch，添加 <code>elasticsearch</code> 选项到你的 <code>Homestead.yaml</code> 文件并指定一个支持的版本，该版本可能是一个主版本或者一个精确的版本号（主版本号.次版本号.修复版本号）。默认安装将创建一个名为 <code>homestead</code> 的集群。你应当从不给 Elasticsearch 超过操作系统一半的内存，所以要确保你的 Homestead 机器至少有两倍的 Elasticsearch 分配的内存：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>box: laravel/homestead
+</span></span><span class=line><span class=cl>ip: <span class=s2>&#34;192.168.10.10&#34;</span>
+</span></span><span class=line><span class=cl>memory: <span class=m>4096</span>
+</span></span><span class=line><span class=cl>cpus: <span class=m>4</span>
+</span></span><span class=line><span class=cl>provider: virtualbox
+</span></span><span class=line><span class=cl>elasticsearch: <span class=m>6</span>
+</span></span></code></pre></td></tr></table></div></div><p>{% note info %}</p><p>查阅 <a href=https://www.elastic.co/guide/en/elasticsearch/reference/current target=_blank rel="noopener noreffer">Elasticsearch documentation</a> 去学习如何自定义你的配置。</p><p>{% endnote %}</p><h3 id=安装-neo4j>安装 Neo4j</h3><p><code>Neo4j</code> 是一个图形数据库管理系统。要安装 Neo4j 社区版，更新你的 <code>Homestead.yaml</code> 文件用如下的配置选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>neo4j: <span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><p>默认的 Neo4j 安装将设置数据库的用户名为 <code>homestead</code>，相应的密码为 <code>secret</code>。要访问 Neo4j，用浏览器访问 <code>http://homestead.test:7474</code> 地址。你的端口 <code>7687</code>（Bolt），<code>7474</code>（HTTP），<code>7473</code>（HTTPS）是准备好服务来自 Neo4j 客户端的请求的。</p><h3 id=别名>别名</h3><p>你可以通过在你的 Homestead 目录下修改 <code>aliases</code> 文件添加 Bash 别名到你的 Homestead 机器：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>alias</span> <span class=nv>c</span><span class=o>=</span><span class=s1>&#39;clear&#39;</span>
+</span></span><span class=line><span class=cl><span class=nb>alias</span> ..<span class=o>=</span><span class=s1>&#39;cd ..&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>随后你需要更新 <code>aliases</code> 文件，你应当使用 <code>vagrant reload --provision</code> 命令重新配置 Homestead 机器。这将确保在机器中你的新别名可用。</p><h3 id=踩过的坑>踩过的坑</h3><h4 id=装载-homestead-镜像>装载 Homestead 镜像</h4><p>官方的命令是这样的，如果你觉得执行下面命令没问题，那你真是 <code>too young too simple</code>，我可是踩过坑的。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vagrant box add laravel/homestead
+</span></span></code></pre></td></tr></table></div></div><p>执行上面命令后，你在 <code>vagrant up</code> 是时会遇到 <code>Box 'laravel/homestead' could not be found</code> 这个不是问题的问题，怎么办，不能凉拌吧。也好办，不就搜索吗? 别搜了，跟我上：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ mkdir -pv ~/Homestead
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> ~/Homestead
+</span></span><span class=line><span class=cl>$ git clone https://github.com/laravel/homestead.git
+</span></span></code></pre></td></tr></table></div></div><p>查看你的 <code>box</code> 列表</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// <span class=sb>`</span>virtualbox<span class=sb>`</span> 版本为 <span class=sb>`</span>0<span class=sb>`</span>
+</span></span><span class=line><span class=cl>$ vagrant box list
+</span></span><span class=line><span class=cl>laravel/homestead <span class=o>(</span>virtualbox, 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 删除这个添加的 <span class=sb>`</span>box<span class=sb>`</span>
+</span></span><span class=line><span class=cl>$ vagrant box remove laravel/homestead
+</span></span></code></pre></td></tr></table></div></div><p>在 <code>~/Homestead/scripts/homestead.rb</code> 文件中有这么一行，要求版本必须是大于 <code>4.0.0</code>，怎么样，我没骗你吧，版本居然不一致。小意思，改下版本号嘛，可别，咱能不碰代码就不碰：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>config.vm.box_version <span class=o>=</span> settings<span class=o>[</span><span class=s2>&#34;version&#34;</span><span class=o>]</span> <span class=o>||=</span> <span class=s2>&#34;&gt;= 4.0.0&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>打开克隆的项目，根目录创建 <code>Homestead.json</code> 文件，文件填入以下内容</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;name&#34;</span>: <span class=s2>&#34;laravel/homestead&#34;</span>,
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;versions&#34;</span>: <span class=o>[{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;version&#34;</span>: <span class=s2>&#34;5.0.1&#34;</span>,
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;providers&#34;</span>: <span class=o>[{</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;name&#34;</span>: <span class=s2>&#34;virtualbox&#34;</span>,
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;url&#34;</span>: <span class=s2>&#34;file:///path/to/homestead-virtualbox.box&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=o>}]</span>
+</span></span><span class=line><span class=cl>    <span class=o>}]</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>好了，走一个试试</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vagrant box add Homestead.json
+</span></span><span class=line><span class=cl>$ vagrant box list
+</span></span><span class=line><span class=cl>laravel/homestead <span class=o>(</span>virtualbox, 5.0.1<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><p>必须卧槽呀，版本号回来了，好了，我们出发</p><h4 id=生成-key>生成 key</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ mkdir -pv ~/.ssh/homestead
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 文件路径及名称为: ~/.ssh/homestead/homestead_rsa
+</span></span><span class=line><span class=cl>$ ssh-keygen -t rsa -C <span class=s2>&#34;lumen@homestead&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=配置>配置</h4><p>这个基本上是在修改 <code>~/Homestead/Vagrantfile</code> 文件</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>ip: <span class=s2>&#34;192.168.10.10&#34;</span>
+</span></span><span class=line><span class=cl>memory: <span class=m>2048</span>
+</span></span><span class=line><span class=cl>cpus: <span class=m>1</span>
+</span></span><span class=line><span class=cl>provider: virtualbox
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>authorize: ~/.ssh/homestead/homestead_rsa.pub
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>keys:
+</span></span><span class=line><span class=cl>    - ~/.ssh/homestead/homestead_rsa
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>folders:
+</span></span><span class=line><span class=cl>    - map: ~/Codes
+</span></span><span class=line><span class=cl>      to: /home/vagrant/workspace
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: dev.lumen.com
+</span></span><span class=line><span class=cl>      to: /home/vagrant/workspace/lumen/public
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>databases:
+</span></span><span class=line><span class=cl>    - homestead
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># blackfire:</span>
+</span></span><span class=line><span class=cl><span class=c1>#     - id: foo</span>
+</span></span><span class=line><span class=cl><span class=c1>#       token: bar</span>
+</span></span><span class=line><span class=cl><span class=c1>#       client-id: foo</span>
+</span></span><span class=line><span class=cl><span class=c1>#       client-token: bar</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ports:</span>
+</span></span><span class=line><span class=cl><span class=c1>#     - send: 50000</span>
+</span></span><span class=line><span class=cl><span class=c1>#       to: 5000</span>
+</span></span><span class=line><span class=cl><span class=c1>#     - send: 7777</span>
+</span></span><span class=line><span class=cl><span class=c1>#       to: 777</span>
+</span></span><span class=line><span class=cl><span class=c1>#       protocol: udp</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=启动并进入虚拟机>启动并进入虚拟机</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 启动
+</span></span><span class=line><span class=cl>$ vagrant up
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 登录虚拟机
+</span></span><span class=line><span class=cl>$ vagrant ssh
+</span></span><span class=line><span class=cl>Welcome to Ubuntu 16.04.5 LTS <span class=o>(</span>GNU/Linux 4.4.0-101-generic x86_64<span class=o>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl> * Documentation:  https://help.ubuntu.com
+</span></span><span class=line><span class=cl> * Management:     https://landscape.canonical.com
+</span></span><span class=line><span class=cl> * Support:        https://ubuntu.com/advantage
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=m>102</span> packages can be updated.
+</span></span><span class=line><span class=cl><span class=m>29</span> updates are security updates.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Last login: Thu Aug <span class=m>30</span> 13:32:04 <span class=m>2018</span> from 10.0.2.2
+</span></span></code></pre></td></tr></table></div></div><h2 id=日常操作>日常操作</h2><h3 id=全局访问-homestead>全局访问 Homestead</h3><p>有时你想文件系统的任何地方 <code>vagrant up</code> 你的 Homestead 机器。你能这样做，在 Mac / Linux 系统上通过添加一个 Bash 函数到你的 Bash 简介中。在 Windows 中，你可以通过添加一个『batch』文件到 <code>PATH</code> 来完成这个操作。这些脚本将允许你在你的系统的任何地方运行任何 Vagrant 命令，并自动将该命令指向你的 Homestead 安装目录：</p><h4 id=mac--linux>Mac / Linux</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=k>function</span> homestead<span class=o>()</span> <span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=o>(</span> <span class=nb>cd</span> ~/Homestead <span class=o>&amp;&amp;</span> vagrant <span class=nv>$*</span> <span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>确保函数中的 <code>~/Homestead</code> 路径调整到实际 的 Homestead 安装的位置。一旦该函数被安装，你可以从你的系统的任何位置运行像 <code>homestead up</code> 或者 <code>homestead ssh</code> 命令。</p><h4 id=windows>Windows</h4><p>在你的机器的任何位置创建一个如下内容的 <code>homestead.bat</code> 批处理文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>@echo off
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>set</span> <span class=nv>cwd</span><span class=o>=</span>%cd%
+</span></span><span class=line><span class=cl><span class=nb>set</span> <span class=nv>homesteadVagrant</span><span class=o>=</span>C:<span class=se>\H</span>omestead
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>cd</span> /d %homesteadVagrant% <span class=o>&amp;&amp;</span> vagrant %*
+</span></span><span class=line><span class=cl><span class=nb>cd</span> /d %cwd%
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>set</span> <span class=nv>cwd</span><span class=o>=</span>
+</span></span><span class=line><span class=cl><span class=nb>set</span> <span class=nv>homesteadVagrant</span><span class=o>=</span>
+</span></span></code></pre></td></tr></table></div></div><p>确保在脚本中的实例 <code>C:\Homestead</code> 路径调整为 Homestead 实际安装的位置。创建文件之后，针文件添加到 <code>PATH</code> 中。然后，你可以在你的系统的任何地方运行像 <code>homestead up</code> 或者 <code>homestead ssh</code> 之类的命令。</p><h3 id=通过-ssh-连接>通过 SSH 连接</h3><p>你能从你的 Homestead 目录中通过在终端中发送 <code>vagrant ssh</code> 命令来 SSH 到你的虚拟机中。</p><p>但是，由于你可能需要经常 SSH 到你的 Homestead 机器，考虑将上面的『function』 添加到主机以快速 SSH 到 Homestead 盒子中。</p><h3 id=数据库连接>数据库连接</h3><p>一个 <code>homestead</code> 数据库配置了开箱即用的 MySQL 和 PostgreSQL。为了更加方便，Laravel 的 <code>.env</code> 文件配置到框架以开箱即用此数据库。</p><p>要从你的主机的数据库客户端连接到你的 MySQL 或者 PostgreSQL 数据库，你应当连接 <code>127.0.0.1</code> 和端口为 <code>33060</code>（MySQL）或者 <code>54320</code>（PostgreSQL）。两个数据库的用户名和密码是 <code>homestead</code> / <code>secret</code>。</p><p>{% note danger %}</p><p>当从你的主机连接到数据库时，你应当仅使用这些非标准端口。由于 Laravel 在虚拟机中运行。你将在你的 Laravel 数据库配置文件中使用默认的 3306 和 5532 端口。</p><p>{% endnote %}</p><h3 id=数据库备份>数据库备份</h3><p>当你的 Vagrant 盒子销毁时，Homestead 能自动备份你的数据库。为了使用这个功能，你必须使用 Vagrant 2.1.0 或者更高的版本。或者，如果你使用一个旧版本的 Vagrant，你必须安装 <code>vagrant-triggers</code> 插件。为了开启自动数据库备份，添加如下的行到你的 <code>Homestead.yaml</code> 文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>backup: <span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><p>一旦配置了，当 <code>vagrant destroy</code> 命令被执行时，Homestead 将导出你的数据库到 <code>mysql_backup</code> 和 <code>postgres_backup</code> 目录。如果你使用 <a href=https://laravel.com/docs/5.7/homestead#per-project-installation target=_blank rel="noopener noreffer"><code>per project installation</code></a> 方法，则可以在克隆的 Homestead 或者在你的项目根目录中找到这些目录。</p><h3 id=添加额外的站点>添加额外的站点</h3><p>一旦你的 Homestead 环境已配置并运行，你可以为你的 Laravel 应用添加额外的 Nginx 站点。你能在你希望的单个 Homestead 环境运行多个 Laravel 安装。要添加额外的站点，在你的 <code>Homestead.yaml</code> 文件中添加站点：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: homestead.test
+</span></span><span class=line><span class=cl>      to: /home/vagrant/code/Laravel/public
+</span></span><span class=line><span class=cl>    - map: another.test
+</span></span><span class=line><span class=cl>      to: /home/vagrant/code/another/public
+</span></span></code></pre></td></tr></table></div></div><p>如果 Vagrant 不能自动管理你的『hosts』文件，你可能还需要添加新的站点到该文件中：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>192.168.10.10  homestead.test
+</span></span><span class=line><span class=cl>192.168.10.10  another.test
+</span></span></code></pre></td></tr></table></div></div><p>一旦这个站点被添加，从你的 Homestead 目录运行 <code>vagrant reload --provision</code> 命令。</p><h4 id=站点类型>站点类型</h4><p>Homestead 支持多种类型的站点，允许你轻松运行不是基于 Laravel 的项目。例如，我们可以使用 <code>symfony2</code> 站点类型轻松地添加一个 Symfony 应用到 Homestead：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: symfony2.test
+</span></span><span class=line><span class=cl>      to: /home/vagrant/code/Symfony/web
+</span></span><span class=line><span class=cl>      type: <span class=s2>&#34;symfony2&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>可用的站点类型是：<code>apache</code>，<code>apigility</code>，<code>expressive</code>，<code>laravel</code>（默认），<code>proxy</code>，<code>silverstripe</code>，<code>statamic</code>，<code>symfony2</code>，<code>symfony4</code>，和 <code>zf</code>。</p><h4 id=站点参数>站点参数</h4><p>你可以通过 <code>params</code> 站点指令添加额外的 Nginx <code>fastcgi_param</code> 值到你的站点。例如，我们添加一个值为 <code>BAR</code> 的 <code>Foo</code> 参数：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: homestead.test
+</span></span><span class=line><span class=cl>      to: /home/vagrant/code/Laravel/public
+</span></span><span class=line><span class=cl>      params:
+</span></span><span class=line><span class=cl>          - key: FOO
+</span></span><span class=line><span class=cl>            value: BAR
+</span></span></code></pre></td></tr></table></div></div><h3 id=环境变量>环境变量</h3><p>你能通过添加如下的值到 <code>Homestead.yaml</code> 文件来设置全局环境变量：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>variables:
+</span></span><span class=line><span class=cl>    - key: APP_ENV
+</span></span><span class=line><span class=cl>      value: <span class=nb>local</span>
+</span></span><span class=line><span class=cl>    - key: FOO
+</span></span><span class=line><span class=cl>      value: bar
+</span></span></code></pre></td></tr></table></div></div><p>更新 <code>Homestead.yaml</code> 文件之后，确保通过运行 <code>vagrant reload --provision</code> 命令重新配置机器。这个将更新所有安装 的 PHP 版本的 PHP-FPM 配置并为 <code>vagrant</code> 用户更新环境。</p><h3 id=配置定时计划>配置定时计划</h3><p>Laravel 提供了一种通过单个计划将每分钟运行 <code>schedule:run</code> Artisan 命令 <a href=https://laravel.com/docs/5.7/scheduling target=_blank rel="noopener noreffer"><code>schedule Cron jobs</code></a> 的便捷方式。<code>schedule:run</code> 命令将检查在你的 <code>App\Console\Kernel</code> 类中定义的计划来决定哪个工作应当被运行。</p><p>如果你想为一个 Homestead 站点的 <code>schedule:run</code> 命令去运行，当定义站点时，你可以设置 <code>schedule</code> 选项为 <code>true</code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: homestead.test
+</span></span><span class=line><span class=cl>      to: /home/vagrant/code/Laravel/public
+</span></span><span class=line><span class=cl>      schedule: <span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><p>站点的 Cron 工作将被定义在虚机的 <code>/etc/cron.d</code> 文件夹下。</p><h3 id=配置-mailhog>配置 Mailhog</h3><p>Mailhog 允许你轻松地捕获外发的电子邮件并进行检查它，而实际上没有将发送邮件给收件人。开始使用时，更新你的 <code>.env</code> 文件以使用以下的邮件设置：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>MAIL_DRIVER</span><span class=o>=</span>smtp
+</span></span><span class=line><span class=cl><span class=nv>MAIL_HOST</span><span class=o>=</span>localhost
+</span></span><span class=line><span class=cl><span class=nv>MAIL_PORT</span><span class=o>=</span><span class=m>1025</span>
+</span></span><span class=line><span class=cl><span class=nv>MAIL_USERNAME</span><span class=o>=</span>null
+</span></span><span class=line><span class=cl><span class=nv>MAIL_PASSWORD</span><span class=o>=</span>null
+</span></span><span class=line><span class=cl><span class=nv>MAIL_ENCRYPTION</span><span class=o>=</span>null
+</span></span></code></pre></td></tr></table></div></div><h3 id=配置-minio>配置 Minio</h3><p>Minio 是一个开源的对象存储服务器，具有与 Amazon S3 兼容的 API。要安装 Minio，用以下的配置选项更新你的 <code>Homestead.yaml</code> 文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>minio: <span class=nb>true</span>
+</span></span></code></pre></td></tr></table></div></div><p>默认情况下，Minio 为端口 9600 上可用。你可以访问 Minio 控制面板通过访问 <code>http://homestead:9600</code>。默认访问的键名是 <code>homestead</code>，同时默认的密钥是 <code>secretkey</code>。当访问 Minio，你应当总是使用 <code>us-east-1</code>。</p><p>为了使用 Minio，你将需要在你的 <code>config/filesystems.php</code> 配置文件中调整 S3 磁盘配置。你将需要添加 <code>use_path_style_endpoint</code> 选项到磁盘配置，并将 <code>url</code> 键更改为 <code>endpoint</code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=s1>&#39;s3&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;driver&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;s3&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;key&#39;</span> <span class=o>=&gt;</span> <span class=nx>env</span><span class=p>(</span><span class=s1>&#39;AWS_ACCESS_KEY_ID&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;secret&#39;</span> <span class=o>=&gt;</span> <span class=nx>env</span><span class=p>(</span><span class=s1>&#39;AWS_SECRET_ACCESS_KEY&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;region&#39;</span> <span class=o>=&gt;</span> <span class=nx>env</span><span class=p>(</span><span class=s1>&#39;AWS_DEFAULT_REGION&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;bucket&#39;</span> <span class=o>=&gt;</span> <span class=nx>env</span><span class=p>(</span><span class=s1>&#39;AWS_BUCKET&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;endpoint&#39;</span> <span class=o>=&gt;</span> <span class=nx>env</span><span class=p>(</span><span class=s1>&#39;AWS_URL&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;use_path_style_endpoint&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span>
+</span></span><span class=line><span class=cl><span class=p>]</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后，确保你的 <code>.env</code> 文件有如下的选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>AWS_ACCESS_KEY_ID</span><span class=o>=</span>homestead
+</span></span><span class=line><span class=cl><span class=nv>AWS_SECRET_ACCESS_KEY</span><span class=o>=</span>secretkey
+</span></span><span class=line><span class=cl><span class=nv>AWS_DEFAULT_REGION</span><span class=o>=</span>us-east-1
+</span></span><span class=line><span class=cl><span class=nv>AWS_URL</span><span class=o>=</span>http://homestead:9600
+</span></span></code></pre></td></tr></table></div></div><h3 id=端口>端口</h3><p>默认情况下，如下的端口将转发到你的 Homestead 环境：</p><ul><li><strong>SSH</strong>：2222 -> 22</li><li><strong>ngrok UI</strong>：4040 -> 4040</li><li><strong>HTTP</strong>：8000 -> 80</li><li><strong>HTTPS</strong>：44300 -> 443</li><li><strong>MySQL</strong>：33060 -> 3306</li><li><strong>PostgreSQL</strong>：54320 -> 5432</li><li><strong>MongoDB</strong>：27017 -> 27017</li><li><strong>Mailhog</strong>：8025 -> 8025</li><li><strong>Minio</strong>：9600 -> 9600</li></ul><h4 id=转发额外的端口>转发额外的端口</h4><p>如果你愿意，你可以转发额外的端口到 Vagrant 盒子，同时也指定他们的协议：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ports:
+</span></span><span class=line><span class=cl>    - send: <span class=m>50000</span>
+</span></span><span class=line><span class=cl>      to: <span class=m>5000</span>
+</span></span><span class=line><span class=cl>    - send: <span class=m>7777</span>
+</span></span><span class=line><span class=cl>      to: <span class=m>777</span>
+</span></span><span class=line><span class=cl>      protocol: udp
+</span></span></code></pre></td></tr></table></div></div><h3 id=共享你的环境>共享你的环境</h3><p>有时你希望共享你当前工作的内容跟同事或客户。Vagrant 有内置的方法通过 <code>vagrant share</code> 去支持这个；然而，如果你有多个站点在你的 <code>Homestead.yaml</code> 文件中配置过，这个将不会工作。</p><p>为了解决这个问题，Homestead 包含它自己的 <code>share</code> 命令。开始，通过 SSH 即 <code>vagrant ssh</code> 命令进入到你的 Homestead 机器并运行 <code>share homestead.test</code>。这个将从你的 <code>Homestead.yaml</code> 配置文件中分享 <code>homestead.test</code> 站点。当然，你可以将任何其它配置的站点替换为 <code>homestead.test</code>：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>share homestead.test
+</span></span></code></pre></td></tr></table></div></div><p>运行此命令之后，你将看到一个 Ngrok 屏幕出现，其中包含了活动日志和共享站点的可访问的 URL。如果你想指定一个自定义的区域，子域，或者其它 Ngrok 运行时选项，你可以添加他们到你的 <code>share</code> 命令：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>share homestead.test -region<span class=o>=</span>eu -subdomain<span class=o>=</span>laravel
+</span></span></code></pre></td></tr></table></div></div><p>{% note danger %}</p><p>记住，Vagrant 本质上是不安全的，并且在运行 <code>share</code> 时将虚拟机显露给互联网。</p><p>{% endnote %}</p><h3 id=多版本-php>多版本 PHP</h3><p>{% note danger %}</p><p>这个功能仅兼容 Nginx。</p><p>{% endnote %}</p><p>Homestead 6 在同一个虚拟机上引入了对多个 PHP 版本的支持。你可以在你的 <code>Homestead.yaml</code> 文件中指定要用于给定站点的 PHP 版本。可用的 PHP 版本是：『5.6』，『7.0』，『7.1』和『7.2』（默认）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>sites:
+</span></span><span class=line><span class=cl>    - map: homestead.test
+</span></span><span class=line><span class=cl>      to: /home/vagrant/code/Laravel/public
+</span></span><span class=line><span class=cl>      php: <span class=s2>&#34;5.6&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>另外，你可以通过 CLI 使用任何 PHP 支持的版本：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>php5.6 artisan list
+</span></span><span class=line><span class=cl>php7.0 artisan list
+</span></span><span class=line><span class=cl>php7.1 artisan list
+</span></span><span class=line><span class=cl>php7.2 artisan list
+</span></span></code></pre></td></tr></table></div></div><p>设置 Cli 下默认的 PHP 版本：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看所有 php 版本和当前版本
+</span></span><span class=line><span class=cl>update-alternatives --display php
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 执行后，会列出当前 php 所有版本和编号，输入编号，切换到执行的版本
+</span></span><span class=line><span class=cl>update-alternatives --config php
+</span></span></code></pre></td></tr></table></div></div><h3 id=web-服务器>Web 服务器</h3><p>默认情况下，Homestead 使用 Nginx Web 服务器。然而，如果 <code>apache</code> 是指定的一个站点类型，它能安装 Apache。同时两个 Web 服务器在同时被安装，他们不能同时运行。<code>flip</code> 脚本命令可用来易于处理 Web 服务器之间的切换。<code>flip</code> 命令自动确定正在运行的 Web 服务器，将其关闭。然后启动别一台服务器。要使用这个命令，SSH 进入到你的 Homestead 机器并在终端运行命令：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>flip
+</span></span></code></pre></td></tr></table></div></div><h3 id=邮件>邮件</h3><p>Homestead 包括 Postfix 邮件传输代理，默认监听 <code>1025</code> 端口。因此，你可以指示你的应用程序在 <code>localhost</code> 端口 <code>1025</code> 上使用 <code>smtp</code> 邮件驱动。所有发送的邮件将由 Postfix 处理并由 Mailhog 捕获。要查看已发送的邮件，在 Web 浏览器中打开 <code>http://localhost:8025</code>。</p><h2 id=网络接口>网络接口</h2><p><code>Homestead.yaml</code> 中的 <code>networks</code> 属性为你的 Homestead 环境配置网络接口。你可以根据需要配置多个接口：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>networks:
+</span></span><span class=line><span class=cl>    - type: <span class=s2>&#34;private_network&#34;</span>
+</span></span><span class=line><span class=cl>      ip: <span class=s2>&#34;192.168.10.20&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>要开启一个 <a href=https://www.vagrantup.com/docs/networking/public_network.html target=_blank rel="noopener noreffer"><code>bridged</code></a> 接口，配置 <code>bridge</code> 设置并改变 <code>public_network</code> 网络类型：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>networks:
+</span></span><span class=line><span class=cl>    - type: <span class=s2>&#34;public_network&#34;</span>
+</span></span><span class=line><span class=cl>      ip: <span class=s2>&#34;192.168.10.20&#34;</span>
+</span></span><span class=line><span class=cl>      bridge: <span class=s2>&#34;en1: Wi-Fi (AirPort)&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><p>要开启 <a href=https://www.vagrantup.com/docs/networking/public_network.html target=_blank rel="noopener noreffer"><code>DHCP</code></a>，仅从你的配置中移除 <code>ip</code> 选项：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>networks:
+</span></span><span class=line><span class=cl>    - type: <span class=s2>&#34;public_network&#34;</span>
+</span></span><span class=line><span class=cl>      bridge: <span class=s2>&#34;en1: Wi-Fi (AirPort)&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=更新-homestead>更新 Homestead</h2><p>你能通过两个简单的步骤更新 Homestead。首先，你应当更新 Vagrant 盒子使用 <code>vagrant box update</code> 命令：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vagrant box update
+</span></span></code></pre></td></tr></table></div></div><p>接下来，你需要去更新 Homestead 源代码。如果你克隆过仓库，你能在最初克隆仓库的位置 <code>git pull origin master</code>。</p><p>如果你通过你的项目的 <code>composer.json</code> 安装 Homestead，你应当确保你的 <code>composer.json</code> 包含 <code>"laravel/homestead": "^7"</code> 并更新你的依赖：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ composer update
+</span></span></code></pre></td></tr></table></div></div><h2 id=提供指定的设置>提供指定的设置</h2><h3 id=virtualbox>VirtualBox</h3><p>默认情况下，Homestead 将 <code>natdnshostresolver</code> 配置设置为 <code>on</code>。这允许 Homestead 去使用你的主机操作系统的 DNS 设置。如果你不想覆盖这个行为，添加如下的行到你的 <code>Homestead.yaml</code> 文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>provider: virtualbox
+</span></span><span class=line><span class=cl>natdnshostresolver: off
+</span></span></code></pre></td></tr></table></div></div><h3 id=符号链接在-windows>符号链接在 Windows</h3><p>如果符号链接在你的 Windows 机器上无法正常工作，你可能需要添加以下的块到 <code>Vagrantfile</code> 文件：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-ruby data-lang=ruby><span class=line><span class=cl><span class=n>config</span><span class=o>.</span><span class=n>vm</span><span class=o>.</span><span class=n>provider</span> <span class=s2>&#34;virtualbox&#34;</span> <span class=k>do</span> <span class=o>|</span><span class=n>v</span><span class=o>|</span>
+</span></span><span class=line><span class=cl>    <span class=n>v</span><span class=o>.</span><span class=n>customize</span> <span class=o>[</span><span class=s2>&#34;setextradata&#34;</span><span class=p>,</span> <span class=ss>:id</span><span class=p>,</span> <span class=s2>&#34;VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root&#34;</span><span class=p>,</span> <span class=s2>&#34;1&#34;</span><span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=k>end</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-21</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ data-title="Mac 搭建 Homestead 集成开发环境" data-hashtags=Mac><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ data-hashtag=Mac><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ data-title="Mac 搭建 Homestead 集成开发环境"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ data-title="Mac 搭建 Homestead 集成开发环境"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/01/21/mac-%E6%90%AD%E5%BB%BA-homestead-%E9%9B%86%E6%88%90%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ data-title="Mac 搭建 Homestead 集成开发环境"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/mac/>Mac</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/01/21/mac-%E6%89%93%E9%80%A0-php-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83/ class=prev rel=prev title="Mac 打造 PHP 开发环境"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Mac 打造 PHP 开发环境</a>
+<a href=https://imajinyun.xyz/2018/01/22/git-%E8%B5%B7%E6%AD%A5/ class=next rel=next title="Git 起步">Git 起步<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

@@ -1,0 +1,1828 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>PHP 编码标准插件 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="PHP 编码标准插件"><meta property="og:description" content="无规矩不成方圆，无规范不能协作。每门编程语言几乎都有一套合乎自有章法的规矩，当然了，PHP 也不例外。即使是你独立撸码，也自有一套自己的章法，可惜，你不是一个人在战斗，在这个讲究编程效率的兵团作战时代，没有人愿意忍受别人糟糕的代码风格。是的，代码的的确确是机器去执行的，但是因更改需求而维护的代码可不是机器人干的。为了让代码可维护，看起来像那么回事，还是尽力码好吧，不然，下一个遭吐槽可能就是你了，我已经不至一次听过『这特么谁写的』这句话了，反正听起来不像是在夸谁。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-02-07T17:46:43+08:00"><meta property="article:modified_time" content="2018-02-07T17:46:43+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/2021/09/13/php-src-learning2/"><meta property="og:see_also" content="https://imajinyun.xyz/2021/09/12/php-src-learning1/"><meta property="og:see_also" content="https://imajinyun.xyz/2021/07/02/php-array-sort/"><meta property="og:see_also" content="https://imajinyun.xyz/2019/12/02/php-some-ingenious-ways/"><meta property="og:see_also" content="https://imajinyun.xyz/2019/11/29/php-php74-new-features/"><meta property="og:see_also" content="https://imajinyun.xyz/2019/10/27/php-swoole-get-started/"><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP 编码标准插件"><meta name=twitter:description content="无规矩不成方圆，无规范不能协作。每门编程语言几乎都有一套合乎自有章法的规矩，当然了，PHP 也不例外。即使是你独立撸码，也自有一套自己的章法，可惜，你不是一个人在战斗，在这个讲究编程效率的兵团作战时代，没有人愿意忍受别人糟糕的代码风格。是的，代码的的确确是机器去执行的，但是因更改需求而维护的代码可不是机器人干的。为了让代码可维护，看起来像那么回事，还是尽力码好吧，不然，下一个遭吐槽可能就是你了，我已经不至一次听过『这特么谁写的』这句话了，反正听起来不像是在夸谁。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/><link rel=prev href=https://imajinyun.xyz/2018/02/05/mac-homebrew-cask/><link rel=next href=https://imajinyun.xyz/2018/02/13/linux-common-command/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"PHP 编码标准插件","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/2018\/02\/07\/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6\/"},"genre":"posts","keywords":"PHP","wordcount":4969,"url":"https:\/\/imajinyun.xyz\/2018\/02\/07\/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6\/","datePublished":"2018-02-07T17:46:43+08:00","dateModified":"2018-02-07T17:46:43+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">PHP 编码标准插件</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/php/><i class="far fa-folder fa-fw" aria-hidden=true></i>PHP</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-02-07>2018-02-07</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 4969 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 10 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#php-codesniffer>PHP CodeSniffer</a><ul><li><a href=#codesniffer-安装>CodeSniffer 安装</a><ul><li><a href=#curl-安装-codesniffer>Curl 安装 CodeSniffer</a></li><li><a href=#composer-安装-codesniffer>Composer 安装 CodeSniffer</a></li></ul></li><li><a href=#工具设置>工具设置</a><ul><li><a href=#设置编码标准>设置编码标准</a></li><li><a href=#设置报告格式>设置报告格式</a></li><li><a href=#设置警告隐藏>设置警告隐藏</a></li><li><a href=#设置运行进度>设置运行进度</a></li><li><a href=#设置输出时使用润色>设置输出时使用润色</a></li><li><a href=#设置报告的宽度>设置报告的宽度</a></li><li><a href=#设置文本字符编码>设置文本字符编码</a></li><li><a href=#设置制表符宽度>设置制表符宽度</a></li><li><a href=#设置-php-版本>设置 PHP 版本</a></li><li><a href=#设置-php-路径>设置 PHP 路径</a></li><li><a href=#查看设置>查看设置</a></li></ul></li><li><a href=#工具使用>工具使用</a><ul><li><a href=#指定编码标准>指定编码标准</a></li><li><a href=#打印安装编码标准的列表>打印安装编码标准的列表</a></li><li><a href=#编码标准内的嗅探列表>编码标准内的嗅探列表</a></li></ul></li><li><a href=#使用-codesniffer-格式化代码>使用 CodeSniffer 格式化代码</a><ul><li><a href=#codesniffer-格式化前的不规范代码>CodeSniffer 格式化前的不规范代码</a></li><li><a href=#经过-phpcs-检查后的报告>经过 phpcs 检查后的报告</a></li><li><a href=#使用-phpcbf-修理代码>使用 phpcbf 修理代码</a></li><li><a href=#修理后的代码样式>修理后的代码样式</a></li></ul></li></ul></li><li><a href=#php-coding-standards-fixer>PHP Coding Standards Fixer</a><ul><li><a href=#fixer-安装>Fixer 安装</a><ul><li><a href=#curl-或-wget-方式安装>Curl 或 Wget 方式安装</a></li><li><a href=#composer-安装-fixer>Composer 安装 Fixer</a></li><li><a href=#homebrew-安装-fixer>Homebrew 安装 Fixer</a></li></ul></li><li><a href=#使用-fixer-格式化代码>使用 Fixer 格式化代码</a><ul><li><a href=#使用-fixer-格式化前的不规范代码>使用 Fixer 格式化前的不规范代码</a></li><li><a href=#自定义代码修复格式>自定义代码修复格式</a></li><li><a href=#执行格式化>执行格式化</a></li><li><a href=#格式化后的代码>格式化后的代码</a></li></ul></li></ul></li><li><a href=#结论>结论</a><ul><li><a href=#原始代码>原始代码</a></li><li><a href=#php_codesniffer-格式化>PHP_CodeSniffer 格式化</a></li><li><a href=#php-cs-fixer-格式化>PHP-CS-Fixer 格式化</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>无规矩不成方圆，无规范不能协作。每门编程语言几乎都有一套合乎自有章法的规矩，当然了，PHP 也不例外。即使是你独立撸码，也自有一套自己的章法，可惜，你不是一个人在战斗，在这个讲究编程效率的兵团作战时代，没有人愿意忍受别人糟糕的代码风格。是的，代码的的确确是机器去执行的，但是因更改需求而维护的代码可不是机器人干的。为了让代码可维护，看起来像那么回事，还是尽力码好吧，不然，下一个遭吐槽可能就是你了，我已经不至一次听过『这特么谁写的』这句话了，反正听起来不像是在夸谁。</p><h2 id=php-codesniffer>PHP CodeSniffer</h2><blockquote><ul><li><a href=http://pear.php.net/package/PHP_CodeSniffer target=_blank rel="noopener noreffer">PHP_CodeSniffer Pear</a></li><li><a href=https://github.com/squizlabs/PHP_CodeSniffer target=_blank rel="noopener noreffer">PHP_CodeSniffer GitHub</a></li><li><a href=https://github.com/squizlabs/PHP_CodeSniffer/wiki target=_blank rel="noopener noreffer">PHP_CodeSniffer Documentation</a></li></ul></blockquote><h3 id=codesniffer-安装>CodeSniffer 安装</h3><p>PHP CodeSniffer 有两个脚本，<code>phpcs</code> 脚本用来检测违反定义的编码标准，<code>phpcbf</code> 脚本用来自动纠正编码标准违规。</p><h4 id=curl-安装-codesniffer>Curl 安装 CodeSniffer</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 下载 phpcs 和 phpcbf 文件并移动到相应目录
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> ~
+</span></span><span class=line><span class=cl>$ curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcs.phar
+</span></span><span class=line><span class=cl>$ sudo mv phpcs.phar /usr/local/bin/phpcs
+</span></span><span class=line><span class=cl>$ sudo chmod +x /usr/local/bin/phpcs
+</span></span><span class=line><span class=cl>$ curl -OL https://squizlabs.github.io/PHP_CodeSniffer/phpcbf.phar
+</span></span><span class=line><span class=cl>$ sudo mv phpcbf.phar /usr/local/bin/phpcbf
+</span></span><span class=line><span class=cl>$ sudo chmod +x /usr/local/bin/phpcbf
+</span></span></code></pre></td></tr></table></div></div><h4 id=composer-安装-codesniffer>Composer 安装 CodeSniffer</h4><blockquote><p>安装完成后，将 <code>$HOME/.composer/vendor/bin</code> 添加到系统 <code>PATH</code> 中。</p></blockquote><ul><li>全局安装</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 安装 squizlabs/php_codesniffer
+</span></span><span class=line><span class=cl>$ composer global require <span class=s2>&#34;squizlabs/php_codesniffer=*&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>项目安装</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ vim composer.json
+</span></span><span class=line><span class=cl><span class=o>{</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;require-dev&#34;</span>: <span class=o>{</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;squizlabs/php_codesniffer&#34;</span>: <span class=s2>&#34;3.*&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=o>}</span>
+</span></span><span class=line><span class=cl><span class=o>}</span>
+</span></span><span class=line><span class=cl>$ composer install
+</span></span></code></pre></td></tr></table></div></div><h3 id=工具设置>工具设置</h3><h4 id=设置编码标准>设置编码标准</h4><blockquote><p>支持的编码标准：<code>PEAR, Zend, PSR2, MySource, Squiz, PSR1</code>，默认：<code>PEAR</code>。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 设置编码标准为 PSR2
+</span></span><span class=line><span class=cl>$ phpcs --config-set default_standard PSR2
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置报告格式>设置报告格式</h4><blockquote><p>支持的报告格式：<code>full, xml, checkstyle, csv, json, junit, emacs, source, summary, diff, svnblame, gitblame, hgblame, notifysend</code>，默认：<code>full</code></p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 设置报告格式为 full
+</span></span><span class=line><span class=cl>$ phpcs --config-set report_format full
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置警告隐藏>设置警告隐藏</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 默认值为 <span class=m>1</span>
+</span></span><span class=line><span class=cl>$ phpcs --config-set show_warnings <span class=m>0</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置运行进度>设置运行进度</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 默认值为 <span class=m>0</span>
+</span></span><span class=line><span class=cl>$ phpcs --config-set show_progress <span class=m>1</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置输出时使用润色>设置输出时使用润色</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 默认值为 <span class=m>0</span>
+</span></span><span class=line><span class=cl>$ phpcs --config-set colors <span class=m>1</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置报告的宽度>设置报告的宽度</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 设置报告的宽度为 <span class=m>120</span>
+</span></span><span class=line><span class=cl>$ phpcs --config-set report_width <span class=m>120</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置文本字符编码>设置文本字符编码</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 设置文本字符编码为 UTF-8
+</span></span><span class=line><span class=cl>$ phpcs --config-set encoding UTF-8
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置制表符宽度>设置制表符宽度</h4><blockquote><p>默认情况下，<code>PHP_CodeSniffer</code> 不会将检查文件中的制表符转换为空格，指定一个制表符宽度将使 <code>PHP_CodeSniffer</code> 用空格替换制表符。也可以通过设置 <code>tab_width</code> 配置选项来强制 <code>PHP_CodeSniffer</code> 将制表符替换为空格。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 设置制表符宽度为 <span class=m>4</span> 个空格
+</span></span><span class=line><span class=cl>$ phpcs --config-set tab_width <span class=m>4</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置-php-版本>设置 PHP 版本</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 使用 PHP_VERSION_ID 获取后再设置
+</span></span><span class=line><span class=cl>$ phpcs --config-set php_version <span class=m>70114</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=设置-php-路径>设置 PHP 路径</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 使用 which 命令获取后再设置
+</span></span><span class=line><span class=cl>$ phpcs --config-set php_path /usr/local/bin/php
+</span></span></code></pre></td></tr></table></div></div><h4 id=查看设置>查看设置</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看刚才的一些设置
+</span></span><span class=line><span class=cl>$ phpcs --config-show
+</span></span><span class=line><span class=cl>Using config file: /Users/user/.composer/vendor/squizlabs/php_codesniffer/CodeSniffer.conf
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>colors:           <span class=m>1</span>
+</span></span><span class=line><span class=cl>default_standard: PSR2
+</span></span><span class=line><span class=cl>encoding:         UTF-8
+</span></span><span class=line><span class=cl>php_path:         /usr/local/bin/php
+</span></span><span class=line><span class=cl>php_version:      <span class=m>70114</span>
+</span></span><span class=line><span class=cl>report_format:    full
+</span></span><span class=line><span class=cl>report_width:     <span class=m>120</span>
+</span></span><span class=line><span class=cl>show_progress:    <span class=m>1</span>
+</span></span><span class=line><span class=cl>show_warnings:    <span class=m>1</span>
+</span></span><span class=line><span class=cl>tab_width:        <span class=m>4</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=工具使用>工具使用</h3><h4 id=指定编码标准>指定编码标准</h4><blockquote><p>也可以自定义编码标准，然后加入到检查标准中。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ phpcs --standard<span class=o>=</span>PEAR /path/to/code/Demo.php
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ phpcs --standard<span class=o>=</span>/path/to/MyStandard /path/to/code/Demo.php
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ phpcs --standard<span class=o>=</span>PEAR,Squiz,/path/to/MyStandard /path/to/code/Demo.php
+</span></span></code></pre></td></tr></table></div></div><h4 id=打印安装编码标准的列表>打印安装编码标准的列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ phpcs -i
+</span></span><span class=line><span class=cl>The installed coding standards are PEAR, Zend, PSR2, MySource, Squiz and PSR1
+</span></span></code></pre></td></tr></table></div></div><h4 id=编码标准内的嗅探列表>编码标准内的嗅探列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ phpcs --standard<span class=o>=</span>PSR2 -e
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>The PSR2 standard contains <span class=m>42</span> sniffs
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Generic <span class=o>(</span><span class=m>12</span> sniffs<span class=o>)</span>
+</span></span><span class=line><span class=cl>-------------------
+</span></span><span class=line><span class=cl>  Generic.ControlStructures.InlineControlStructure
+</span></span><span class=line><span class=cl>  Generic.Files.ByteOrderMark
+</span></span><span class=line><span class=cl>  Generic.Files.LineEndings
+</span></span><span class=line><span class=cl>  Generic.Files.LineLength
+</span></span><span class=line><span class=cl>  Generic.Formatting.DisallowMultipleStatements
+</span></span><span class=line><span class=cl>  Generic.Functions.FunctionCallArgumentSpacing
+</span></span><span class=line><span class=cl>  Generic.NamingConventions.UpperCaseConstantName
+</span></span><span class=line><span class=cl>  Generic.PHP.DisallowShortOpenTag
+</span></span><span class=line><span class=cl>  Generic.PHP.LowerCaseConstant
+</span></span><span class=line><span class=cl>  Generic.PHP.LowerCaseKeyword
+</span></span><span class=line><span class=cl>  Generic.WhiteSpace.DisallowTabIndent
+</span></span><span class=line><span class=cl>  Generic.WhiteSpace.ScopeIndent
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>PEAR <span class=o>(</span><span class=m>1</span> sniff<span class=o>)</span>
+</span></span><span class=line><span class=cl>---------------
+</span></span><span class=line><span class=cl>  PEAR.Functions.ValidDefaultValue
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>PSR1 <span class=o>(</span><span class=m>3</span> sniffs<span class=o>)</span>
+</span></span><span class=line><span class=cl>---------------
+</span></span><span class=line><span class=cl>  PSR1.Classes.ClassDeclaration
+</span></span><span class=line><span class=cl>  PSR1.Files.SideEffects
+</span></span><span class=line><span class=cl>  PSR1.Methods.CamelCapsMethodName
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>PSR2 <span class=o>(</span><span class=m>12</span> sniffs<span class=o>)</span>
+</span></span><span class=line><span class=cl>----------------
+</span></span><span class=line><span class=cl>  PSR2.Classes.ClassDeclaration
+</span></span><span class=line><span class=cl>  PSR2.Classes.PropertyDeclaration
+</span></span><span class=line><span class=cl>  PSR2.ControlStructures.ControlStructureSpacing
+</span></span><span class=line><span class=cl>  PSR2.ControlStructures.ElseIfDeclaration
+</span></span><span class=line><span class=cl>  PSR2.ControlStructures.SwitchDeclaration
+</span></span><span class=line><span class=cl>  PSR2.Files.ClosingTag
+</span></span><span class=line><span class=cl>  PSR2.Files.EndFileNewline
+</span></span><span class=line><span class=cl>  PSR2.Methods.FunctionCallSignature
+</span></span><span class=line><span class=cl>  PSR2.Methods.FunctionClosingBrace
+</span></span><span class=line><span class=cl>  PSR2.Methods.MethodDeclaration
+</span></span><span class=line><span class=cl>  PSR2.Namespaces.NamespaceDeclaration
+</span></span><span class=line><span class=cl>  PSR2.Namespaces.UseDeclaration
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>Squiz <span class=o>(</span><span class=m>14</span> sniffs<span class=o>)</span>
+</span></span><span class=line><span class=cl>-----------------
+</span></span><span class=line><span class=cl>  Squiz.Classes.ValidClassName
+</span></span><span class=line><span class=cl>  Squiz.ControlStructures.ControlSignature
+</span></span><span class=line><span class=cl>  Squiz.ControlStructures.ForEachLoopDeclaration
+</span></span><span class=line><span class=cl>  Squiz.ControlStructures.ForLoopDeclaration
+</span></span><span class=line><span class=cl>  Squiz.ControlStructures.LowercaseDeclaration
+</span></span><span class=line><span class=cl>  Squiz.Functions.FunctionDeclaration
+</span></span><span class=line><span class=cl>  Squiz.Functions.FunctionDeclarationArgumentSpacing
+</span></span><span class=line><span class=cl>  Squiz.Functions.LowercaseFunctionKeywords
+</span></span><span class=line><span class=cl>  Squiz.Functions.MultiLineFunctionDeclaration
+</span></span><span class=line><span class=cl>  Squiz.Scope.MethodScope
+</span></span><span class=line><span class=cl>  Squiz.WhiteSpace.ControlStructureSpacing
+</span></span><span class=line><span class=cl>  Squiz.WhiteSpace.ScopeClosingBrace
+</span></span><span class=line><span class=cl>  Squiz.WhiteSpace.ScopeKeywordSpacing
+</span></span><span class=line><span class=cl>  Squiz.WhiteSpace.SuperfluousWhitespace
+</span></span></code></pre></td></tr></table></div></div><h3 id=使用-codesniffer-格式化代码>使用 CodeSniffer 格式化代码</h3><blockquote><p>请自行创建工程去测试。</p></blockquote><h4 id=codesniffer-格式化前的不规范代码>CodeSniffer 格式化前的不规范代码</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nx>Nilnice\Acme</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Finder</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>IGNORE_VCS_FILES</span> <span class=o>=</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>public</span> <span class=k>const</span> <span class=no>IGNORE_DOT_FILES</span><span class=o>=</span><span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$ignore</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>public</span> <span class=k>function</span> <span class=fm>__construct</span><span class=p>(){</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$this</span><span class=o>-&gt;</span> <span class=na>ignore</span><span class=o>=</span><span class=k>static</span><span class=o>::</span><span class=na>IGNORE_VCS_FILES</span><span class=o>|</span><span class=k>static</span><span class=o>::</span><span class=na>IGNORE_DOT_FILES</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=k>public</span> <span class=k>function</span> <span class=nf>getIterator</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=mi>0</span><span class=o>===</span><span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>dirs</span><span class=p>)</span><span class=o>&amp;&amp;</span><span class=mi>0</span><span class=o>===</span><span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>iterators</span><span class=p>)){</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nx>\LogicException</span><span class=p>(</span><span class=s1>&#39;You must call one of in() or append() methods before iterating over a Finder.&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=mi>1</span><span class=o>===</span><span class=nx>count</span><span class=p>(</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>dirs</span> <span class=p>)</span> <span class=o>&amp;&amp;</span><span class=mi>0</span> <span class=o>===</span><span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>iterators</span><span class=p>)){</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span>   <span class=nv>$this</span> <span class=o>-&gt;</span><span class=na>searchInDirectory</span><span class=p>(</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$iterator</span><span class=o>=</span><span class=k>new</span> <span class=nx>\AppendIterator</span> <span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span> <span class=na>dirs</span>        <span class=k>as</span> <span class=nv>$dir</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$iterator</span><span class=o>-&gt;</span><span class=na>append</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>searchInDirectory</span><span class=p>(</span> <span class=nv>$dir</span> <span class=p>))</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span>  <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>iterators</span> <span class=k>as</span> <span class=nv>$it</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$iterator</span><span class=o>-&gt;</span><span class=na>append</span><span class=p>(</span>    <span class=nv>$it</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=nv>$iterator</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}}</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=经过-phpcs-检查后的报告>经过 phpcs 检查后的报告</h4><p><img class=lazyload src=https://imajinyun.xyz/svg/loading.min.svg data-src=https://inotes.oss-cn-beijing.aliyuncs.com/php/201812/php-codesniffer-phpcs.png data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/php/201812/php-codesniffer-phpcs.png, https://inotes.oss-cn-beijing.aliyuncs.com/php/201812/php-codesniffer-phpcs.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/php/201812/php-codesniffer-phpcs.png 2x" data-sizes=auto alt=https://inotes.oss-cn-beijing.aliyuncs.com/php/201812/php-codesniffer-phpcs.png title=php-codesniffer-phpcs.png></p><p>怎么样，这个检查结果明码标价，童叟无欺矣！</p><h4 id=使用-phpcbf-修理代码>使用 phpcbf 修理代码</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 指定文件修理
+</span></span><span class=line><span class=cl>$ phpcbf ./src/Test.php
+</span></span></code></pre></td></tr></table></div></div><h4 id=修理后的代码样式>修理后的代码样式</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nx>Nilnice\Acme</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Finder</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>IGNORE_VCS_FILES</span> <span class=o>=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>IGNORE_DOT_FILES</span> <span class=o>=</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$ignore</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=fm>__construct</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$this</span><span class=o>-&gt;</span> <span class=na>ignore</span> <span class=o>=</span> <span class=k>static</span><span class=o>::</span><span class=na>IGNORE_VCS_FILES</span> <span class=o>|</span> <span class=k>static</span><span class=o>::</span><span class=na>IGNORE_DOT_FILES</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>}</span><span class=c1>//end __construct()
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>getIterator</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=mi>0</span> <span class=o>===</span> <span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>dirs</span><span class=p>)</span><span class=o>&amp;&amp;</span><span class=mi>0</span> <span class=o>===</span> <span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>iterators</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nx>\LogicException</span><span class=p>(</span><span class=s1>&#39;You must call one of in() or append() methods before iterating over a Finder.&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=mi>1</span> <span class=o>===</span> <span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>dirs</span><span class=p>)</span> <span class=o>&amp;&amp;</span><span class=mi>0</span> <span class=o>===</span> <span class=nx>count</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>iterators</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span>   <span class=nv>$this</span> <span class=o>-&gt;</span><span class=na>searchInDirectory</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>dirs</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=nv>$iterator</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>\AppendIterator</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span> <span class=na>dirs</span>        <span class=k>as</span> <span class=nv>$dir</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$iterator</span><span class=o>-&gt;</span><span class=na>append</span><span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>searchInDirectory</span><span class=p>(</span><span class=nv>$dir</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=nv>$this</span><span class=o>-&gt;</span><span class=na>iterators</span> <span class=k>as</span> <span class=nv>$it</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$iterator</span><span class=o>-&gt;</span><span class=na>append</span><span class=p>(</span><span class=nv>$it</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=nv>$iterator</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=p>}</span><span class=c1>//end getIterator()
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span><span class=c1>//end class
+</span></span></span><span class=line><span class=cl><span class=c1>// 此处多一空行
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=php-coding-standards-fixer>PHP Coding Standards Fixer</h2><blockquote><ul><li><a href=http://cs.sensiolabs.org/ target=_blank rel="noopener noreffer">PHP Coding Standards Fixer Website</a></li><li><a href=https://github.com/FriendsOfPHP/PHP-CS-Fixer target=_blank rel="noopener noreffer">PHP Coding Standards Fixer GitHub</a></li></ul></blockquote><h3 id=fixer-安装>Fixer 安装</h3><h4 id=curl-或-wget-方式安装>Curl 或 Wget 方式安装</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -O php-cs-fixer
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ wget https://github.com/FriendsOfPHP/PHP-CS-Fixer/releases/download/v2.10.2/php-cs-fixer.phar -O php-cs-fixer
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ curl -L http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar -o php-cs-fixer
+</span></span><span class=line><span class=cl>$ sudo chmod +x php-cs-fixer
+</span></span><span class=line><span class=cl>$ sudo mv php-cs-fixer /usr/local/bin/php-cs-fixer
+</span></span></code></pre></td></tr></table></div></div><h4 id=composer-安装-fixer>Composer 安装 Fixer</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ composer global require friendsofphp/php-cs-fixer
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 如果之前设置过，就不需要
+</span></span><span class=line><span class=cl>$ <span class=nb>export</span> <span class=nv>PATH</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$PATH</span><span class=s2>:</span><span class=nv>$HOME</span><span class=s2>/.composer/vendor/bin&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=homebrew-安装-fixer>Homebrew 安装 Fixer</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 先搜索 fixer 以确定名称后再安装
+</span></span><span class=line><span class=cl>$ brew install homebrew/php/php-cs-fixer
+</span></span></code></pre></td></tr></table></div></div><h3 id=使用-fixer-格式化代码>使用 Fixer 格式化代码</h3><h4 id=使用-fixer-格式化前的不规范代码>使用 Fixer 格式化前的不规范代码</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl><span class=k>declare</span><span class=p>(</span><span class=nx>strict_types</span><span class=o>=</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nx>A</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=nx>SebastianBergmann\CodeCoverage\InvalidArgumentException</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>abstract</span> <span class=k>class</span> <span class=nc>Foo</span> <span class=k>extends</span> <span class=nx>FooBaseClass</span> <span class=k>implements</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Bar1</span> <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Bar2</span> <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Bar3</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=k>const</span> <span class=no>FIRST</span><span class=o>=</span><span class=s1>&#39;first&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=k>const</span> <span class=no>SECOND</span><span class=o>=</span><span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=k>const</span> <span class=no>Z</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>E_FOO</span> <span class=o>=</span> <span class=mi>200</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>E_BAR</span> <span class=o>=</span> <span class=mi>400</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$isNull</span> <span class=o>=</span> <span class=k>null</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=nv>$hello</span><span class=p>,</span>     <span class=nv>$world</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$numbers</span><span class=o>=</span><span class=k>array</span><span class=p>(</span><span class=s1>&#39;one&#39;</span><span class=p>,</span><span class=s1>&#39;two&#39;</span><span class=p>,</span><span class=s1>&#39;three&#39;</span><span class=p>,</span><span class=s1>&#39;four&#39;</span><span class=p>,</span><span class=s1>&#39;five&#39;</span><span class=p>,</span><span class=s1>&#39;six&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$v</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$path</span> <span class=o>=</span> <span class=s1>&#39;root&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>bar</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$v</span><span class=p>,</span> <span class=nv>$w</span> <span class=o>=</span> <span class=s1>&#39;a&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$y</span> <span class=o>=</span> <span class=nv>$w</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$result</span> <span class=o>=</span> <span class=nx>foo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;arg1&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;arg2&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=mi>10</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>switch</span> <span class=p>(</span><span class=nv>$v</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span> <span class=mi>1</span>      <span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>echo</span> <span class=s1>&#39;1&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span>  <span class=mi>2</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$result</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=nv>$result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>static</span> <span class=k>public</span> <span class=k>function</span> <span class=nf>fOne</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argE</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argG</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argH</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=nv>$argA</span> <span class=o>+</span> <span class=nv>$argB</span> <span class=o>+</span> <span class=nv>$argC</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$argD</span> <span class=o>+</span> <span class=nv>$argE</span> <span class=o>+</span> <span class=nv>$argF</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$argG</span> <span class=o>+</span> <span class=nv>$argH</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>list</span><span class=p>(</span><span class=nv>$field1</span><span class=p>,</span> <span class=nv>$field2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$field3</span><span class=p>,</span> <span class=nv>$filed4</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$field5</span><span class=p>,</span> <span class=nv>$field6</span><span class=p>)</span> <span class=o>=</span> <span class=nx>explode</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>,</span> <span class=nv>$x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>fTwo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$argA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$argB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$argC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>fThree</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$argD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$argE</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$argF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$argG</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$argH</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$z</span> <span class=o>=</span> <span class=nv>$argA</span> <span class=o>===</span> <span class=s1>&#39;Some string&#39;</span>
+</span></span><span class=line><span class=cl>            <span class=o>?</span> <span class=s1>&#39;yes&#39;</span> <span class=o>:</span> <span class=s1>&#39;no&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$colors</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;red&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;green&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>              <span class=s1>&#39;blue&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;black&#39;</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;white&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;gray&#39;</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$count</span><span class=o>=</span><span class=nx>count</span><span class=p>(</span><span class=nv>$colors</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=nv>$count</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$colorString</span>
+</span></span><span class=line><span class=cl>                <span class=o>=</span> <span class=nv>$colors</span><span class=p>[</span><span class=nv>$i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>fTwo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strD</span>
+</span></span><span class=line><span class=cl>    <span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nv>$strA</span> <span class=o>===</span> <span class=s1>&#39;one&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=o>||</span> <span class=nv>$strB</span> <span class=o>===</span> <span class=s1>&#39;two&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=o>||</span> <span class=nv>$strC</span> <span class=o>===</span> <span class=s1>&#39;three&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nv>$strA</span> <span class=o>+</span> <span class=nv>$strB</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$strC</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nv>$strA</span><span class=o>===</span><span class=s1>&#39;hello&#39;</span><span class=p>){</span><span class=nv>$strB</span> <span class=o>=</span> <span class=s1>&#39;world&#39;</span><span class=p>;}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span><span class=p>(</span><span class=nv>$strB</span><span class=o>===</span><span class=s1>&#39;second&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strA</span><span class=o>=</span><span class=k>null</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nx>\InvalidArgumentException</span><span class=p>(</span><span class=s1>&#39;Invalid argument.&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=nv>$foo</span><span class=o>-&gt;</span><span class=na>one</span><span class=p>(</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=o>-&gt;</span><span class=na>two</span><span class=p>(</span><span class=s1>&#39;c&#39;</span><span class=p>,</span> <span class=s1>&#39;d&#39;</span><span class=p>,</span>             <span class=s1>&#39;e&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=o>-&gt;</span><span class=na>three</span><span class=p>(</span><span class=s1>&#39;fg&#39;</span><span class=p>)</span><span class=o>-&gt;</span>  <span class=na>four</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$y</span> <span class=o>=</span> <span class=nx>a</span><span class=p>()</span>    <span class=o>-&gt;</span> <span class=na>b</span><span class=p>()</span>   <span class=o>-&gt;</span><span class=na>c</span>            <span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$strD</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>fThree</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strE</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>Exception</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>foo</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>finally</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// do something
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$strA</span> <span class=o>+</span> <span class=nv>$strB</span> <span class=o>+</span> <span class=nv>$strC</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$strD</span> <span class=o>+</span> <span class=nv>$strE</span><span class=p>;}</span>
+</span></span><span class=line><span class=cl>    <span class=k>abstract</span> <span class=k>protected</span> <span class=k>function</span> <span class=nf>fFour</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>final</span> <span class=k>class</span> <span class=nc>Bar</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>final</span> <span class=k>function</span> <span class=nf>foo</span><span class=p>(</span><span class=nv>$x</span><span class=p>,</span><span class=nv>$z</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>        <span class=k>global</span> <span class=nv>$k</span><span class=p>,</span> <span class=nv>$s1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$obj</span><span class=o>-&gt;</span><span class=na>foo</span><span class=p>()</span><span class=o>-&gt;</span><span class=na>bar</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$arr</span> <span class=o>=</span><span class=k>array</span><span class=p>(</span><span class=mi>0</span> <span class=o>=&gt;</span> <span class=s1>&#39;zero&#39;</span><span class=p>,</span> <span class=mi>1</span> <span class=o>=&gt;</span> <span class=s1>&#39;one&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>call_func</span><span class=p>(</span><span class=k>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=nv>$x</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$y</span><span class=o>+=</span> <span class=p>(</span><span class=nv>$y</span><span class=o>^</span><span class=mh>0x123</span><span class=p>)</span> <span class=o>&lt;&lt;</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>&gt;</span> <span class=mi>15</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>?:</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>??</span> <span class=nv>$z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span><span class=o>&lt;=&gt;</span><span class=nv>$z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>do</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=mi>0</span> <span class=o>&gt;</span> <span class=nv>$x</span> <span class=o>&amp;&amp;</span> <span class=o>!</span> <span class=nv>$x</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                    <span class=k>while</span> <span class=p>(</span><span class=nv>$x</span> <span class=o>!==</span> <span class=nv>$y</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$x</span> <span class=o>=</span> <span class=nx>f</span><span class=p>(</span><span class=nv>$x</span> <span class=o>*</span> <span class=mi>3</span> <span class=o>+</span> <span class=mi>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$z</span> <span class=o>+=</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span> <span class=k>elseif</span> <span class=p>(</span><span class=nv>$x</span> <span class=o>&gt;</span> <span class=mi>20</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$z</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>&lt;&lt;</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$z</span> <span class=o>=</span> <span class=nv>$x</span><span class=o>|</span><span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$j</span> <span class=o>=</span> <span class=nx>intval</span><span class=p>(</span><span class=nv>$z</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=k>switch</span> <span class=p>(</span><span class=nv>$j</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$s1</span><span class=o>=</span><span class=nx>strval</span><span class=p>(</span><span class=s1>&#39;100&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=mi>2</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$s1</span> <span class=o>=</span> <span class=s1>&#39;two&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$s1</span> <span class=o>=</span> <span class=s1>&#39;other&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>\Exception</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$t</span> <span class=o>=</span> <span class=nv>$one</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$u</span> <span class=o>=</span> <span class=nv>$one</span><span class=p>[</span><span class=s1>&#39;str&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$v</span> <span class=o>=</span> <span class=nv>$one</span><span class=p>[</span><span class=nv>$x</span><span class=p>[</span><span class=mi>1</span><span class=p>]];</span>
+</span></span><span class=line><span class=cl>                <span class=k>echo</span> <span class=nv>$val</span><span class=p>{</span><span class=nx>foo</span> <span class=o>.</span> <span class=nv>$num</span><span class=p>}[</span><span class=nv>$cell</span><span class=p>{</span><span class=nv>$a</span><span class=p>}];</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span><span class=k>finally</span><span class=p>{</span><span class=c1>// do something
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span><span class=k>while</span> <span class=p>(</span><span class=nv>$x</span> <span class=o>&lt;</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>foo</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>bar</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$y</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>int</span> <span class=nv>$z</span> <span class=o>=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=p>){</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// $x = 1
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>do</span><span class=p>{</span><span class=nv>$y</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;}</span> <span class=k>while</span> <span class=p>(</span><span class=nv>$y</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span><span class=p>(</span><span class=k>true</span><span class=p>){</span><span class=nv>$x</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;}</span><span class=k>elseif</span> <span class=p>(</span><span class=nv>$y</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>)</span> <span class=p>{</span><span class=nv>$x</span><span class=o>=</span><span class=mi>5</span><span class=p>;}</span><span class=k>elseif</span> <span class=p>(</span><span class=k>true</span><span class=p>)</span> <span class=p>{</span><span class=nv>$x</span><span class=o>=</span>     <span class=mi>5</span>  <span class=p>;}</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>){</span><span class=nv>$yy</span><span class=o>=</span><span class=nv>$x</span><span class=o>&gt;</span><span class=mi>2</span><span class=o>?</span><span class=mi>1</span><span class=o>:</span><span class=mi>2</span><span class=p>;}</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span><span class=p>(</span> <span class=k>true</span> <span class=p>)</span> <span class=p>{</span><span class=nv>$x</span><span class=o>=</span><span class=mi>0</span><span class=p>;}</span>
+</span></span><span class=line><span class=cl>    <span class=k>do</span><span class=p>{</span><span class=nv>$x</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;}</span><span class=k>while</span><span class=p>(</span> <span class=k>true</span> <span class=p>)</span> <span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>foreach</span> <span class=p>([</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;a&#39;</span>   <span class=o>=&gt;</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;b&#39;</span>  <span class=o>=&gt;</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;c&#39;</span><span class=o>=&gt;</span><span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span> <span class=k>as</span> <span class=nv>$e1</span><span class=p>)</span> <span class=p>{</span><span class=k>echo</span><span class=nv>$e1</span><span class=p>;}</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$count</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;x&#39;</span><span class=p>,</span><span class=s1>&#39;y&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=mi>1</span>  <span class=o>=&gt;</span> <span class=s1>&#39;abc&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=mi>2</span> <span class=o>=&gt;</span>            <span class=s1>&#39;def&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=mi>3</span>    <span class=o>=&gt;</span> <span class=s1>&#39;ghi&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$zz</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.4</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=mi>0</span> <span class=o>=&gt;</span> <span class=s1>&#39;zero&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mi>123</span> <span class=o>=&gt;</span> <span class=s1>&#39;one two three&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mi>25</span> <span class=o>=&gt;</span> <span class=s1>&#39;two five&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nx>bar</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=nx>bar</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;b&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>foobar</span><span class=p>(</span> <span class=nv>$a</span> <span class=p>)</span><span class=o>:</span><span class=nx>Bar</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$a</span><span class=o>=</span><span class=k>null</span> <span class=o>===</span><span class=nv>$a</span><span class=o>?</span><span class=nv>$a</span><span class=o>:</span><span class=k>new</span> <span class=nv>$a</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>include</span><span class=p>(</span><span class=s1>&#39;a.php&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>emptyreturn</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$map</span> <span class=o>=</span> <span class=nx>array_map</span> <span class=p>(</span><span class=k>function</span><span class=p>(</span> <span class=nv>$value</span> <span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=nv>$value</span>  <span class=o>+</span>   <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=nv>$array</span>   <span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=cp>?&gt;</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>&lt;div&gt;&lt;?= foo() ?&gt;&lt;/div&gt;
+</span></span></span></code></pre></td></tr></table></div></div><h4 id=自定义代码修复格式>自定义代码修复格式</h4><blockquote><p>创建 <code>.php_cs</code> 文件，并写入以下内容。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>require</span> <span class=no>__DIR__</span> <span class=o>.</span> <span class=s1>&#39;/vendor/autoload.php&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=nx>PhpCsFixer\Config</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=nx>PhpCsFixer\Finder</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$finder</span> <span class=o>=</span> <span class=nx>Finder</span><span class=o>::</span><span class=na>create</span><span class=p>()</span><span class=o>-&gt;</span><span class=na>in</span><span class=p>(</span><span class=no>__DIR__</span> <span class=o>.</span> <span class=s1>&#39;/src&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>return</span> <span class=nx>Config</span><span class=o>::</span><span class=na>create</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=o>-&gt;</span><span class=na>setRiskyAllowed</span><span class=p>(</span><span class=k>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=o>-&gt;</span><span class=na>setCacheFile</span><span class=p>(</span><span class=no>__DIR__</span> <span class=o>.</span> <span class=s1>&#39;/.php_cs.cache&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=o>-&gt;</span><span class=na>setRules</span><span class=p>([</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;@PSR2&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 使用 PSR2 标准
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;array_syntax&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;syntax&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;short&#39;</span><span class=p>,</span> <span class=c1>// 数组使用短语法
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;binary_operator_spaces&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;align_double_arrow&#39;</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span> <span class=c1>// 不对齐双箭头操作符
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=s1>&#39;align_equals&#39;</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span> <span class=c1>// 不对齐赋值操作符
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;blank_line_after_namespace&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 命名空间之后有一个空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;blank_line_after_opening_tag&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// PHP 打开标记之后有一个空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;blank_line_before_return&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// return 语句之前有一个空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;blank_line_before_statement&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;statements&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;break&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;continue&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;declare&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;return&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;throw&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;try&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>],</span> <span class=c1>// 这些声明之前有一个空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;class_attributes_separation&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;elements&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;const&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;method&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;property&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>],</span> <span class=c1>// 类的这些元素分开，也就是元素之间加上空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;dir_constant&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 将 dirname(__FILE__) 替换成 __DIR__
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;include&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 将 include(&#39;a.php&#39;) 替换成 include &#39;a.php&#39;
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;is_null&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 将 is_null($a) 替换成 null === $a
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;linebreak_after_opening_tag&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;list_syntax&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;syntax&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;long&#39;</span><span class=p>,</span> <span class=c1>// list 使用 long 语法
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;lowercase_constants&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 常量 true, false, null 使用小写
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;lowercase_keywords&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// PHP 关键字使用小写
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;method_chaining_indentation&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 方法链式调用不需要缩进
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;modernize_types_casting&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 将 *val 函数做对应类型的强制转换
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;new_with_braces&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 实例化类时带上括号
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_blank_lines_after_class_opening&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 类左大括号后没有空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_blank_lines_before_namespace&#39;</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span> <span class=c1>// 命名空间之前没有穿行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_closing_tag&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 纯 PHP 文件不需要闭合标记
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_multiline_whitespace_around_double_arrow&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 箭头操作符前后没有多余的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;multiline_whitespace_before_semicolons&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除结束分号之前的多余空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_null_property_initialization&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除属性用 null 初始化是的显式指定
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_php4_constructor&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除 PHP4 风格的构造方法
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_short_bool_cast&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 采用双感叹号表示布尔情况的不应该使用，会转换为 (bool)
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_short_echo_tag&#39;</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span> <span class=c1>// 替换短标记输出为长标记
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_singleline_whitespace_before_semicolons&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除分号之前的多余空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_spaces_after_function_name&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 在进行方法或函数调用时，移除方法或函数名称与左括号之间的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_spaces_around_offset&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除偏移大括号的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_spaces_inside_parenthesis&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除左括号后的和右括号前的多余空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_superfluous_elseif&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 用 if 替换多余的 elseif
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_trailing_whitespace&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除末行的尾随空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_trailing_whitespace_in_comment&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除注释末行的尾随空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_unneeded_control_parentheses&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;statements&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;break&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;clone&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;continue&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;echo_print&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;return&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;switch_case&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;yield&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>],</span> <span class=c1>// 移除控制语句周围不需要的括号
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;no_useless_return&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 将 return; 替换成空
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;no_whitespace_in_blank_line&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除空白行末尾的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;not_operator_with_space&#39;</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span> <span class=c1>// 逻辑非操作符前后有一个空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;not_operator_with_successor_space&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 逻辑非操作符尾随一个空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;object_operator_without_whitespace&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除对象操作符前后的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;short_scalar_cast&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 标量使用缩写
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;single_blank_line_at_eof&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 纯 PHP 文件总是以一个空行换行符结束
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;single_blank_line_before_namespace&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 命名空间之前有一个空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;single_class_element_per_statement&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;elements&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;const&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;property&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=p>],</span> <span class=c1>// 类元素的每个声明有自己的关键字
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;single_import_per_statement&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 导入的每个声明有自己的关键字
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;single_line_after_imports&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 每个命名空间的 use 独占一行，最后一个 use 后有一个空行
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;single_quote&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 简单字符串的双引号转换为单引号
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;standardize_not_equals&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 将 &lt;&gt; 替换为 !=
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;strict_comparison&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 比较使用严格化
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;strict_param&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 参数使用严格化
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;switch_case_space&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除冒号和 case value 之间的多余空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;ternary_operator_spaces&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除三元运算符周围多余的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;ternary_to_null_coalescing&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 使用 null 合并运算符 ?? 在可以的地方
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;trailing_comma_in_multiline_array&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 多个数组元素的最后一个元素后有一个逗号
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;trim_array_spaces&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 移除数组首尾元素多余的空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;unary_operator_spaces&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 一元操作符紧挨操作项，不需要空格分开
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;visibility_required&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 访问修饰符放置在属性方法前，abstract 和 final 放置在访问修饰符前面，static 放置在访问修饰符后
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=s1>&#39;whitespace_after_comma_in_array&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span> <span class=c1>// 数组的每个元素逗号后面有一个空格
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=p>])</span>
+</span></span><span class=line><span class=cl>    <span class=o>-&gt;</span><span class=na>setFinder</span><span class=p>(</span><span class=nv>$finder</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=执行格式化>执行格式化</h4><blockquote><ul><li>格式化期间 <code>php-cs-fixer</code> 会自动创建 <code>.php_cs.cache</code> 文件</li><li>不同的代码量和复杂程度会影响执行的时长</li></ul></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 指定文件进行格式化
+</span></span><span class=line><span class=cl>$ php-cs-fixer fix ./src/Test.php
+</span></span></code></pre></td></tr></table></div></div><h4 id=格式化后的代码>格式化后的代码</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl><span class=k>declare</span><span class=p>(</span><span class=nx>strict_types</span><span class=o>=</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nx>A</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=nx>SebastianBergmann\CodeCoverage\InvalidArgumentException</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>abstract</span> <span class=k>class</span> <span class=nc>Foo</span> <span class=k>extends</span> <span class=nx>FooBaseClass</span> <span class=k>implements</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Bar1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Bar2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>Bar3</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=k>const</span> <span class=no>FIRST</span> <span class=o>=</span> <span class=s1>&#39;first&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=k>const</span> <span class=no>SECOND</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=k>const</span> <span class=no>Z</span> <span class=o>=</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>E_FOO</span> <span class=o>=</span> <span class=mi>200</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>const</span> <span class=no>E_BAR</span> <span class=o>=</span> <span class=mi>400</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$isNull</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=nv>$hello</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=nv>$world</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$numbers</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;one&#39;</span><span class=p>,</span> <span class=s1>&#39;two&#39;</span><span class=p>,</span> <span class=s1>&#39;three&#39;</span><span class=p>,</span> <span class=s1>&#39;four&#39;</span><span class=p>,</span> <span class=s1>&#39;five&#39;</span><span class=p>,</span> <span class=s1>&#39;six&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$v</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$path</span> <span class=o>=</span> <span class=s1>&#39;root&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>bar</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$v</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$w</span> <span class=o>=</span> <span class=s1>&#39;a&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$y</span> <span class=o>=</span> <span class=nv>$w</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$result</span> <span class=o>=</span> <span class=nx>foo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;arg1&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;arg2&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=mi>10</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>switch</span> <span class=p>(</span><span class=nv>$v</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span> <span class=mi>1</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>echo</span> <span class=s1>&#39;1&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>case</span>  <span class=mi>2</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$result</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span><span class=nv>$result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>static</span> <span class=k>function</span> <span class=nf>fOne</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argE</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argG</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$argH</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=nv>$argA</span> <span class=o>+</span> <span class=nv>$argB</span> <span class=o>+</span> <span class=nv>$argC</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$argD</span> <span class=o>+</span> <span class=nv>$argE</span> <span class=o>+</span> <span class=nv>$argF</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$argG</span> <span class=o>+</span> <span class=nv>$argH</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>list</span><span class=p>(</span><span class=nv>$field1</span><span class=p>,</span> <span class=nv>$field2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$field3</span><span class=p>,</span> <span class=nv>$filed4</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$field5</span><span class=p>,</span> <span class=nv>$field6</span><span class=p>)</span> <span class=o>=</span> <span class=nx>explode</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>,</span> <span class=nv>$x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>fTwo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$argA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$argB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$argC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=nx>fThree</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$argD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$argE</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$argF</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$argG</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$argH</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$z</span> <span class=o>=</span> <span class=nv>$argA</span> <span class=o>===</span> <span class=s1>&#39;Some string&#39;</span>
+</span></span><span class=line><span class=cl>            <span class=o>?</span> <span class=s1>&#39;yes&#39;</span> <span class=o>:</span> <span class=s1>&#39;no&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$colors</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;red&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;green&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>              <span class=s1>&#39;blue&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;black&#39;</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;white&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;gray&#39;</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$count</span> <span class=o>=</span> <span class=nx>count</span><span class=p>(</span><span class=nv>$colors</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=nv>$count</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$colorString</span>
+</span></span><span class=line><span class=cl>                <span class=o>=</span> <span class=nv>$colors</span><span class=p>[</span><span class=nv>$i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>fTwo</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strD</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nv>$strA</span> <span class=o>===</span> <span class=s1>&#39;one&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=o>||</span> <span class=nv>$strB</span> <span class=o>===</span> <span class=s1>&#39;two&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=o>||</span> <span class=nv>$strC</span> <span class=o>===</span> <span class=s1>&#39;three&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nv>$strA</span> <span class=o>+</span> <span class=nv>$strB</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$strC</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nv>$strA</span> <span class=o>===</span> <span class=s1>&#39;hello&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$strB</span> <span class=o>=</span> <span class=s1>&#39;world&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nv>$strB</span> <span class=o>===</span> <span class=s1>&#39;second&#39;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$strA</span> <span class=o>=</span> <span class=k>null</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>throw</span> <span class=k>new</span> <span class=nx>\InvalidArgumentException</span><span class=p>(</span><span class=s1>&#39;Invalid argument.&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=nv>$foo</span><span class=o>-&gt;</span><span class=na>one</span><span class=p>(</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=o>-&gt;</span><span class=na>two</span><span class=p>(</span><span class=s1>&#39;c&#39;</span><span class=p>,</span> <span class=s1>&#39;d&#39;</span><span class=p>,</span> <span class=s1>&#39;e&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=o>-&gt;</span><span class=na>three</span><span class=p>(</span><span class=s1>&#39;fg&#39;</span><span class=p>)</span><span class=o>-&gt;</span><span class=na>four</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$y</span> <span class=o>=</span> <span class=nx>a</span><span class=p>()</span><span class=o>-&gt;</span><span class=na>b</span><span class=p>()</span><span class=o>-&gt;</span><span class=na>c</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$strD</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>fThree</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strA</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strB</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strC</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strD</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$strE</span>
+</span></span><span class=line><span class=cl>    <span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>Exception</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>foo</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>finally</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// do something
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$strA</span> <span class=o>+</span> <span class=nv>$strB</span> <span class=o>+</span> <span class=nv>$strC</span>
+</span></span><span class=line><span class=cl>            <span class=o>+</span> <span class=nv>$strD</span> <span class=o>+</span> <span class=nv>$strE</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>abstract</span> <span class=k>protected</span> <span class=k>function</span> <span class=nf>fFour</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>final</span> <span class=k>class</span> <span class=nc>Bar</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>final</span> <span class=k>public</span> <span class=k>function</span> <span class=nf>foo</span><span class=p>(</span><span class=nv>$x</span><span class=p>,</span> <span class=nv>$z</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>global</span> <span class=nv>$k</span><span class=p>,</span> <span class=nv>$s1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$obj</span><span class=o>-&gt;</span><span class=na>foo</span><span class=p>()</span><span class=o>-&gt;</span><span class=na>bar</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$arr</span> <span class=o>=</span> <span class=p>[</span><span class=mi>0</span> <span class=o>=&gt;</span> <span class=s1>&#39;zero&#39;</span><span class=p>,</span> <span class=mi>1</span> <span class=o>=&gt;</span> <span class=s1>&#39;one&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=nx>call_func</span><span class=p>(</span><span class=k>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>});</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=nv>$x</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$y</span> <span class=o>+=</span> <span class=p>(</span><span class=nv>$y</span> <span class=o>^</span> <span class=mh>0x123</span><span class=p>)</span> <span class=o>&lt;&lt;</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>&gt;</span> <span class=mi>15</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>?:</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>??</span> <span class=nv>$z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$k</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>&lt;=&gt;</span> <span class=nv>$z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>do</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=o>!</span> <span class=mi>0</span> <span class=o>&gt;</span> <span class=nv>$x</span> <span class=o>&amp;&amp;</span> <span class=o>!</span> <span class=nv>$x</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>while</span> <span class=p>(</span><span class=nv>$x</span> <span class=o>!==</span> <span class=nv>$y</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$x</span> <span class=o>=</span> <span class=nx>f</span><span class=p>(</span><span class=nv>$x</span> <span class=o>*</span> <span class=mi>3</span> <span class=o>+</span> <span class=mi>5</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=p>}</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$z</span> <span class=o>+=</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span> <span class=k>elseif</span> <span class=p>(</span><span class=nv>$x</span> <span class=o>&gt;</span> <span class=mi>20</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$z</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>&lt;&lt;</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=nv>$z</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>|</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$j</span> <span class=o>=</span> <span class=p>(</span><span class=nx>int</span><span class=p>)</span> <span class=nv>$z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>switch</span> <span class=p>(</span><span class=nv>$j</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=mi>0</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$s1</span> <span class=o>=</span> <span class=p>(</span><span class=nx>string</span><span class=p>)</span> <span class=s1>&#39;100&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>case</span> <span class=mi>2</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$s1</span> <span class=o>=</span> <span class=s1>&#39;two&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>default</span><span class=o>:</span>
+</span></span><span class=line><span class=cl>                        <span class=nv>$s1</span> <span class=o>=</span> <span class=s1>&#39;other&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>\Exception</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$t</span> <span class=o>=</span> <span class=nv>$one</span><span class=p>[</span><span class=mi>0</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$u</span> <span class=o>=</span> <span class=nv>$one</span><span class=p>[</span><span class=s1>&#39;str&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$v</span> <span class=o>=</span> <span class=nv>$one</span><span class=p>[</span><span class=nv>$x</span><span class=p>[</span><span class=mi>1</span><span class=p>]];</span>
+</span></span><span class=line><span class=cl>                <span class=k>echo</span> <span class=nv>$val</span><span class=p>{</span><span class=nx>foo</span> <span class=o>.</span> <span class=nv>$num</span><span class=p>}[</span><span class=nv>$cell</span><span class=p>{</span><span class=nv>$a</span><span class=p>}];</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>finally</span> <span class=p>{</span><span class=c1>// do something
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>while</span> <span class=p>(</span><span class=nv>$x</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>foo</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>bar</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$y</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>int</span> <span class=nv>$z</span> <span class=o>=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// $x = 1
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>do</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$y</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>while</span> <span class=p>(</span><span class=nv>$y</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=k>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>elseif</span> <span class=p>(</span><span class=nv>$y</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=mi>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>elseif</span> <span class=p>(</span><span class=k>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=mi>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=nv>$i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nv>$i</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>;</span> <span class=nv>$i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$yy</span> <span class=o>=</span> <span class=nv>$x</span> <span class=o>&gt;</span> <span class=mi>2</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span><span class=k>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>do</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$x</span> <span class=o>+=</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span> <span class=k>while</span> <span class=p>(</span><span class=k>true</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>foreach</span> <span class=p>([</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;a&#39;</span> <span class=o>=&gt;</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;b&#39;</span> <span class=o>=&gt;</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;c&#39;</span> <span class=o>=&gt;</span> <span class=mi>2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>]</span> <span class=k>as</span> <span class=nv>$e1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>echo</span><span class=nv>$e1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$count</span> <span class=o>=</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;x&#39;</span><span class=p>,</span> <span class=s1>&#39;y&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>[</span>
+</span></span><span class=line><span class=cl>            <span class=mi>1</span> <span class=o>=&gt;</span> <span class=s1>&#39;abc&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=mi>2</span> <span class=o>=&gt;</span> <span class=s1>&#39;def&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=mi>3</span> <span class=o>=&gt;</span> <span class=s1>&#39;ghi&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$zz</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mf>0.4</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$x</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=mi>0</span> <span class=o>=&gt;</span> <span class=s1>&#39;zero&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mi>123</span> <span class=o>=&gt;</span> <span class=s1>&#39;one two three&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=mi>25</span> <span class=o>=&gt;</span> <span class=s1>&#39;two five&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>];</span>
+</span></span><span class=line><span class=cl>    <span class=nx>bar</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=nx>bar</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;b&#39;</span>
+</span></span><span class=line><span class=cl>    <span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>foobar</span><span class=p>(</span><span class=nv>$a</span><span class=p>)</span><span class=o>:</span><span class=nx>Bar</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$a</span> <span class=o>=</span> <span class=k>null</span> <span class=o>===</span> <span class=nv>$a</span> <span class=o>?</span> <span class=nv>$a</span> <span class=o>:</span> <span class=k>new</span> <span class=nv>$a</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=k>include</span> <span class=s1>&#39;a.php&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>emptyreturn</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$map</span> <span class=o>=</span> <span class=nx>array_map</span><span class=p>(</span><span class=k>function</span> <span class=p>(</span><span class=nv>$value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span><span class=nv>$value</span> <span class=o>+</span> <span class=mi>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=nv>$array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=cp>?&gt;</span><span class=err>
+</span></span></span><span class=line><span class=cl><span class=err>&lt;div&gt;&lt;?= foo() ?&gt;&lt;/div&gt;
+</span></span></span></code></pre></td></tr></table></div></div><h2 id=结论>结论</h2><h3 id=原始代码>原始代码</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$result</span> <span class=o>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl><span class=nv>$array</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;x&#39;</span> <span class=o>=&gt;</span>     <span class=mi>0</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;a&#39;</span> <span class=o>=&gt;</span>     <span class=mi>1</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;b&#39;</span> <span class=o>=&gt;</span>     <span class=mi>2</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;c&#39;</span> <span class=o>=&gt;</span>     <span class=mi>3</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;d&#39;</span> <span class=o>=&gt;</span>     <span class=mi>4</span>                   <span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;e&#39;</span> <span class=o>=&gt;</span>     <span class=mi>5</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;f&#39;</span> <span class=o>=&gt;</span>     <span class=mi>6</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;g&#39;</span> <span class=o>=&gt;</span>     <span class=mi>7</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;y&#39;</span> <span class=o>=&gt;</span>     <span class=mi>8</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=s1>&#39;z&#39;</span> <span class=o>=&gt;</span> <span class=mi>9</span><span class=p>,</span>                <span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=k>foreach</span> <span class=p>(</span><span class=nv>$array</span> <span class=k>as</span> <span class=nv>$key</span> <span class=o>=&gt;</span> <span class=nv>$val</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>in_array</span><span class=p>(</span><span class=nv>$key</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=s1>&#39;c&#39;</span><span class=p>],</span> <span class=k>true</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$result</span><span class=p>[</span><span class=nv>$key</span><span class=p>]</span> <span class=o>=</span> <span class=nv>$val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=php_codesniffer-格式化>PHP_CodeSniffer 格式化</h3><p>执行 <code>phpcbf ./src/Test.php</code> 后：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$result</span> <span class=o>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl><span class=nv>$array</span>  <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;x&#39;</span> <span class=o>=&gt;</span> <span class=mi>0</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;a&#39;</span> <span class=o>=&gt;</span> <span class=mi>1</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;b&#39;</span> <span class=o>=&gt;</span> <span class=mi>2</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;c&#39;</span> <span class=o>=&gt;</span> <span class=mi>3</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;d&#39;</span> <span class=o>=&gt;</span> <span class=mi>4</span>        <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;e&#39;</span> <span class=o>=&gt;</span> <span class=mi>5</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;f&#39;</span> <span class=o>=&gt;</span> <span class=mi>6</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;g&#39;</span> <span class=o>=&gt;</span> <span class=mi>7</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;y&#39;</span> <span class=o>=&gt;</span> <span class=mi>8</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;z&#39;</span> <span class=o>=&gt;</span> <span class=mi>9</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=k>foreach</span> <span class=p>(</span><span class=nv>$array</span> <span class=k>as</span> <span class=nv>$key</span> <span class=o>=&gt;</span> <span class=nv>$val</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>in_array</span><span class=p>(</span><span class=nv>$key</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=s1>&#39;c&#39;</span><span class=p>],</span> <span class=k>true</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nv>$result</span><span class=p>[</span><span class=nv>$key</span><span class=p>]</span> <span class=o>=</span> <span class=nv>$val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=php-cs-fixer-格式化>PHP-CS-Fixer 格式化</h3><p>执行 <code>php-cs-fixer fix ./src/Test.php</code> 后：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$result</span> <span class=o>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl><span class=nv>$array</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;x&#39;</span> <span class=o>=&gt;</span> <span class=mi>0</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;a&#39;</span> <span class=o>=&gt;</span> <span class=mi>1</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;b&#39;</span> <span class=o>=&gt;</span> <span class=mi>2</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;c&#39;</span> <span class=o>=&gt;</span> <span class=mi>3</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;d&#39;</span> <span class=o>=&gt;</span> <span class=mi>4</span>        <span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;e&#39;</span> <span class=o>=&gt;</span> <span class=mi>5</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;f&#39;</span> <span class=o>=&gt;</span> <span class=mi>6</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;g&#39;</span> <span class=o>=&gt;</span> <span class=mi>7</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;y&#39;</span> <span class=o>=&gt;</span> <span class=mi>8</span>  <span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=s1>&#39;z&#39;</span> <span class=o>=&gt;</span> <span class=mi>9</span><span class=p>,</span>                <span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=k>foreach</span> <span class=p>(</span><span class=nv>$array</span> <span class=k>as</span> <span class=nv>$key</span> <span class=o>=&gt;</span> <span class=nv>$val</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nx>in_array</span><span class=p>(</span><span class=nv>$key</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=s1>&#39;c&#39;</span><span class=p>],</span> <span class=k>true</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$result</span><span class=p>[</span><span class=nv>$key</span><span class=p>]</span> <span class=o>=</span> <span class=nv>$val</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>经过对两个工具的使用，发现各有所长，<code>PHP_CodeSniffer</code> 囊括代码质量检测和自动修复，而 <code>PHP-CS-Fixer</code> 则只有自动修复功能，无论哪种工具，在我测试的过程中，都没法把用户主动添加的一些空格给利索的去掉，略有点失望。</p></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-02-07</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/ data-title="PHP 编码标准插件" data-hashtags=PHP><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/ data-hashtag=PHP><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/ data-title="PHP 编码标准插件"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/ data-title="PHP 编码标准插件"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/2018/02/07/php-%E7%BC%96%E7%A0%81%E6%A0%87%E5%87%86%E6%8F%92%E4%BB%B6/ data-title="PHP 编码标准插件"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/php/>PHP</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/2018/02/05/mac-homebrew-cask/ class=prev rel=prev title="Mac Homebrew Cask"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Mac Homebrew Cask</a>
+<a href=https://imajinyun.xyz/2018/02/13/linux-common-command/ class=next rel=next title="Linux - 常用命令">Linux - 常用命令<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>
