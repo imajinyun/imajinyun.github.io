@@ -1,1105 +1,720 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="robots" content="noodp" />
-        <title>Go 日期时间 - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Go 日期时间" />
-<meta property="og:description" content="Go 中的日期时间使用布局来格式化，通过布局来完成日期时间的格式化和解析。" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://imajinyun.xyz/posts/go-date-time/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-07-11T11:51:23+08:00" />
-<meta property="article:modified_time" content="2021-07-11T11:51:23+08:00" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
-<meta property="og:see_also" content="https://imajinyun.xyz/posts/go-concat-string/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-correct-posture/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-other-test/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-benchmark-test/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-unit-test/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-random-number/" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Go 日期时间"/>
-<meta name="twitter:description" content="Go 中的日期时间使用布局来格式化，通过布局来完成日期时间的格式化和解析。"/>
-<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
-<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://imajinyun.xyz/apple-touch-icon.png"><link rel="mask-icon" href="https://imajinyun.xyz/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://imajinyun.xyz/site.webmanifest"><link rel="canonical" href="https://imajinyun.xyz/posts/go-date-time/" /><link rel="prev" href="https://imajinyun.xyz/posts/go-data-type/" /><link rel="next" href="https://imajinyun.xyz/posts/go-random-number/" /><link rel="stylesheet" href="https://imajinyun.xyz/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
-    {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        "headline": "Go 日期时间",
-        "inLanguage": "zh-CN",
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "https:\/\/imajinyun.xyz\/posts\/go-date-time\/"
-        },"genre": "posts","keywords": "Go","wordcount":  2898 ,
-        "url": "https:\/\/imajinyun.xyz\/posts\/go-date-time\/","datePublished": "2021-07-11T11:51:23+08:00","dateModified": "2021-07-11T11:51:23+08:00","publisher": {
-            "@type": "Organization",
-            "name": ""},"author": {
-                "@type": "Person",
-                "name": "作者"
-            },"description": ""
-    }
-    </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
-
-        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
-    <div class="header-wrapper">
-        <div class="header-title">
-            <a href="https://imajinyun.xyz/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
-        </div>
-        <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="https://imajinyun.xyz/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://imajinyun.xyz/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://imajinyun.xyz/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://imajinyun.xyz/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://imajinyun.xyz/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://imajinyun.xyz/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
-                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
-                        </span>
-                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</header><header class="mobile" id="header-mobile">
-    <div class="header-container">
-        <div class="header-wrapper">
-            <div class="header-title">
-                <a href="https://imajinyun.xyz/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
-            </div>
-            <div class="menu-toggle" id="menu-toggle-mobile">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-        <div class="menu" id="menu-mobile"><div class="search-wrapper">
-                    <div class="search mobile" id="search-mobile">
-                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
-                        </span>
-                    </div>
-                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
-                        取消
-                    </a>
-                </div><a class="menu-item" href="https://imajinyun.xyz/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://imajinyun.xyz/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://imajinyun.xyz/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://imajinyun.xyz/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://imajinyun.xyz/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://imajinyun.xyz/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
-    </div>
-</header><div class="search-dropdown desktop">
-        <div id="search-dropdown-desktop"></div>
-    </div>
-    <div class="search-dropdown mobile">
-        <div id="search-dropdown-mobile"></div>
-    </div><main class="main">
-                <div class="container"><div class="toc" id="toc-auto">
-            <h2 class="toc-title">目录</h2>
-            <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go 日期时间</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="https://imajinyun.xyz/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="https://imajinyun.xyz/categories/go/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Go</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2021-07-11">2021-07-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2898 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
-        </div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>目录</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#标准日期时间格式">标准日期时间格式</a></li>
-    <li><a href="#获取当前日期时间">获取当前日期时间</a></li>
-    <li><a href="#获取当前时间戳">获取当前时间戳</a></li>
-    <li><a href="#获取当前时间的字符串格式">获取当前时间的字符串格式</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#使用-fixedzone-指定">使用 FixedZone 指定</a></li>
-    <li><a href="#使用-loadlocation-指定">使用 LoadLocation 指定</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#时间戳转日期时间字符串">时间戳转日期时间字符串</a></li>
-    <li><a href="#日期时间字符串转时间戳">日期时间字符串转时间戳</a></li>
-    <li><a href="#日期时间字符串转时间对象">日期时间字符串转时间对象</a></li>
-  </ul>
-
-  <ul>
-    <li><a href="#计算两个给定日期之前相差的天数">计算两个给定日期之前相差的天数</a></li>
-    <li><a href="#统计代码运行时间">统计代码运行时间</a></li>
-  </ul>
-</nav></div>
-            </div><div class="content" id="content"><p>Go 中的日期时间使用布局来格式化，通过布局来完成日期时间的格式化和解析。</p>
-<ul>
-<li><a href="https://imajinyun.xyz/2021/06/26/go-get-started/" target="_blank" rel="noopener noreffer"><code>Go 起步</code></a></li>
-<li><a href="https://imajinyun.xyz/2021/07/02/go-data-type/" target="_blank" rel="noopener noreffer"><code>Go 数据类型</code></a></li>
-<li><strong>Go 日期时间</strong></li>
-<li><a href="https://imajinyun.xyz/2021/07/14/go-random-number/" target="_blank" rel="noopener noreffer"><code>Go 随机数</code></a></li>
-<li><a href="https://imajinyun.xyz/2021/07/16/go-unit-test/" target="_blank" rel="noopener noreffer"><code>Go 单元测试</code></a></li>
-<li><a href="https://imajinyun.xyz/2021/07/17/go-benchmark-test/" target="_blank" rel="noopener noreffer"><code>Go 基准测试</code></a></li>
-<li><a href="https://imajinyun.xyz/2021/07/22/go-other-test/" target="_blank" rel="noopener noreffer"><code>Go 其它测试</code></a></li>
-<li><a href="https://imajinyun.xyz/2021/07/24/go-correct-posture/" target="_blank" rel="noopener noreffer"><code>Go 正确姿势</code></a></li>
-<li><a href="https://imajinyun.xyz/2021/07/25/go-concat-string/" target="_blank" rel="noopener noreffer"><code>Go 连接字符串</code></a></li>
-</ul>
-<h1 id="当前日期时间">当前日期时间</h1>
-<h2 id="标准日期时间格式">标准日期时间格式</h2>
-<p>布局格式：</p>
-<table>
-<thead>
-<tr>
-<th>Layout</th>
-<th>Note</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>January 2, 2006</code></td>
-<td>Date</td>
-</tr>
-<tr>
-<td><code>01/02/06</code></td>
-<td>Date</td>
-</tr>
-<tr>
-<td><code>Jan-02-06</code></td>
-<td>Date</td>
-</tr>
-<tr>
-<td><code>15:04:05</code></td>
-<td>Time</td>
-</tr>
-<tr>
-<td><code>3:04:05 PM</code></td>
-<td>Time</td>
-</tr>
-<tr>
-<td><code>Jan _2 15:04:05</code></td>
-<td>Timestamp</td>
-</tr>
-<tr>
-<td><code>Jan _2 15:04:05.000000</code></td>
-<td>With microseconds</td>
-</tr>
-<tr>
-<td><code>2006-01-02T15:04:05-0700</code></td>
-<td><a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank" rel="noopener noreffer">ISO 8601</a>(<a href="https://www.ietf.org/rfc/rfc3339.txt" target="_blank" rel="noopener noreffer">RFC 3339</a>)</td>
-</tr>
-<tr>
-<td><code>2006-01-02</code></td>
-<td><a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank" rel="noopener noreffer">ISO 8601</a>(<a href="https://www.ietf.org/rfc/rfc3339.txt" target="_blank" rel="noopener noreffer">RFC 3339</a>)</td>
-</tr>
-<tr>
-<td><code>15:04:05</code></td>
-<td><a href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank" rel="noopener noreffer">ISO 8601</a>(<a href="https://www.ietf.org/rfc/rfc3339.txt" target="_blank" rel="noopener noreffer">RFC 3339</a>)</td>
-</tr>
-<tr>
-<td><code>02 Jan 06 15:04 MST</code></td>
-<td><a href="https://www.ietf.org/rfc/rfc822.txt" target="_blank" rel="noopener noreffer">RFC 822</a></td>
-</tr>
-<tr>
-<td><code>02 Jan 06 15:04 -0700</code></td>
-<td>With numeric zone</td>
-</tr>
-<tr>
-<td><code>Mon, 02 Jan 2006 15:04:05 MST</code></td>
-<td><a href="https://www.ietf.org/rfc/rfc1123.txt" target="_blank" rel="noopener noreffer">RFC 1123</a></td>
-</tr>
-<tr>
-<td><code>Mon, 02 Jan 2006 15:04:05 -0700</code></td>
-<td>With numeric zone</td>
-</tr>
-</tbody>
-</table>
-<p>布局选项：</p>
-<table>
-<thead>
-<tr>
-<th>Type</th>
-<th>Options</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>Year</code></td>
-<td><code>06</code> <code>2006</code></td>
-</tr>
-<tr>
-<td><code>Month</code></td>
-<td><code>01</code> <code>1</code> <code>Jan</code> <code>January</code></td>
-</tr>
-<tr>
-<td><code>Day</code></td>
-<td><code>02</code> <code>2</code> <code>_2</code>(width two, right justified)</td>
-</tr>
-<tr>
-<td><code>Weekday</code></td>
-<td><code>Mon</code> <code>Monday</code></td>
-</tr>
-<tr>
-<td><code>Hours</code></td>
-<td><code>03</code> <code>3</code> <code>15</code></td>
-</tr>
-<tr>
-<td><code>Minutes</code></td>
-<td><code>04</code> <code>4</code></td>
-</tr>
-<tr>
-<td><code>Seconds</code></td>
-<td><code>05</code> <code>5</code></td>
-</tr>
-<tr>
-<td><code>ms us ns</code></td>
-<td><code>.000</code> <code>.000000</code> <code>.000000000</code></td>
-</tr>
-<tr>
-<td><code>ms us ns</code></td>
-<td><code>.999</code> <code>.999999</code> <code>.999999999</code>(trailing zeros removed)</td>
-</tr>
-<tr>
-<td><code>am/pm</code></td>
-<td><code>AM</code> <code>am</code> <code>PM</code> <code>pm</code></td>
-</tr>
-<tr>
-<td><code>Timezone</code></td>
-<td><code>MST</code></td>
-</tr>
-<tr>
-<td><code>Offset</code></td>
-<td><code>-0700</code> <code>-07</code> <code>-07:00</code> <code>Z0700</code> <code>Z07:00</code></td>
-</tr>
-</tbody>
-</table>
-<p>以下是 Go 源码中预定义日期和时间格式常量：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span><span class="lnt">37
-</span><span class="lnt">38
-</span><span class="lnt">39
-</span><span class="lnt">40
-</span><span class="lnt">41
-</span><span class="lnt">42
-</span><span class="lnt">43
-</span><span class="lnt">44
-</span><span class="lnt">45
-</span><span class="lnt">46
-</span><span class="lnt">47
-</span><span class="lnt">48
-</span><span class="lnt">49
-</span><span class="lnt">50
-</span><span class="lnt">51
-</span><span class="lnt">52
-</span><span class="lnt">53
-</span><span class="lnt">54
-</span><span class="lnt">55
-</span><span class="lnt">56
-</span><span class="lnt">57
-</span><span class="lnt">58
-</span><span class="lnt">59
-</span><span class="lnt">60
-</span><span class="lnt">61
-</span><span class="lnt">62
-</span><span class="lnt">63
-</span><span class="lnt">64
-</span><span class="lnt">65
-</span><span class="lnt">66
-</span><span class="lnt">67
-</span><span class="lnt">68
-</span><span class="lnt">69
-</span><span class="lnt">70
-</span><span class="lnt">71
-</span><span class="lnt">72
-</span><span class="lnt">73
-</span><span class="lnt">74
-</span><span class="lnt">75
-</span><span class="lnt">76
-</span><span class="lnt">77
-</span><span class="lnt">78
-</span><span class="lnt">79
-</span><span class="lnt">80
-</span><span class="lnt">81
-</span><span class="lnt">82
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// These are predefined layouts for use in Time.Format and time.Parse.
-</span></span></span><span class="line"><span class="cl"><span class="c1">// The reference time used in the layouts is the specific time:
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	Mon Jan 2 15:04:05 MST 2006
-</span></span></span><span class="line"><span class="cl"><span class="c1">// which is Unix time 1136239445. Since MST is GMT-0700,
-</span></span></span><span class="line"><span class="cl"><span class="c1">// the reference time can be thought of as
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	01/02 03:04:05PM &#39;06 -0700
-</span></span></span><span class="line"><span class="cl"><span class="c1">// To define your own format, write down what the reference time would look
-</span></span></span><span class="line"><span class="cl"><span class="c1">// like formatted your way; see the values of constants like ANSIC,
-</span></span></span><span class="line"><span class="cl"><span class="c1">// StampMicro or Kitchen for examples. The model is to demonstrate what the
-</span></span></span><span class="line"><span class="cl"><span class="c1">// reference time looks like so that the Format and Parse methods can apply
-</span></span></span><span class="line"><span class="cl"><span class="c1">// the same transformation to a general time value.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// Some valid layouts are invalid time values for time.Parse, due to formats
-</span></span></span><span class="line"><span class="cl"><span class="c1">// such as _ for space padding and Z for zone information.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// Within the format string, an underscore _ represents a space that may be
-</span></span></span><span class="line"><span class="cl"><span class="c1">// replaced by a digit if the following number (a day) has two digits; for
-</span></span></span><span class="line"><span class="cl"><span class="c1">// compatibility with fixed-width Unix time formats.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// A decimal point followed by one or more zeros represents a fractional
-</span></span></span><span class="line"><span class="cl"><span class="c1">// second, printed to the given number of decimal places. A decimal point
-</span></span></span><span class="line"><span class="cl"><span class="c1">// followed by one or more nines represents a fractional second, printed to
-</span></span></span><span class="line"><span class="cl"><span class="c1">// the given number of decimal places, with trailing zeros removed.
-</span></span></span><span class="line"><span class="cl"><span class="c1">// When parsing (only), the input may contain a fractional second
-</span></span></span><span class="line"><span class="cl"><span class="c1">// field immediately after the seconds field, even if the layout does not
-</span></span></span><span class="line"><span class="cl"><span class="c1">// signify its presence. In that case a decimal point followed by a maximal
-</span></span></span><span class="line"><span class="cl"><span class="c1">// series of digits is parsed as a fractional second.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// Numeric time zone offsets format as follows:
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	-0700  ±hhmm
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	-07:00 ±hh:mm
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	-07    ±hh
-</span></span></span><span class="line"><span class="cl"><span class="c1">// Replacing the sign in the format with a Z triggers
-</span></span></span><span class="line"><span class="cl"><span class="c1">// the ISO 8601 behavior of printing Z instead of an
-</span></span></span><span class="line"><span class="cl"><span class="c1">// offset for the UTC zone. Thus:
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	Z0700  Z or ±hhmm
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	Z07:00 Z or ±hh:mm
-</span></span></span><span class="line"><span class="cl"><span class="c1">//	Z07    Z or ±hh
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// The recognized day of week formats are &#34;Mon&#34; and &#34;Monday&#34;.
-</span></span></span><span class="line"><span class="cl"><span class="c1">// The recognized month formats are &#34;Jan&#34; and &#34;January&#34;.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// The formats 2, _2, and 02 are unpadded, space-padded, and zero-padded
-</span></span></span><span class="line"><span class="cl"><span class="c1">// day of month. The formats __2 and 002 are space-padded and zero-padded
-</span></span></span><span class="line"><span class="cl"><span class="c1">// three-character day of year; there is no unpadded day of year format.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// Text in the format string that is not recognized as part of the reference
-</span></span></span><span class="line"><span class="cl"><span class="c1">// time is echoed verbatim during Format and expected to appear verbatim
-</span></span></span><span class="line"><span class="cl"><span class="c1">// in the input to Parse.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// The executable example for Time.Format demonstrates the working
-</span></span></span><span class="line"><span class="cl"><span class="c1">// of the layout string in detail and is a good reference.
-</span></span></span><span class="line"><span class="cl"><span class="c1">//
-</span></span></span><span class="line"><span class="cl"><span class="c1">// Note that the RFC822, RFC850, and RFC1123 formats should be applied
-</span></span></span><span class="line"><span class="cl"><span class="c1">// only to local times. Applying them to UTC times will use &#34;UTC&#34; as the
-</span></span></span><span class="line"><span class="cl"><span class="c1">// time zone abbreviation, while strictly speaking those RFCs require the
-</span></span></span><span class="line"><span class="cl"><span class="c1">// use of &#34;GMT&#34; in that case.
-</span></span></span><span class="line"><span class="cl"><span class="c1">// In general RFC1123Z should be used instead of RFC1123 for servers
-</span></span></span><span class="line"><span class="cl"><span class="c1">// that insist on that format, and RFC3339 should be preferred for new protocols.
-</span></span></span><span class="line"><span class="cl"><span class="c1">// RFC3339, RFC822, RFC822Z, RFC1123, and RFC1123Z are useful for formatting;
-</span></span></span><span class="line"><span class="cl"><span class="c1">// when used with time.Parse they do not accept all the time formats
-</span></span></span><span class="line"><span class="cl"><span class="c1">// permitted by the RFCs and they do accept time formats not formally defined.
-</span></span></span><span class="line"><span class="cl"><span class="c1">// The RFC3339Nano format removes trailing zeros from the seconds field
-</span></span></span><span class="line"><span class="cl"><span class="c1">// and thus may not sort correctly once formatted.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">const</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">ANSIC</span>       <span class="p">=</span> <span class="s">&#34;Mon Jan _2 15:04:05 2006&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">UnixDate</span>    <span class="p">=</span> <span class="s">&#34;Mon Jan _2 15:04:05 MST 2006&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">RubyDate</span>    <span class="p">=</span> <span class="s">&#34;Mon Jan 02 15:04:05 -0700 2006&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">RFC822</span>      <span class="p">=</span> <span class="s">&#34;02 Jan 06 15:04 MST&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">RFC822Z</span>     <span class="p">=</span> <span class="s">&#34;02 Jan 06 15:04 -0700&#34;</span> <span class="c1">// RFC822 with numeric zone
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">RFC850</span>      <span class="p">=</span> <span class="s">&#34;Monday, 02-Jan-06 15:04:05 MST&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">RFC1123</span>     <span class="p">=</span> <span class="s">&#34;Mon, 02 Jan 2006 15:04:05 MST&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">RFC1123Z</span>    <span class="p">=</span> <span class="s">&#34;Mon, 02 Jan 2006 15:04:05 -0700&#34;</span> <span class="c1">// RFC1123 with numeric zone
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">RFC3339</span>     <span class="p">=</span> <span class="s">&#34;2006-01-02T15:04:05Z07:00&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">RFC3339Nano</span> <span class="p">=</span> <span class="s">&#34;2006-01-02T15:04:05.999999999Z07:00&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">Kitchen</span>     <span class="p">=</span> <span class="s">&#34;3:04PM&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="c1">// Handy time stamps.
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">Stamp</span>      <span class="p">=</span> <span class="s">&#34;Jan _2 15:04:05&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">StampMilli</span> <span class="p">=</span> <span class="s">&#34;Jan _2 15:04:05.000&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">StampMicro</span> <span class="p">=</span> <span class="s">&#34;Jan _2 15:04:05.000000&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">StampNano</span>  <span class="p">=</span> <span class="s">&#34;Jan _2 15:04:05.000000000&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="获取当前日期时间">获取当前日期时间</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">now</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;当前日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;年：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Year</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;月：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Month</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;日：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Day</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;时：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Hour</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;分：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Minute</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;秒：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Second</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;纳秒：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Nanosecond</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;\n&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="o">/*</span>
-</span></span><span class="line"><span class="cl"><span class="nx">当前日期时间</span><span class="err">：</span><span class="mi">2021</span><span class="o">-</span><span class="mo">07</span><span class="o">-</span><span class="mi">11</span> <span class="mi">11</span><span class="p">:</span><span class="mi">12</span><span class="p">:</span><span class="mf">59.787921</span> <span class="o">+</span><span class="mi">0800</span> <span class="nx">CST</span> <span class="nx">m</span><span class="p">=</span><span class="o">+</span><span class="mf">0.000104353</span>
-</span></span><span class="line"><span class="cl"><span class="nx">年</span><span class="err">：</span><span class="mi">2021</span>
-</span></span><span class="line"><span class="cl"><span class="nx">月</span><span class="err">：</span><span class="nx">July</span>
-</span></span><span class="line"><span class="cl"><span class="nx">日</span><span class="err">：</span><span class="mi">11</span>
-</span></span><span class="line"><span class="cl"><span class="nx">时</span><span class="err">：</span><span class="mi">11</span>
-</span></span><span class="line"><span class="cl"><span class="nx">分</span><span class="err">：</span><span class="mi">12</span>
-</span></span><span class="line"><span class="cl"><span class="nx">秒</span><span class="err">：</span><span class="mi">59</span>
-</span></span><span class="line"><span class="cl"><span class="nx">纳秒</span><span class="err">：</span><span class="mi">787921000</span>
-</span></span><span class="line"><span class="cl"><span class="o">/*</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="获取当前时间戳">获取当前时间戳</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">now</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;当前时间戳（单位为秒）：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Unix</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;当前时间戳（单位为纳秒）：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">UnixNano</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">当前时间戳（单位为秒）：1625973361
-</span></span></span><span class="line"><span class="cl"><span class="cm">当前时间戳（单位为纳秒）：1625973361766745000
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="获取当前时间的字符串格式">获取当前时间的字符串格式</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">now</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;当前日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Format</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">RFC3339</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;当前日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">.</span><span class="nf">Format</span><span class="p">(</span><span class="s">&#34;2006-01-02 15:04:05&#34;</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">当前日期时间：2021-07-11T11:42:19+08:00
-</span></span></span><span class="line"><span class="cl"><span class="cm">当前日期时间：2021-07-11 11:42:19
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="指定时区获取日期时间">指定时区获取日期时间</h1>
-<h2 id="使用-fixedzone-指定">使用 FixedZone 指定</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;testing&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">TheCSTLayout</span> <span class="p">=</span> <span class="s">&#34;2006-01-02T15:04:05&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">theCSTZone</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Location</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">theCSTZone</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">FixedZone</span><span class="p">(</span><span class="s">&#34;CST&#34;</span><span class="p">,</span> <span class="mi">8</span><span class="o">*</span><span class="mi">3600</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestNowDateTime</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">dateTime</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">In</span><span class="p">(</span><span class="nx">theCSTZone</span><span class="p">).</span><span class="nf">Format</span><span class="p">(</span><span class="nx">TheCSTLayout</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">t</span><span class="p">.</span><span class="nf">Logf</span><span class="p">(</span><span class="s">&#34;The date time: %v&#34;</span><span class="p">,</span> <span class="nx">dateTime</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">now</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">ParseInLocation</span><span class="p">(</span><span class="nx">TheCSTLayout</span><span class="p">,</span> <span class="nx">dateTime</span><span class="p">,</span> <span class="nx">theCSTZone</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">t</span><span class="p">.</span><span class="nf">Logf</span><span class="p">(</span><span class="s">&#34;Now date time: %v&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">$ go test -v -timeout 30s -run ^TestNowDateTime$ example.org/hello/v2
-</span></span></span><span class="line"><span class="cl"><span class="cm">=== RUN   TestNowDateTime
-</span></span></span><span class="line"><span class="cl"><span class="cm">    main_test.go:18: The date time: 2021-09-25T09:02:03
-</span></span></span><span class="line"><span class="cl"><span class="cm">    main_test.go:20: Now date time: 2021-09-25 09:02:03 +0800 CST
-</span></span></span><span class="line"><span class="cl"><span class="cm">--- PASS: TestNowDateTime (0.00s)
-</span></span></span><span class="line"><span class="cl"><span class="cm">PASS
-</span></span></span><span class="line"><span class="cl"><span class="cm">ok      example.org/hello/v2    0.234s
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="使用-loadlocation-指定">使用 LoadLocation 指定</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span><span class="lnt">31
-</span><span class="lnt">32
-</span><span class="lnt">33
-</span><span class="lnt">34
-</span><span class="lnt">35
-</span><span class="lnt">36
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;log&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;testing&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">TheCSTLayout</span> <span class="p">=</span> <span class="s">&#34;2006-01-02T15:04:05&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">theCSTLocation</span> <span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Location</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="kd">var</span> <span class="nx">err</span> <span class="kt">error</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">theCSTLocation</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">LoadLocation</span><span class="p">(</span><span class="s">&#34;Asia/Shanghai&#34;</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">log</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;Load location failed, %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TestNowDateTime</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">dateTime</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">In</span><span class="p">(</span><span class="nx">theCSTLocation</span><span class="p">).</span><span class="nf">Format</span><span class="p">(</span><span class="nx">TheCSTLayout</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">t</span><span class="p">.</span><span class="nf">Logf</span><span class="p">(</span><span class="s">&#34;The date time: %v&#34;</span><span class="p">,</span> <span class="nx">dateTime</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">now</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">ParseInLocation</span><span class="p">(</span><span class="nx">TheCSTLayout</span><span class="p">,</span> <span class="nx">dateTime</span><span class="p">,</span> <span class="nx">theCSTLocation</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">t</span><span class="p">.</span><span class="nf">Logf</span><span class="p">(</span><span class="s">&#34;Now date time: %v&#34;</span><span class="p">,</span> <span class="nx">now</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">$ go test -v -timeout 30s -run ^TestNowDateTime$ example.org/hello/v2
-</span></span></span><span class="line"><span class="cl"><span class="cm">=== RUN   TestNowDateTime
-</span></span></span><span class="line"><span class="cl"><span class="cm">    main_test.go:23: The date time: 2021-09-25T09:39:02
-</span></span></span><span class="line"><span class="cl"><span class="cm">    main_test.go:25: Now date time: 2021-09-25 09:39:02 +0800 CST
-</span></span></span><span class="line"><span class="cl"><span class="cm">--- PASS: TestNowDateTime (0.00s)
-</span></span></span><span class="line"><span class="cl"><span class="cm">PASS
-</span></span></span><span class="line"><span class="cl"><span class="cm">ok      example.org/hello/v2    1.777s
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="常用日期时间转换">常用日期时间转换</h1>
-<h2 id="时间戳转日期时间字符串">时间戳转日期时间字符串</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;strconv&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">layout</span> <span class="o">:=</span> <span class="s">&#34;2006-01-02 15:04:05&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">now</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">Unix</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;转换后的日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="nx">now</span><span class="p">,</span> <span class="mi">0</span><span class="p">).</span><span class="nf">Format</span><span class="p">(</span><span class="nx">layout</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="mi">1626005415</span><span class="p">,</span> <span class="s">&#34;1626005415&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">c</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">ParseInt</span><span class="p">(</span><span class="nx">b</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;转换后的日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="nb">int64</span><span class="p">(</span><span class="nx">a</span><span class="p">),</span> <span class="mi">0</span><span class="p">).</span><span class="nf">Format</span><span class="p">(</span><span class="nx">layout</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;转换后的日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Unix</span><span class="p">(</span><span class="nx">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">).</span><span class="nf">Format</span><span class="p">(</span><span class="nx">layout</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">转换后的日期时间：2021-07-11 20:35:31
-</span></span></span><span class="line"><span class="cl"><span class="cm">转换后的日期时间：2021-07-11 20:10:15
-</span></span></span><span class="line"><span class="cl"><span class="cm">转换后的日期时间：2021-07-11 20:10:15
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="日期时间字符串转时间戳">日期时间字符串转时间戳</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">ChinaFormat</span> <span class="p">=</span> <span class="s">&#34;2006-01-02 15:04:05&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="o">:=</span> <span class="s">&#34;2021-07-11 20:27:33&#34;</span><span class="p">,</span> <span class="s">&#34;Sun, 11 Jul 2021 15:04:05 UTC&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">at1</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Parse</span><span class="p">(</span><span class="nx">ChinaFormat</span><span class="p">,</span> <span class="nx">a</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">at2</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Parse</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">RFC1123</span><span class="p">,</span> <span class="nx">b</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;转换后的时间戳：%v\n&#34;</span><span class="p">,</span> <span class="nx">at1</span><span class="p">.</span><span class="nf">Unix</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;转换后的时间戳：%v\n&#34;</span><span class="p">,</span> <span class="nx">at2</span><span class="p">.</span><span class="nf">Unix</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">转换后的时间戳：1626035253
-</span></span></span><span class="line"><span class="cl"><span class="cm">转换后的时间戳：1626015845
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="日期时间字符串转时间对象">日期时间字符串转时间对象</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">str</span> <span class="o">:=</span> <span class="s">&#34;2008-08-08 08:08:08&#34;</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl">  <span class="c1">// Parse the date string into Go&#39;s time object
-</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">at</span><span class="p">,</span> <span class="nx">_</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Parse</span><span class="p">(</span><span class="s">&#34;2006-01-02 15:04:05&#34;</span><span class="p">,</span> <span class="nx">str</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;转换后的日期时间：%v\n&#34;</span><span class="p">,</span> <span class="nx">at</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">at</span><span class="p">.</span><span class="nf">Date</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">转换后的日期时间：2008-08-08 08:08:08 +0000 UTC
-</span></span></span><span class="line"><span class="cl"><span class="cm">2008 August 8
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h1 id="常用日期时间计算">常用日期时间计算</h1>
-<h2 id="计算两个给定日期之前相差的天数">计算两个给定日期之前相差的天数</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">t1</span><span class="p">,</span> <span class="nx">t2</span> <span class="o">:=</span> <span class="nf">Date</span><span class="p">(</span><span class="mi">2020</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="nf">Date</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">days</span> <span class="o">:=</span> <span class="nx">t2</span><span class="p">.</span><span class="nf">Sub</span><span class="p">(</span><span class="nx">t1</span><span class="p">).</span><span class="nf">Hours</span><span class="p">()</span> <span class="o">/</span> <span class="mi">24</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;两个给定日期之前相差的天数为：%v\n&#34;</span><span class="p">,</span> <span class="nx">days</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">Date</span><span class="p">(</span><span class="nx">year</span><span class="p">,</span> <span class="nx">month</span><span class="p">,</span> <span class="nx">day</span> <span class="kt">int</span><span class="p">)</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Date</span><span class="p">(</span><span class="nx">year</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Month</span><span class="p">(</span><span class="nx">month</span><span class="p">),</span> <span class="nx">day</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">UTC</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">两个给定日期之前相差的天数为：366
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h2 id="统计代码运行时间">统计代码运行时间</h2>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span><span class="lnt">24
-</span><span class="lnt">25
-</span><span class="lnt">26
-</span><span class="lnt">27
-</span><span class="lnt">28
-</span><span class="lnt">29
-</span><span class="lnt">30
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;fmt&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fn</span> <span class="o">:=</span> <span class="nf">TimeSpent</span><span class="p">(</span><span class="nx">execSlowFunc</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Exec result: %v\n&#34;</span><span class="p">,</span> <span class="nf">fn</span><span class="p">(</span><span class="mi">9999</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">execSlowFunc</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">x</span> <span class="o">+</span> <span class="mi">1</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TimeSpent</span><span class="p">(</span><span class="nx">fn</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span><span class="p">)</span> <span class="kd">func</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="kd">func</span><span class="p">(</span><span class="nx">x</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">start</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">ret</span> <span class="o">:=</span> <span class="nf">fn</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Time spent:&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Since</span><span class="p">(</span><span class="nx">start</span><span class="p">).</span><span class="nf">Seconds</span><span class="p">())</span>
-</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">ret</span>
-</span></span><span class="line"><span class="cl">  <span class="p">}</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">Time spent: 3.004356442
-</span></span></span><span class="line"><span class="cl"><span class="cm">Exec result: 10000
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span><span class="lnt">11
-</span><span class="lnt">12
-</span><span class="lnt">13
-</span><span class="lnt">14
-</span><span class="lnt">15
-</span><span class="lnt">16
-</span><span class="lnt">17
-</span><span class="lnt">18
-</span><span class="lnt">19
-</span><span class="lnt">20
-</span><span class="lnt">21
-</span><span class="lnt">22
-</span><span class="lnt">23
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="p">(</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;log&#34;</span>
-</span></span><span class="line"><span class="cl">  <span class="s">&#34;time&#34;</span>
-</span></span><span class="line"><span class="cl"><span class="p">)</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="k">defer</span> <span class="nf">TimeSpent</span><span class="p">(</span><span class="nf">execSlowFunc</span><span class="p">(</span><span class="s">&#34;Hello World!&#34;</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">execSlowFunc</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="kt">string</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
-</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">s</span> <span class="o">+</span> <span class="s">&#34; 🌏🌈💫🔥🎉🚀🙏&#34;</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">()</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">TimeSpent</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">start</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">{</span>
-</span></span><span class="line"><span class="cl">  <span class="nx">log</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%v: %v\n&#34;</span><span class="p">,</span> <span class="nx">s</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Since</span><span class="p">(</span><span class="nx">start</span><span class="p">))</span>
-</span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="cm">/*
-</span></span></span><span class="line"><span class="cl"><span class="cm">2021/07/14 08:22:38 Hello World! 🌏🌈💫🔥🎉🚀🙏: 4.582µs
-</span></span></span><span class="line"><span class="cl"><span class="cm">*/</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div></div><div class="post-footer" id="post-footer">
-    <div class="post-info">
-        <div class="post-info-line">
-            <div class="post-info-mod">
-                <span>更新于 2021-07-11</span>
-            </div></div>
-        <div class="post-info-line">
-            <div class="post-info-md"></div>
-            <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://imajinyun.xyz/posts/go-date-time/" data-title="Go 日期时间" data-hashtags="Go"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://imajinyun.xyz/posts/go-date-time/" data-hashtag="Go"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://imajinyun.xyz/posts/go-date-time/" data-title="Go 日期时间"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://imajinyun.xyz/posts/go-date-time/" data-title="Go 日期时间"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://imajinyun.xyz/posts/go-date-time/" data-title="Go 日期时间"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="https://imajinyun.xyz/tags/go/">Go</a></section>
-        <section>
-            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://imajinyun.xyz/">主页</a></span>
-        </section>
-    </div>
-
-    <div class="post-nav"><a href="https://imajinyun.xyz/posts/go-data-type/" class="prev" rel="prev" title="Go 数据类型"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Go 数据类型</a>
-            <a href="https://imajinyun.xyz/posts/go-random-number/" class="next" rel="next" title="Go 随机数">Go 随机数<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
-</div>
-</article></div>
-            </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://imajinyun.xyz/" target="_blank"></a></span></div>
-        </div>
-    </footer></div>
-
-        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
-            </a>
-        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://imajinyun.xyz/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://imajinyun.xyz/js/theme.min.js"></script></body>
-</html>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Go 日期时间 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Go 日期时间"><meta property="og:description" content="Go 中的日期时间使用布局来格式化，通过布局来完成日期时间的格式化和解析。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/posts/go-date-time/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-07-11T11:51:23+08:00"><meta property="article:modified_time" content="2021-07-11T11:51:23+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-concat-string/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-correct-posture/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-other-test/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-benchmark-test/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-unit-test/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/go-random-number/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go 日期时间"><meta name=twitter:description content="Go 中的日期时间使用布局来格式化，通过布局来完成日期时间的格式化和解析。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/posts/go-date-time/><link rel=prev href=https://imajinyun.xyz/posts/go-data-type/><link rel=next href=https://imajinyun.xyz/posts/go-random-number/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go 日期时间","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/posts\/go-date-time\/"},"genre":"posts","keywords":"Go","wordcount":2898,"url":"https:\/\/imajinyun.xyz\/posts\/go-date-time\/","datePublished":"2021-07-11T11:51:23+08:00","dateModified":"2021-07-11T11:51:23+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go 日期时间</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/go/><i class="far fa-folder fa-fw" aria-hidden=true></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2021-07-11>2021-07-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 2898 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 6 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#标准日期时间格式>标准日期时间格式</a></li><li><a href=#获取当前日期时间>获取当前日期时间</a></li><li><a href=#获取当前时间戳>获取当前时间戳</a></li><li><a href=#获取当前时间的字符串格式>获取当前时间的字符串格式</a></li></ul><ul><li><a href=#使用-fixedzone-指定>使用 FixedZone 指定</a></li><li><a href=#使用-loadlocation-指定>使用 LoadLocation 指定</a></li></ul><ul><li><a href=#时间戳转日期时间字符串>时间戳转日期时间字符串</a></li><li><a href=#日期时间字符串转时间戳>日期时间字符串转时间戳</a></li><li><a href=#日期时间字符串转时间对象>日期时间字符串转时间对象</a></li></ul><ul><li><a href=#计算两个给定日期之前相差的天数>计算两个给定日期之前相差的天数</a></li><li><a href=#统计代码运行时间>统计代码运行时间</a></li></ul></nav></div></div><div class=content id=content><p>Go 中的日期时间使用布局来格式化，通过布局来完成日期时间的格式化和解析。</p><ul><li><a href=https://imajinyun.xyz/2021/06/26/go-get-started/ target=_blank rel="noopener noreffer"><code>Go 起步</code></a></li><li><a href=https://imajinyun.xyz/2021/07/02/go-data-type/ target=_blank rel="noopener noreffer"><code>Go 数据类型</code></a></li><li><strong>Go 日期时间</strong></li><li><a href=https://imajinyun.xyz/2021/07/14/go-random-number/ target=_blank rel="noopener noreffer"><code>Go 随机数</code></a></li><li><a href=https://imajinyun.xyz/2021/07/16/go-unit-test/ target=_blank rel="noopener noreffer"><code>Go 单元测试</code></a></li><li><a href=https://imajinyun.xyz/2021/07/17/go-benchmark-test/ target=_blank rel="noopener noreffer"><code>Go 基准测试</code></a></li><li><a href=https://imajinyun.xyz/2021/07/22/go-other-test/ target=_blank rel="noopener noreffer"><code>Go 其它测试</code></a></li><li><a href=https://imajinyun.xyz/2021/07/24/go-correct-posture/ target=_blank rel="noopener noreffer"><code>Go 正确姿势</code></a></li><li><a href=https://imajinyun.xyz/2021/07/25/go-concat-string/ target=_blank rel="noopener noreffer"><code>Go 连接字符串</code></a></li></ul><h1 id=当前日期时间>当前日期时间</h1><h2 id=标准日期时间格式>标准日期时间格式</h2><p>布局格式：</p><table><thead><tr><th>Layout</th><th>Note</th></tr></thead><tbody><tr><td><code>January 2, 2006</code></td><td>Date</td></tr><tr><td><code>01/02/06</code></td><td>Date</td></tr><tr><td><code>Jan-02-06</code></td><td>Date</td></tr><tr><td><code>15:04:05</code></td><td>Time</td></tr><tr><td><code>3:04:05 PM</code></td><td>Time</td></tr><tr><td><code>Jan _2 15:04:05</code></td><td>Timestamp</td></tr><tr><td><code>Jan _2 15:04:05.000000</code></td><td>With microseconds</td></tr><tr><td><code>2006-01-02T15:04:05-0700</code></td><td><a href=https://en.wikipedia.org/wiki/ISO_8601 target=_blank rel="noopener noreffer">ISO 8601</a>(<a href=https://www.ietf.org/rfc/rfc3339.txt target=_blank rel="noopener noreffer">RFC 3339</a>)</td></tr><tr><td><code>2006-01-02</code></td><td><a href=https://en.wikipedia.org/wiki/ISO_8601 target=_blank rel="noopener noreffer">ISO 8601</a>(<a href=https://www.ietf.org/rfc/rfc3339.txt target=_blank rel="noopener noreffer">RFC 3339</a>)</td></tr><tr><td><code>15:04:05</code></td><td><a href=https://en.wikipedia.org/wiki/ISO_8601 target=_blank rel="noopener noreffer">ISO 8601</a>(<a href=https://www.ietf.org/rfc/rfc3339.txt target=_blank rel="noopener noreffer">RFC 3339</a>)</td></tr><tr><td><code>02 Jan 06 15:04 MST</code></td><td><a href=https://www.ietf.org/rfc/rfc822.txt target=_blank rel="noopener noreffer">RFC 822</a></td></tr><tr><td><code>02 Jan 06 15:04 -0700</code></td><td>With numeric zone</td></tr><tr><td><code>Mon, 02 Jan 2006 15:04:05 MST</code></td><td><a href=https://www.ietf.org/rfc/rfc1123.txt target=_blank rel="noopener noreffer">RFC 1123</a></td></tr><tr><td><code>Mon, 02 Jan 2006 15:04:05 -0700</code></td><td>With numeric zone</td></tr></tbody></table><p>布局选项：</p><table><thead><tr><th>Type</th><th>Options</th></tr></thead><tbody><tr><td><code>Year</code></td><td><code>06</code> <code>2006</code></td></tr><tr><td><code>Month</code></td><td><code>01</code> <code>1</code> <code>Jan</code> <code>January</code></td></tr><tr><td><code>Day</code></td><td><code>02</code> <code>2</code> <code>_2</code>(width two, right justified)</td></tr><tr><td><code>Weekday</code></td><td><code>Mon</code> <code>Monday</code></td></tr><tr><td><code>Hours</code></td><td><code>03</code> <code>3</code> <code>15</code></td></tr><tr><td><code>Minutes</code></td><td><code>04</code> <code>4</code></td></tr><tr><td><code>Seconds</code></td><td><code>05</code> <code>5</code></td></tr><tr><td><code>ms us ns</code></td><td><code>.000</code> <code>.000000</code> <code>.000000000</code></td></tr><tr><td><code>ms us ns</code></td><td><code>.999</code> <code>.999999</code> <code>.999999999</code>(trailing zeros removed)</td></tr><tr><td><code>am/pm</code></td><td><code>AM</code> <code>am</code> <code>PM</code> <code>pm</code></td></tr><tr><td><code>Timezone</code></td><td><code>MST</code></td></tr><tr><td><code>Offset</code></td><td><code>-0700</code> <code>-07</code> <code>-07:00</code> <code>Z0700</code> <code>Z07:00</code></td></tr></tbody></table><p>以下是 Go 源码中预定义日期和时间格式常量：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// These are predefined layouts for use in Time.Format and time.Parse.
+</span></span></span><span class=line><span class=cl><span class=c1>// The reference time used in the layouts is the specific time:
+</span></span></span><span class=line><span class=cl><span class=c1>//	Mon Jan 2 15:04:05 MST 2006
+</span></span></span><span class=line><span class=cl><span class=c1>// which is Unix time 1136239445. Since MST is GMT-0700,
+</span></span></span><span class=line><span class=cl><span class=c1>// the reference time can be thought of as
+</span></span></span><span class=line><span class=cl><span class=c1>//	01/02 03:04:05PM &#39;06 -0700
+</span></span></span><span class=line><span class=cl><span class=c1>// To define your own format, write down what the reference time would look
+</span></span></span><span class=line><span class=cl><span class=c1>// like formatted your way; see the values of constants like ANSIC,
+</span></span></span><span class=line><span class=cl><span class=c1>// StampMicro or Kitchen for examples. The model is to demonstrate what the
+</span></span></span><span class=line><span class=cl><span class=c1>// reference time looks like so that the Format and Parse methods can apply
+</span></span></span><span class=line><span class=cl><span class=c1>// the same transformation to a general time value.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// Some valid layouts are invalid time values for time.Parse, due to formats
+</span></span></span><span class=line><span class=cl><span class=c1>// such as _ for space padding and Z for zone information.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// Within the format string, an underscore _ represents a space that may be
+</span></span></span><span class=line><span class=cl><span class=c1>// replaced by a digit if the following number (a day) has two digits; for
+</span></span></span><span class=line><span class=cl><span class=c1>// compatibility with fixed-width Unix time formats.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// A decimal point followed by one or more zeros represents a fractional
+</span></span></span><span class=line><span class=cl><span class=c1>// second, printed to the given number of decimal places. A decimal point
+</span></span></span><span class=line><span class=cl><span class=c1>// followed by one or more nines represents a fractional second, printed to
+</span></span></span><span class=line><span class=cl><span class=c1>// the given number of decimal places, with trailing zeros removed.
+</span></span></span><span class=line><span class=cl><span class=c1>// When parsing (only), the input may contain a fractional second
+</span></span></span><span class=line><span class=cl><span class=c1>// field immediately after the seconds field, even if the layout does not
+</span></span></span><span class=line><span class=cl><span class=c1>// signify its presence. In that case a decimal point followed by a maximal
+</span></span></span><span class=line><span class=cl><span class=c1>// series of digits is parsed as a fractional second.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// Numeric time zone offsets format as follows:
+</span></span></span><span class=line><span class=cl><span class=c1>//	-0700  ±hhmm
+</span></span></span><span class=line><span class=cl><span class=c1>//	-07:00 ±hh:mm
+</span></span></span><span class=line><span class=cl><span class=c1>//	-07    ±hh
+</span></span></span><span class=line><span class=cl><span class=c1>// Replacing the sign in the format with a Z triggers
+</span></span></span><span class=line><span class=cl><span class=c1>// the ISO 8601 behavior of printing Z instead of an
+</span></span></span><span class=line><span class=cl><span class=c1>// offset for the UTC zone. Thus:
+</span></span></span><span class=line><span class=cl><span class=c1>//	Z0700  Z or ±hhmm
+</span></span></span><span class=line><span class=cl><span class=c1>//	Z07:00 Z or ±hh:mm
+</span></span></span><span class=line><span class=cl><span class=c1>//	Z07    Z or ±hh
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// The recognized day of week formats are &#34;Mon&#34; and &#34;Monday&#34;.
+</span></span></span><span class=line><span class=cl><span class=c1>// The recognized month formats are &#34;Jan&#34; and &#34;January&#34;.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// The formats 2, _2, and 02 are unpadded, space-padded, and zero-padded
+</span></span></span><span class=line><span class=cl><span class=c1>// day of month. The formats __2 and 002 are space-padded and zero-padded
+</span></span></span><span class=line><span class=cl><span class=c1>// three-character day of year; there is no unpadded day of year format.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// Text in the format string that is not recognized as part of the reference
+</span></span></span><span class=line><span class=cl><span class=c1>// time is echoed verbatim during Format and expected to appear verbatim
+</span></span></span><span class=line><span class=cl><span class=c1>// in the input to Parse.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// The executable example for Time.Format demonstrates the working
+</span></span></span><span class=line><span class=cl><span class=c1>// of the layout string in detail and is a good reference.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// Note that the RFC822, RFC850, and RFC1123 formats should be applied
+</span></span></span><span class=line><span class=cl><span class=c1>// only to local times. Applying them to UTC times will use &#34;UTC&#34; as the
+</span></span></span><span class=line><span class=cl><span class=c1>// time zone abbreviation, while strictly speaking those RFCs require the
+</span></span></span><span class=line><span class=cl><span class=c1>// use of &#34;GMT&#34; in that case.
+</span></span></span><span class=line><span class=cl><span class=c1>// In general RFC1123Z should be used instead of RFC1123 for servers
+</span></span></span><span class=line><span class=cl><span class=c1>// that insist on that format, and RFC3339 should be preferred for new protocols.
+</span></span></span><span class=line><span class=cl><span class=c1>// RFC3339, RFC822, RFC822Z, RFC1123, and RFC1123Z are useful for formatting;
+</span></span></span><span class=line><span class=cl><span class=c1>// when used with time.Parse they do not accept all the time formats
+</span></span></span><span class=line><span class=cl><span class=c1>// permitted by the RFCs and they do accept time formats not formally defined.
+</span></span></span><span class=line><span class=cl><span class=c1>// The RFC3339Nano format removes trailing zeros from the seconds field
+</span></span></span><span class=line><span class=cl><span class=c1>// and thus may not sort correctly once formatted.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>const</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ANSIC</span>       <span class=p>=</span> <span class=s>&#34;Mon Jan _2 15:04:05 2006&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>UnixDate</span>    <span class=p>=</span> <span class=s>&#34;Mon Jan _2 15:04:05 MST 2006&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>RubyDate</span>    <span class=p>=</span> <span class=s>&#34;Mon Jan 02 15:04:05 -0700 2006&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>RFC822</span>      <span class=p>=</span> <span class=s>&#34;02 Jan 06 15:04 MST&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>RFC822Z</span>     <span class=p>=</span> <span class=s>&#34;02 Jan 06 15:04 -0700&#34;</span> <span class=c1>// RFC822 with numeric zone
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>RFC850</span>      <span class=p>=</span> <span class=s>&#34;Monday, 02-Jan-06 15:04:05 MST&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>RFC1123</span>     <span class=p>=</span> <span class=s>&#34;Mon, 02 Jan 2006 15:04:05 MST&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>RFC1123Z</span>    <span class=p>=</span> <span class=s>&#34;Mon, 02 Jan 2006 15:04:05 -0700&#34;</span> <span class=c1>// RFC1123 with numeric zone
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>RFC3339</span>     <span class=p>=</span> <span class=s>&#34;2006-01-02T15:04:05Z07:00&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>RFC3339Nano</span> <span class=p>=</span> <span class=s>&#34;2006-01-02T15:04:05.999999999Z07:00&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>Kitchen</span>     <span class=p>=</span> <span class=s>&#34;3:04PM&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Handy time stamps.
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>Stamp</span>      <span class=p>=</span> <span class=s>&#34;Jan _2 15:04:05&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>StampMilli</span> <span class=p>=</span> <span class=s>&#34;Jan _2 15:04:05.000&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>StampMicro</span> <span class=p>=</span> <span class=s>&#34;Jan _2 15:04:05.000000&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>StampNano</span>  <span class=p>=</span> <span class=s>&#34;Jan _2 15:04:05.000000000&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=获取当前日期时间>获取当前日期时间</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>now</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;当前日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;年：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Year</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;月：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Month</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;日：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Day</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;时：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Hour</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;分：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Minute</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;秒：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Second</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;纳秒：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Nanosecond</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;\n&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>/*</span>
+</span></span><span class=line><span class=cl><span class=nx>当前日期时间</span><span class=err>：</span><span class=mi>2021</span><span class=o>-</span><span class=mo>07</span><span class=o>-</span><span class=mi>11</span> <span class=mi>11</span><span class=p>:</span><span class=mi>12</span><span class=p>:</span><span class=mf>59.787921</span> <span class=o>+</span><span class=mi>0800</span> <span class=nx>CST</span> <span class=nx>m</span><span class=p>=</span><span class=o>+</span><span class=mf>0.000104353</span>
+</span></span><span class=line><span class=cl><span class=nx>年</span><span class=err>：</span><span class=mi>2021</span>
+</span></span><span class=line><span class=cl><span class=nx>月</span><span class=err>：</span><span class=nx>July</span>
+</span></span><span class=line><span class=cl><span class=nx>日</span><span class=err>：</span><span class=mi>11</span>
+</span></span><span class=line><span class=cl><span class=nx>时</span><span class=err>：</span><span class=mi>11</span>
+</span></span><span class=line><span class=cl><span class=nx>分</span><span class=err>：</span><span class=mi>12</span>
+</span></span><span class=line><span class=cl><span class=nx>秒</span><span class=err>：</span><span class=mi>59</span>
+</span></span><span class=line><span class=cl><span class=nx>纳秒</span><span class=err>：</span><span class=mi>787921000</span>
+</span></span><span class=line><span class=cl><span class=o>/*</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=获取当前时间戳>获取当前时间戳</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>now</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;当前时间戳（单位为秒）：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Unix</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;当前时间戳（单位为纳秒）：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>UnixNano</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>当前时间戳（单位为秒）：1625973361
+</span></span></span><span class=line><span class=cl><span class=cm>当前时间戳（单位为纳秒）：1625973361766745000
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=获取当前时间的字符串格式>获取当前时间的字符串格式</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>now</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;当前日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Format</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>RFC3339</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;当前日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>.</span><span class=nf>Format</span><span class=p>(</span><span class=s>&#34;2006-01-02 15:04:05&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>当前日期时间：2021-07-11T11:42:19+08:00
+</span></span></span><span class=line><span class=cl><span class=cm>当前日期时间：2021-07-11 11:42:19
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=指定时区获取日期时间>指定时区获取日期时间</h1><h2 id=使用-fixedzone-指定>使用 FixedZone 指定</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;testing&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>const</span> <span class=nx>TheCSTLayout</span> <span class=p>=</span> <span class=s>&#34;2006-01-02T15:04:05&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>theCSTZone</span> <span class=o>*</span><span class=nx>time</span><span class=p>.</span><span class=nx>Location</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>init</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>theCSTZone</span> <span class=p>=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>FixedZone</span><span class=p>(</span><span class=s>&#34;CST&#34;</span><span class=p>,</span> <span class=mi>8</span><span class=o>*</span><span class=mi>3600</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestNowDateTime</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>dateTime</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>In</span><span class=p>(</span><span class=nx>theCSTZone</span><span class=p>).</span><span class=nf>Format</span><span class=p>(</span><span class=nx>TheCSTLayout</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>t</span><span class=p>.</span><span class=nf>Logf</span><span class=p>(</span><span class=s>&#34;The date time: %v&#34;</span><span class=p>,</span> <span class=nx>dateTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>now</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>ParseInLocation</span><span class=p>(</span><span class=nx>TheCSTLayout</span><span class=p>,</span> <span class=nx>dateTime</span><span class=p>,</span> <span class=nx>theCSTZone</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>t</span><span class=p>.</span><span class=nf>Logf</span><span class=p>(</span><span class=s>&#34;Now date time: %v&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>$ go test -v -timeout 30s -run ^TestNowDateTime$ example.org/hello/v2
+</span></span></span><span class=line><span class=cl><span class=cm>=== RUN   TestNowDateTime
+</span></span></span><span class=line><span class=cl><span class=cm>    main_test.go:18: The date time: 2021-09-25T09:02:03
+</span></span></span><span class=line><span class=cl><span class=cm>    main_test.go:20: Now date time: 2021-09-25 09:02:03 +0800 CST
+</span></span></span><span class=line><span class=cl><span class=cm>--- PASS: TestNowDateTime (0.00s)
+</span></span></span><span class=line><span class=cl><span class=cm>PASS
+</span></span></span><span class=line><span class=cl><span class=cm>ok      example.org/hello/v2    0.234s
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=使用-loadlocation-指定>使用 LoadLocation 指定</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;testing&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>const</span> <span class=nx>TheCSTLayout</span> <span class=p>=</span> <span class=s>&#34;2006-01-02T15:04:05&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>theCSTLocation</span> <span class=o>*</span><span class=nx>time</span><span class=p>.</span><span class=nx>Location</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>init</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>err</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl>  <span class=nx>theCSTLocation</span><span class=p>,</span> <span class=nx>err</span> <span class=p>=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>LoadLocation</span><span class=p>(</span><span class=s>&#34;Asia/Shanghai&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;Load location failed, %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestNowDateTime</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>dateTime</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>In</span><span class=p>(</span><span class=nx>theCSTLocation</span><span class=p>).</span><span class=nf>Format</span><span class=p>(</span><span class=nx>TheCSTLayout</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>t</span><span class=p>.</span><span class=nf>Logf</span><span class=p>(</span><span class=s>&#34;The date time: %v&#34;</span><span class=p>,</span> <span class=nx>dateTime</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>now</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>ParseInLocation</span><span class=p>(</span><span class=nx>TheCSTLayout</span><span class=p>,</span> <span class=nx>dateTime</span><span class=p>,</span> <span class=nx>theCSTLocation</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>t</span><span class=p>.</span><span class=nf>Logf</span><span class=p>(</span><span class=s>&#34;Now date time: %v&#34;</span><span class=p>,</span> <span class=nx>now</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>$ go test -v -timeout 30s -run ^TestNowDateTime$ example.org/hello/v2
+</span></span></span><span class=line><span class=cl><span class=cm>=== RUN   TestNowDateTime
+</span></span></span><span class=line><span class=cl><span class=cm>    main_test.go:23: The date time: 2021-09-25T09:39:02
+</span></span></span><span class=line><span class=cl><span class=cm>    main_test.go:25: Now date time: 2021-09-25 09:39:02 +0800 CST
+</span></span></span><span class=line><span class=cl><span class=cm>--- PASS: TestNowDateTime (0.00s)
+</span></span></span><span class=line><span class=cl><span class=cm>PASS
+</span></span></span><span class=line><span class=cl><span class=cm>ok      example.org/hello/v2    1.777s
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=常用日期时间转换>常用日期时间转换</h1><h2 id=时间戳转日期时间字符串>时间戳转日期时间字符串</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;strconv&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>layout</span> <span class=o>:=</span> <span class=s>&#34;2006-01-02 15:04:05&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>now</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>Unix</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;转换后的日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Unix</span><span class=p>(</span><span class=nx>now</span><span class=p>,</span> <span class=mi>0</span><span class=p>).</span><span class=nf>Format</span><span class=p>(</span><span class=nx>layout</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>a</span><span class=p>,</span> <span class=nx>b</span> <span class=o>:=</span> <span class=mi>1626005415</span><span class=p>,</span> <span class=s>&#34;1626005415&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>strconv</span><span class=p>.</span><span class=nf>ParseInt</span><span class=p>(</span><span class=nx>b</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>64</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;转换后的日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Unix</span><span class=p>(</span><span class=nb>int64</span><span class=p>(</span><span class=nx>a</span><span class=p>),</span> <span class=mi>0</span><span class=p>).</span><span class=nf>Format</span><span class=p>(</span><span class=nx>layout</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;转换后的日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Unix</span><span class=p>(</span><span class=nx>c</span><span class=p>,</span> <span class=mi>0</span><span class=p>).</span><span class=nf>Format</span><span class=p>(</span><span class=nx>layout</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>转换后的日期时间：2021-07-11 20:35:31
+</span></span></span><span class=line><span class=cl><span class=cm>转换后的日期时间：2021-07-11 20:10:15
+</span></span></span><span class=line><span class=cl><span class=cm>转换后的日期时间：2021-07-11 20:10:15
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=日期时间字符串转时间戳>日期时间字符串转时间戳</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>const</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ChinaFormat</span> <span class=p>=</span> <span class=s>&#34;2006-01-02 15:04:05&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>a</span><span class=p>,</span> <span class=nx>b</span> <span class=o>:=</span> <span class=s>&#34;2021-07-11 20:27:33&#34;</span><span class=p>,</span> <span class=s>&#34;Sun, 11 Jul 2021 15:04:05 UTC&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>at1</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Parse</span><span class=p>(</span><span class=nx>ChinaFormat</span><span class=p>,</span> <span class=nx>a</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>at2</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Parse</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>RFC1123</span><span class=p>,</span> <span class=nx>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;转换后的时间戳：%v\n&#34;</span><span class=p>,</span> <span class=nx>at1</span><span class=p>.</span><span class=nf>Unix</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;转换后的时间戳：%v\n&#34;</span><span class=p>,</span> <span class=nx>at2</span><span class=p>.</span><span class=nf>Unix</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>转换后的时间戳：1626035253
+</span></span></span><span class=line><span class=cl><span class=cm>转换后的时间戳：1626015845
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=日期时间字符串转时间对象>日期时间字符串转时间对象</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>str</span> <span class=o>:=</span> <span class=s>&#34;2008-08-08 08:08:08&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Parse the date string into Go&#39;s time object
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>at</span><span class=p>,</span> <span class=nx>_</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Parse</span><span class=p>(</span><span class=s>&#34;2006-01-02 15:04:05&#34;</span><span class=p>,</span> <span class=nx>str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;转换后的日期时间：%v\n&#34;</span><span class=p>,</span> <span class=nx>at</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>at</span><span class=p>.</span><span class=nf>Date</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>转换后的日期时间：2008-08-08 08:08:08 +0000 UTC
+</span></span></span><span class=line><span class=cl><span class=cm>2008 August 8
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=常用日期时间计算>常用日期时间计算</h1><h2 id=计算两个给定日期之前相差的天数>计算两个给定日期之前相差的天数</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>t1</span><span class=p>,</span> <span class=nx>t2</span> <span class=o>:=</span> <span class=nf>Date</span><span class=p>(</span><span class=mi>2020</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>),</span> <span class=nf>Date</span><span class=p>(</span><span class=mi>2021</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>days</span> <span class=o>:=</span> <span class=nx>t2</span><span class=p>.</span><span class=nf>Sub</span><span class=p>(</span><span class=nx>t1</span><span class=p>).</span><span class=nf>Hours</span><span class=p>()</span> <span class=o>/</span> <span class=mi>24</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;两个给定日期之前相差的天数为：%v\n&#34;</span><span class=p>,</span> <span class=nx>days</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Date</span><span class=p>(</span><span class=nx>year</span><span class=p>,</span> <span class=nx>month</span><span class=p>,</span> <span class=nx>day</span> <span class=kt>int</span><span class=p>)</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Date</span><span class=p>(</span><span class=nx>year</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Month</span><span class=p>(</span><span class=nx>month</span><span class=p>),</span> <span class=nx>day</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nx>UTC</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>两个给定日期之前相差的天数为：366
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=统计代码运行时间>统计代码运行时间</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fn</span> <span class=o>:=</span> <span class=nf>TimeSpent</span><span class=p>(</span><span class=nx>execSlowFunc</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Exec result: %v\n&#34;</span><span class=p>,</span> <span class=nf>fn</span><span class=p>(</span><span class=mi>9999</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>execSlowFunc</span><span class=p>(</span><span class=nx>x</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=mi>3</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>x</span> <span class=o>+</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TimeSpent</span><span class=p>(</span><span class=nx>fn</span> <span class=kd>func</span><span class=p>(</span><span class=nx>x</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span><span class=p>)</span> <span class=kd>func</span><span class=p>(</span><span class=nx>n</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=kd>func</span><span class=p>(</span><span class=nx>x</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>start</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=nx>ret</span> <span class=o>:=</span> <span class=nf>fn</span><span class=p>(</span><span class=nx>x</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Time spent:&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Since</span><span class=p>(</span><span class=nx>start</span><span class=p>).</span><span class=nf>Seconds</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>ret</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Time spent: 3.004356442
+</span></span></span><span class=line><span class=cl><span class=cm>Exec result: 10000
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>defer</span> <span class=nf>TimeSpent</span><span class=p>(</span><span class=nf>execSlowFunc</span><span class=p>(</span><span class=s>&#34;Hello World!&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>execSlowFunc</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=kt>string</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=mi>1</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>s</span> <span class=o>+</span> <span class=s>&#34; 🌏🌈💫🔥🎉🚀🙏&#34;</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TimeSpent</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>start</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%v: %v\n&#34;</span><span class=p>,</span> <span class=nx>s</span><span class=p>,</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Since</span><span class=p>(</span><span class=nx>start</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>2021/07/14 08:22:38 Hello World! 🌏🌈💫🔥🎉🚀🙏: 4.582µs
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-07-11</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/posts/go-date-time/ data-title="Go 日期时间" data-hashtags=Go><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/posts/go-date-time/ data-hashtag=Go><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/posts/go-date-time/ data-title="Go 日期时间"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/posts/go-date-time/ data-title="Go 日期时间"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/posts/go-date-time/ data-title="Go 日期时间"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/posts/go-data-type/ class=prev rel=prev title="Go 数据类型"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Go 数据类型</a>
+<a href=https://imajinyun.xyz/posts/go-random-number/ class=next rel=next title="Go 随机数">Go 随机数<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>

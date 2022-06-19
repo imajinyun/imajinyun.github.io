@@ -1,388 +1,64 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="robots" content="noodp" />
-        <title>Linux crontab 命令 - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Linux crontab 命令" />
-<meta property="og:description" content="Crontab 命令被用来提交和管理用户的需要周期性执行的任务。 简介 通过 crontab 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://imajinyun.xyz/posts/linux-crontab-command/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-12-29T11:26:32+08:00" />
-<meta property="article:modified_time" content="2019-12-29T11:26:32+08:00" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
-<meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-network-io-model/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-network-conf-tools/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-shadowsocks/" /><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-common-commands/" />
-
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Linux crontab 命令"/>
-<meta name="twitter:description" content="Crontab 命令被用来提交和管理用户的需要周期性执行的任务。 简介 通过 crontab 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是"/>
-<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
-<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://imajinyun.xyz/apple-touch-icon.png"><link rel="mask-icon" href="https://imajinyun.xyz/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://imajinyun.xyz/site.webmanifest"><link rel="canonical" href="https://imajinyun.xyz/posts/linux-crontab-command/" /><link rel="prev" href="https://imajinyun.xyz/posts/linux-network-conf-tools/" /><link rel="next" href="https://imajinyun.xyz/posts/redis-cluster/" /><link rel="stylesheet" href="https://imajinyun.xyz/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
-    {
-        "@context": "http://schema.org",
-        "@type": "BlogPosting",
-        "headline": "Linux crontab 命令",
-        "inLanguage": "zh-CN",
-        "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": "https:\/\/imajinyun.xyz\/posts\/linux-crontab-command\/"
-        },"genre": "posts","keywords": "Linux","wordcount":  1232 ,
-        "url": "https:\/\/imajinyun.xyz\/posts\/linux-crontab-command\/","datePublished": "2019-12-29T11:26:32+08:00","dateModified": "2019-12-29T11:26:32+08:00","publisher": {
-            "@type": "Organization",
-            "name": ""},"author": {
-                "@type": "Person",
-                "name": "作者"
-            },"description": ""
-    }
-    </script></head>
-    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
-
-        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
-    <div class="header-wrapper">
-        <div class="header-title">
-            <a href="https://imajinyun.xyz/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
-        </div>
-        <div class="menu">
-            <div class="menu-inner"><a class="menu-item" href="https://imajinyun.xyz/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://imajinyun.xyz/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://imajinyun.xyz/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://imajinyun.xyz/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://imajinyun.xyz/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://imajinyun.xyz/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
-                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <span class="search-button search-loading" id="search-loading-desktop">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
-                        </span>
-                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-                </a>
-            </div>
-        </div>
-    </div>
-</header><header class="mobile" id="header-mobile">
-    <div class="header-container">
-        <div class="header-wrapper">
-            <div class="header-title">
-                <a href="https://imajinyun.xyz/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
-            </div>
-            <div class="menu-toggle" id="menu-toggle-mobile">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-        <div class="menu" id="menu-mobile"><div class="search-wrapper">
-                    <div class="search mobile" id="search-mobile">
-                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
-                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
-                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
-                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
-                        </a>
-                        <span class="search-button search-loading" id="search-loading-mobile">
-                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
-                        </span>
-                    </div>
-                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
-                        取消
-                    </a>
-                </div><a class="menu-item" href="https://imajinyun.xyz/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://imajinyun.xyz/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://imajinyun.xyz/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://imajinyun.xyz/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://imajinyun.xyz/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://imajinyun.xyz/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
-                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
-            </a></div>
-    </div>
-</header><div class="search-dropdown desktop">
-        <div id="search-dropdown-desktop"></div>
-    </div>
-    <div class="search-dropdown mobile">
-        <div id="search-dropdown-mobile"></div>
-    </div><main class="main">
-                <div class="container"><div class="toc" id="toc-auto">
-            <h2 class="toc-title">目录</h2>
-            <div class="toc-content" id="toc-content-auto"></div>
-        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Linux crontab 命令</h1><div class="post-meta">
-            <div class="post-meta-line"><span class="post-author"><a href="https://imajinyun.xyz/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="https://imajinyun.xyz/categories/linux/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Linux</a></span></div>
-            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2019-12-29">2019-12-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1232 字&nbsp;
-                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
-        </div><div class="details toc" id="toc-static"  data-kept="">
-                <div class="details-summary toc-title">
-                    <span>目录</span>
-                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
-                </div>
-                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
-  <ul>
-    <li><a href="#简介">简介</a></li>
-    <li><a href="#选项">选项</a></li>
-    <li><a href="#任务调度">任务调度</a>
-      <ul>
-        <li><a href="#系统任务调度">系统任务调度</a></li>
-        <li><a href="#用户任务调度">用户任务调度</a></li>
-      </ul>
-    </li>
-    <li><a href="#文件格式">文件格式</a></li>
-    <li><a href="#使用实例">使用实例</a>
-      <ul>
-        <li><a href="#每-1-分钟执行一次命令">每 1 分钟执行一次命令</a></li>
-        <li><a href="#每小时的第-3-和第-15-分钟执行">每小时的第 3 和第 15 分钟执行</a></li>
-        <li><a href="#上午-8-点到-11-点的第-3-和第-15-分钟执行">上午 8 点到 11 点的第 3 和第 15 分钟执行</a></li>
-        <li><a href="#每隔两天的上午-8-点到-11-点的第-3-和第-15-分钟执行">每隔两天的上午 8 点到 11 点的第 3 和第 15 分钟执行</a></li>
-        <li><a href="#每个星期一的上午-8-点到-11-点的第-3-和第-15-分钟执行">每个星期一的上午 8 点到 11 点的第 3 和第 15 分钟执行</a></li>
-        <li><a href="#每晚的-2130-重启-smb">每晚的 21:30 重启 smb</a></li>
-        <li><a href="#每月-11022-日的-445-重启-smb">每月 1、10、22 日的 4:45 重启 smb</a></li>
-        <li><a href="#每周六周日的-110-重启-smb">每周六、周日的 1:10 重启 smb</a></li>
-        <li><a href="#每天-1800-至-2300-之间每隔-30-分钟重启-smb">每天 18:00 至 23:00 之间每隔 30 分钟重启 smb</a></li>
-        <li><a href="#每星期六的晚上-1100-pm-重启-smb">每星期六的晚上 11:00 PM 重启 smb</a></li>
-        <li><a href="#每一小时重启-smb">每一小时重启 smb</a></li>
-        <li><a href="#晚上-11-点到早上-7-点之间每隔一小时重启-smb">晚上 11 点到早上 7 点之间，每隔一小时重启 smb</a></li>
-        <li><a href="#每月的-4-号与每周一到周三的-11-点重启-smb">每月的 4 号与每周一到周三的 11 点重启 smb</a></li>
-        <li><a href="#一月一号的-4-点重启-smb">一月一号的 4 点重启 smb</a></li>
-        <li><a href="#每小时执行-etccronhourly-目录内的脚本">每小时执行 /etc/cron.hourly 目录内的脚本</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav></div>
-            </div><div class="content" id="content"><p>Crontab 命令被用来提交和管理用户的需要周期性执行的任务。</p>
-<!-- more -->
-<h2 id="简介">简介</h2>
-<p>通过 <strong>crontab</strong> 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是分钟、小时、日、月、周及以上的任意组合。这个命令非常适合周期性的日志分析或数据备份等工作。</p>
-<h2 id="选项">选项</h2>
-<ul>
-<li><code>-e</code>：编辑该用户的计时器设置；</li>
-<li><code>-l</code>：列出该用户的计时器设置；</li>
-<li><code>-r</code>：删除该用户的计时器设置；</li>
-<li><code>-u&lt;username&gt;</code>：指定要设定计时器的用户名称。</li>
-</ul>
-<h2 id="任务调度">任务调度</h2>
-<h3 id="系统任务调度">系统任务调度</h3>
-<p><strong>系统任务调度</strong> 是系统周期性所要执行的工作，比如写缓存数据到硬盘、日志清理等。在 <code>/etc</code> 目录下有一个 crontab 文件，这个就是系统任务调度的配置文件。</p>
-<p><code>/etc/crontab</code> 文件包括下面几行：</p>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
-</span><span class="lnt"> 2
-</span><span class="lnt"> 3
-</span><span class="lnt"> 4
-</span><span class="lnt"> 5
-</span><span class="lnt"> 6
-</span><span class="lnt"> 7
-</span><span class="lnt"> 8
-</span><span class="lnt"> 9
-</span><span class="lnt">10
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nv">SHELL</span><span class="o">=</span>/bin/bash <span class="c1"># SHELL变量指定了系统要使用哪个 shell，这里是 bash</span>
-</span></span><span class="line"><span class="cl"><span class="nv">PATH</span><span class="o">=</span>/sbin:/bin:/usr/sbin:/usr/bin <span class="c1"># PATH 变量指定了系统执行命令的路径</span>
-</span></span><span class="line"><span class="cl"><span class="nv">MAILTO</span><span class="o">=</span><span class="s2">&#34;&#34;</span> <span class="c1"># MAILTO 变量指定了 crond 的任务执行信息将通过电子邮件发送给 root 用户，如果 MAILTO 变量的值为空，则表示不发送任务执行信息给用户</span>
-</span></span><span class="line"><span class="cl"><span class="nv">HOME</span><span class="o">=</span>/ <span class="c1"># HOME 变量指定了在执行命令或者脚本时使用的主目录</span>
-</span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="c1"># run-parts</span>
-</span></span><span class="line"><span class="cl"><span class="m">51</span> * * * * root run-parts /etc/cron.hourly
-</span></span><span class="line"><span class="cl"><span class="m">24</span> <span class="m">7</span> * * * root run-parts /etc/cron.daily
-</span></span><span class="line"><span class="cl"><span class="m">22</span> <span class="m">4</span> * * <span class="m">0</span> root run-parts /etc/cron.weekly
-</span></span><span class="line"><span class="cl"><span class="m">42</span> <span class="m">4</span> <span class="m">1</span> * * root run-parts /etc/cron.monthly
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="用户任务调度">用户任务调度</h3>
-<p><strong>用户任务调度</strong> 是用户定期要执行的工作，比如用户数据备份、定时邮件提醒等。用户可以使用 crontab 工具来定制自己的计划任务。所有用户定义的 crontab 文件都被保存在 <code>/var/spool/cron</code> 目录中。其文件名与用户名一致，使用者权限文件如下：</p>
-<blockquote>
-<ul>
-<li>/etc/cron.deny 该文件中所列用户不允许使用 crontab 命令；</li>
-<li>/etc/cron.allow 该文件中所列用户允许使用 crontab 命令；</li>
-<li>/var/spool/cron/ 所有用户 crontab 文件存放的目录，以用户名命名。</li>
-</ul>
-</blockquote>
-<h2 id="文件格式">文件格式</h2>
-<p><img
-        class="lazyload"
-        src="https://imajinyun.xyz/svg/loading.min.svg"
-        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png"
-        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png, https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png 2x"
-        data-sizes="auto"
-        alt="https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png"
-        title="202003151135.png" /></p>
-<p>在以上各个字段中，还可以使用以下特殊字符：</p>
-<blockquote>
-<ul>
-<li><code>*</code>：代表所有可能的值，例如 month 字段如果是星号，则表示在满足其它字段的制约条件后每月都执行该命令操作；</li>
-<li><code>,</code>：可以用逗号隔开的值指定一个列表范围，例如：<code>1,2,5,7,8,9</code>；</li>
-<li><code>-</code>：可以用整数之间的中杠表示一个整数范围，例如：<code>2-6</code> 表示 <code>2,3,4,5,6</code>；</li>
-<li><code>/</code>：可以用正斜线指定时间的间隔频率，例如：<code>0-23/2</code> 表示每两小时执行一次。同时正斜线可以和星号一起使用，例如：<code>*/10</code>，如果用在 minute 字段，表示每十分钟执行一次。</li>
-</ul>
-</blockquote>
-<h2 id="使用实例">使用实例</h2>
-<p>{% note info %}</p>
-<p>最好在 <code>crontab</code> 文件的每一个条目之上加入一条注释，这样就可以知道它的功能、运行时间，更为重要的是，知道这是哪位用户的定时作业。</p>
-<p>{%endnote %}</p>
-<h3 id="每-1-分钟执行一次命令">每 1 分钟执行一次命令</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">* * * * * <span class="nb">command</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每小时的第-3-和第-15-分钟执行">每小时的第 3 和第 15 分钟执行</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">3,15 * * * * <span class="nb">command</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="上午-8-点到-11-点的第-3-和第-15-分钟执行">上午 8 点到 11 点的第 3 和第 15 分钟执行</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">3,15 8-11 * * * <span class="nb">command</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每隔两天的上午-8-点到-11-点的第-3-和第-15-分钟执行">每隔两天的上午 8 点到 11 点的第 3 和第 15 分钟执行</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">3,15 8-11 */2 * * <span class="nb">command</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每个星期一的上午-8-点到-11-点的第-3-和第-15-分钟执行">每个星期一的上午 8 点到 11 点的第 3 和第 15 分钟执行</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">3,15 8-11 * * <span class="m">1</span> <span class="nb">command</span>
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每晚的-2130-重启-smb">每晚的 21:30 重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">30</span> <span class="m">21</span> * * * /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每月-11022-日的-445-重启-smb">每月 1、10、22 日的 4:45 重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">45</span> <span class="m">4</span> 1,10,22 * * /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每周六周日的-110-重启-smb">每周六、周日的 1:10 重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">10</span> <span class="m">1</span> * * 6,0 /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每天-1800-至-2300-之间每隔-30-分钟重启-smb">每天 18:00 至 23:00 之间每隔 30 分钟重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">0,30 18-23 * * * /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每星期六的晚上-1100-pm-重启-smb">每星期六的晚上 11:00 PM 重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">0</span> <span class="m">23</span> * * <span class="m">6</span> /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每一小时重启-smb">每一小时重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">* */1 * * * /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="晚上-11-点到早上-7-点之间每隔一小时重启-smb">晚上 11 点到早上 7 点之间，每隔一小时重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">* 23-7/1 * * * /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每月的-4-号与每周一到周三的-11-点重启-smb">每月的 4 号与每周一到周三的 11 点重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">0</span> <span class="m">11</span> <span class="m">4</span> * mon-wed /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="一月一号的-4-点重启-smb">一月一号的 4 点重启 smb</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">0</span> <span class="m">4</span> <span class="m">1</span> jan * /etc/init.d/smb restart
-</span></span></code></pre></td></tr></table>
-</div>
-</div><h3 id="每小时执行-etccronhourly-目录内的脚本">每小时执行 /etc/cron.hourly 目录内的脚本</h3>
-<div class="highlight"><div class="chroma">
-<table class="lntable"><tr><td class="lntd">
-<pre tabindex="0" class="chroma"><code><span class="lnt">1
-</span></code></pre></td>
-<td class="lntd">
-<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="m">01</span> * * * * root run-parts /etc/cron.hourly
-</span></span></code></pre></td></tr></table>
-</div>
-</div></div><div class="post-footer" id="post-footer">
-    <div class="post-info">
-        <div class="post-info-line">
-            <div class="post-info-mod">
-                <span>更新于 2019-12-29</span>
-            </div></div>
-        <div class="post-info-line">
-            <div class="post-info-md"></div>
-            <div class="post-info-share">
-                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://imajinyun.xyz/posts/linux-crontab-command/" data-title="Linux crontab 命令" data-hashtags="Linux"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://imajinyun.xyz/posts/linux-crontab-command/" data-hashtag="Linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://imajinyun.xyz/posts/linux-crontab-command/" data-title="Linux crontab 命令"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://imajinyun.xyz/posts/linux-crontab-command/" data-title="Linux crontab 命令"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://imajinyun.xyz/posts/linux-crontab-command/" data-title="Linux crontab 命令"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="post-info-more">
-        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="https://imajinyun.xyz/tags/linux/">Linux</a></section>
-        <section>
-            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://imajinyun.xyz/">主页</a></span>
-        </section>
-    </div>
-
-    <div class="post-nav"><a href="https://imajinyun.xyz/posts/linux-network-conf-tools/" class="prev" rel="prev" title="Linux 网络配置工具"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Linux 网络配置工具</a>
-            <a href="https://imajinyun.xyz/posts/redis-cluster/" class="next" rel="next" title="Redis 集群搭建">Redis 集群搭建<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
-</div>
-</article></div>
-            </main><footer class="footer">
-        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
-                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://imajinyun.xyz/" target="_blank"></a></span></div>
-        </div>
-    </footer></div>
-
-        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
-                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
-            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
-                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
-            </a>
-        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://imajinyun.xyz/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://imajinyun.xyz/js/theme.min.js"></script></body>
-</html>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Linux crontab 命令 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Linux crontab 命令"><meta property="og:description" content="Crontab 命令被用来提交和管理用户的需要周期性执行的任务。 简介 通过 crontab 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/posts/linux-crontab-command/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2019-12-29T11:26:32+08:00"><meta property="article:modified_time" content="2019-12-29T11:26:32+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-network-io-model/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-network-conf-tools/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-shadowsocks/"><meta property="og:see_also" content="https://imajinyun.xyz/posts/linux-common-commands/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Linux crontab 命令"><meta name=twitter:description content="Crontab 命令被用来提交和管理用户的需要周期性执行的任务。 简介 通过 crontab 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/posts/linux-crontab-command/><link rel=prev href=https://imajinyun.xyz/posts/linux-network-conf-tools/><link rel=next href=https://imajinyun.xyz/posts/redis-cluster/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload="this.onload=null,this.rel='stylesheet'"><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Linux crontab 命令","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/posts\/linux-crontab-command\/"},"genre":"posts","keywords":"Linux","wordcount":1232,"url":"https:\/\/imajinyun.xyz\/posts\/linux-crontab-command\/","datePublished":"2019-12-29T11:26:32+08:00","dateModified":"2019-12-29T11:26:32+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem('theme')?localStorage.getItem('theme')==='dark':'auto'==='auto'?window.matchMedia('(prefers-color-scheme: dark)').matches:'auto'==='dark')&&document.body.setAttribute('theme','dark')</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章标题或内容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章标题或内容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Linux crontab 命令</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/linux/><i class="far fa-folder fa-fw" aria-hidden=true></i>Linux</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2019-12-29>2019-12-29</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 1232 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#简介>简介</a></li><li><a href=#选项>选项</a></li><li><a href=#任务调度>任务调度</a><ul><li><a href=#系统任务调度>系统任务调度</a></li><li><a href=#用户任务调度>用户任务调度</a></li></ul></li><li><a href=#文件格式>文件格式</a></li><li><a href=#使用实例>使用实例</a><ul><li><a href=#每-1-分钟执行一次命令>每 1 分钟执行一次命令</a></li><li><a href=#每小时的第-3-和第-15-分钟执行>每小时的第 3 和第 15 分钟执行</a></li><li><a href=#上午-8-点到-11-点的第-3-和第-15-分钟执行>上午 8 点到 11 点的第 3 和第 15 分钟执行</a></li><li><a href=#每隔两天的上午-8-点到-11-点的第-3-和第-15-分钟执行>每隔两天的上午 8 点到 11 点的第 3 和第 15 分钟执行</a></li><li><a href=#每个星期一的上午-8-点到-11-点的第-3-和第-15-分钟执行>每个星期一的上午 8 点到 11 点的第 3 和第 15 分钟执行</a></li><li><a href=#每晚的-2130-重启-smb>每晚的 21:30 重启 smb</a></li><li><a href=#每月-11022-日的-445-重启-smb>每月 1、10、22 日的 4:45 重启 smb</a></li><li><a href=#每周六周日的-110-重启-smb>每周六、周日的 1:10 重启 smb</a></li><li><a href=#每天-1800-至-2300-之间每隔-30-分钟重启-smb>每天 18:00 至 23:00 之间每隔 30 分钟重启 smb</a></li><li><a href=#每星期六的晚上-1100-pm-重启-smb>每星期六的晚上 11:00 PM 重启 smb</a></li><li><a href=#每一小时重启-smb>每一小时重启 smb</a></li><li><a href=#晚上-11-点到早上-7-点之间每隔一小时重启-smb>晚上 11 点到早上 7 点之间，每隔一小时重启 smb</a></li><li><a href=#每月的-4-号与每周一到周三的-11-点重启-smb>每月的 4 号与每周一到周三的 11 点重启 smb</a></li><li><a href=#一月一号的-4-点重启-smb>一月一号的 4 点重启 smb</a></li><li><a href=#每小时执行-etccronhourly-目录内的脚本>每小时执行 /etc/cron.hourly 目录内的脚本</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>Crontab 命令被用来提交和管理用户的需要周期性执行的任务。</p><h2 id=简介>简介</h2><p>通过 <strong>crontab</strong> 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是分钟、小时、日、月、周及以上的任意组合。这个命令非常适合周期性的日志分析或数据备份等工作。</p><h2 id=选项>选项</h2><ul><li><code>-e</code>：编辑该用户的计时器设置；</li><li><code>-l</code>：列出该用户的计时器设置；</li><li><code>-r</code>：删除该用户的计时器设置；</li><li><code>-u&lt;username></code>：指定要设定计时器的用户名称。</li></ul><h2 id=任务调度>任务调度</h2><h3 id=系统任务调度>系统任务调度</h3><p><strong>系统任务调度</strong> 是系统周期性所要执行的工作，比如写缓存数据到硬盘、日志清理等。在 <code>/etc</code> 目录下有一个 crontab 文件，这个就是系统任务调度的配置文件。</p><p><code>/etc/crontab</code> 文件包括下面几行：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>SHELL</span><span class=o>=</span>/bin/bash <span class=c1># SHELL变量指定了系统要使用哪个 shell，这里是 bash</span>
+</span></span><span class=line><span class=cl><span class=nv>PATH</span><span class=o>=</span>/sbin:/bin:/usr/sbin:/usr/bin <span class=c1># PATH 变量指定了系统执行命令的路径</span>
+</span></span><span class=line><span class=cl><span class=nv>MAILTO</span><span class=o>=</span><span class=s2>&#34;&#34;</span> <span class=c1># MAILTO 变量指定了 crond 的任务执行信息将通过电子邮件发送给 root 用户，如果 MAILTO 变量的值为空，则表示不发送任务执行信息给用户</span>
+</span></span><span class=line><span class=cl><span class=nv>HOME</span><span class=o>=</span>/ <span class=c1># HOME 变量指定了在执行命令或者脚本时使用的主目录</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># run-parts</span>
+</span></span><span class=line><span class=cl><span class=m>51</span> * * * * root run-parts /etc/cron.hourly
+</span></span><span class=line><span class=cl><span class=m>24</span> <span class=m>7</span> * * * root run-parts /etc/cron.daily
+</span></span><span class=line><span class=cl><span class=m>22</span> <span class=m>4</span> * * <span class=m>0</span> root run-parts /etc/cron.weekly
+</span></span><span class=line><span class=cl><span class=m>42</span> <span class=m>4</span> <span class=m>1</span> * * root run-parts /etc/cron.monthly
+</span></span></code></pre></td></tr></table></div></div><h3 id=用户任务调度>用户任务调度</h3><p><strong>用户任务调度</strong> 是用户定期要执行的工作，比如用户数据备份、定时邮件提醒等。用户可以使用 crontab 工具来定制自己的计划任务。所有用户定义的 crontab 文件都被保存在 <code>/var/spool/cron</code> 目录中。其文件名与用户名一致，使用者权限文件如下：</p><blockquote><ul><li>/etc/cron.deny 该文件中所列用户不允许使用 crontab 命令；</li><li>/etc/cron.allow 该文件中所列用户允许使用 crontab 命令；</li><li>/var/spool/cron/ 所有用户 crontab 文件存放的目录，以用户名命名。</li></ul></blockquote><h2 id=文件格式>文件格式</h2><p><img class=lazyload src=https://imajinyun.xyz/svg/loading.min.svg data-src=https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png, https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png 2x" data-sizes=auto alt=https://inotes.oss-cn-beijing.aliyuncs.com/202003/202003151135.png title=202003151135.png></p><p>在以上各个字段中，还可以使用以下特殊字符：</p><blockquote><ul><li><code>*</code>：代表所有可能的值，例如 month 字段如果是星号，则表示在满足其它字段的制约条件后每月都执行该命令操作；</li><li><code>,</code>：可以用逗号隔开的值指定一个列表范围，例如：<code>1,2,5,7,8,9</code>；</li><li><code>-</code>：可以用整数之间的中杠表示一个整数范围，例如：<code>2-6</code> 表示 <code>2,3,4,5,6</code>；</li><li><code>/</code>：可以用正斜线指定时间的间隔频率，例如：<code>0-23/2</code> 表示每两小时执行一次。同时正斜线可以和星号一起使用，例如：<code>*/10</code>，如果用在 minute 字段，表示每十分钟执行一次。</li></ul></blockquote><h2 id=使用实例>使用实例</h2><p>{% note info %}</p><p>最好在 <code>crontab</code> 文件的每一个条目之上加入一条注释，这样就可以知道它的功能、运行时间，更为重要的是，知道这是哪位用户的定时作业。</p><p>{%endnote %}</p><h3 id=每-1-分钟执行一次命令>每 1 分钟执行一次命令</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>* * * * * <span class=nb>command</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=每小时的第-3-和第-15-分钟执行>每小时的第 3 和第 15 分钟执行</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>3,15 * * * * <span class=nb>command</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=上午-8-点到-11-点的第-3-和第-15-分钟执行>上午 8 点到 11 点的第 3 和第 15 分钟执行</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>3,15 8-11 * * * <span class=nb>command</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=每隔两天的上午-8-点到-11-点的第-3-和第-15-分钟执行>每隔两天的上午 8 点到 11 点的第 3 和第 15 分钟执行</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>3,15 8-11 */2 * * <span class=nb>command</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=每个星期一的上午-8-点到-11-点的第-3-和第-15-分钟执行>每个星期一的上午 8 点到 11 点的第 3 和第 15 分钟执行</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>3,15 8-11 * * <span class=m>1</span> <span class=nb>command</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=每晚的-2130-重启-smb>每晚的 21:30 重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>30</span> <span class=m>21</span> * * * /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每月-11022-日的-445-重启-smb>每月 1、10、22 日的 4:45 重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>45</span> <span class=m>4</span> 1,10,22 * * /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每周六周日的-110-重启-smb>每周六、周日的 1:10 重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>10</span> <span class=m>1</span> * * 6,0 /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每天-1800-至-2300-之间每隔-30-分钟重启-smb>每天 18:00 至 23:00 之间每隔 30 分钟重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>0,30 18-23 * * * /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每星期六的晚上-1100-pm-重启-smb>每星期六的晚上 11:00 PM 重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>0</span> <span class=m>23</span> * * <span class=m>6</span> /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每一小时重启-smb>每一小时重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>* */1 * * * /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=晚上-11-点到早上-7-点之间每隔一小时重启-smb>晚上 11 点到早上 7 点之间，每隔一小时重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>* 23-7/1 * * * /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每月的-4-号与每周一到周三的-11-点重启-smb>每月的 4 号与每周一到周三的 11 点重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>0</span> <span class=m>11</span> <span class=m>4</span> * mon-wed /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=一月一号的-4-点重启-smb>一月一号的 4 点重启 smb</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>0</span> <span class=m>4</span> <span class=m>1</span> jan * /etc/init.d/smb restart
+</span></span></code></pre></td></tr></table></div></div><h3 id=每小时执行-etccronhourly-目录内的脚本>每小时执行 /etc/cron.hourly 目录内的脚本</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=m>01</span> * * * * root run-parts /etc/cron.hourly
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2019-12-29</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/posts/linux-crontab-command/ data-title="Linux crontab 命令" data-hashtags=Linux><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/posts/linux-crontab-command/ data-hashtag=Linux><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/posts/linux-crontab-command/ data-title="Linux crontab 命令"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/posts/linux-crontab-command/ data-title="Linux crontab 命令"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/posts/linux-crontab-command/ data-title="Linux crontab 命令"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/linux/>Linux</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/posts/linux-network-conf-tools/ class=prev rel=prev title="Linux 网络配置工具"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Linux 网络配置工具</a>
+<a href=https://imajinyun.xyz/posts/redis-cluster/ class=next rel=next title="Redis 集群搭建">Redis 集群搭建<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2022</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.stemmer.support.min.js></script><script type=text/javascript src=https://imajinyun.xyz/lib/lunr/lunr.zh.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{highlightTag:"em",lunrIndexURL:"/index.json",lunrLanguageCode:"zh",lunrSegmentitURL:"/lib/lunr/lunr.segmentit.js",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"lunr"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script></body></html>
