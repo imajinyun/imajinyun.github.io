@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Git 起步 - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Git 起步" />
+<meta property="og:description" content="Git 是一种在全球范围都广受欢迎的版本控制系统。在开发过程中，为了跟踪代码，文档，项目等信息中的变化，版本控制变得前所未有的重要。但跟踪变化远远不能满足现代软件开发行业的协同需求，基于 Git 的 Workflow 满足了合作编程的需求，让开发从此变得更加高效和有趣。相比集中式版本控制系统如 SVN ，分布式版本控制系统 Git 拥有更强大的分支管理与合并能力，支持离线开发，并良好地保留了提交过程，让您和您的团队在开发过程中如虎添翼。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://alphabeter.github.io/posts/git-started/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-01-22T21:49:31+08:00" />
+<meta property="article:modified_time" content="2018-01-22T21:49:31+08:00" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Git 起步"/>
+<meta name="twitter:description" content="Git 是一种在全球范围都广受欢迎的版本控制系统。在开发过程中，为了跟踪代码，文档，项目等信息中的变化，版本控制变得前所未有的重要。但跟踪变化远远不能满足现代软件开发行业的协同需求，基于 Git 的 Workflow 满足了合作编程的需求，让开发从此变得更加高效和有趣。相比集中式版本控制系统如 SVN ，分布式版本控制系统 Git 拥有更强大的分支管理与合并能力，支持离线开发，并良好地保留了提交过程，让您和您的团队在开发过程中如虎添翼。"/>
+<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
+<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://alphabeter.github.io/apple-touch-icon.png"><link rel="mask-icon" href="https://alphabeter.github.io/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://alphabeter.github.io/site.webmanifest"><link rel="canonical" href="https://alphabeter.github.io/posts/git-started/" /><link rel="prev" href="https://alphabeter.github.io/posts/mac-homestead/" /><link rel="next" href="https://alphabeter.github.io/posts/git-basic/" /><link rel="stylesheet" href="https://alphabeter.github.io/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Git 起步",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/alphabeter.github.io\/posts\/git-started\/"
+        },"genre": "posts","keywords": "Git","wordcount":  2310 ,
+        "url": "https:\/\/alphabeter.github.io\/posts\/git-started\/","datePublished": "2018-01-22T21:49:31+08:00","dateModified": "2018-01-22T21:49:31+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="https://alphabeter.github.io/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://alphabeter.github.io/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://alphabeter.github.io/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://alphabeter.github.io/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://alphabeter.github.io/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://alphabeter.github.io/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="https://alphabeter.github.io/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://alphabeter.github.io/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://alphabeter.github.io/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://alphabeter.github.io/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://alphabeter.github.io/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://alphabeter.github.io/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Git 起步</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://alphabeter.github.io/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="https://alphabeter.github.io/categories/git/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Git</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-01-22">2018-01-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2310 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a>
+      <ul>
+        <li><a href="#设计初衷">设计初衷</a></li>
+        <li><a href="#一些特性">一些特性</a></li>
+        <li><a href="#工作流程">工作流程</a></li>
+      </ul>
+    </li>
+    <li><a href="#关于版本控制">关于版本控制</a>
+      <ul>
+        <li><a href="#集中化的版本控制系统">集中化的版本控制系统</a></li>
+        <li><a href="#分布式版本控制系统">分布式版本控制系统</a></li>
+      </ul>
+    </li>
+    <li><a href="#安装">安装</a>
+      <ul>
+        <li><a href="#linux-安装">Linux 安装</a>
+          <ul>
+            <li><a href="#安装依赖">安装依赖</a></li>
+            <li><a href="#手动编译安装">手动编译安装</a></li>
+            <li><a href="#包管理器安装">包管理器安装</a></li>
+          </ul>
+        </li>
+        <li><a href="#mac-安装">Mac 安装</a></li>
+        <li><a href="#windows-安装">Windows 安装</a></li>
+      </ul>
+    </li>
+    <li><a href="#配置">配置</a>
+      <ul>
+        <li><a href="#三种配置">三种配置</a></li>
+        <li><a href="#用户信息">用户信息</a></li>
+        <li><a href="#文本编辑器">文本编辑器</a></li>
+        <li><a href="#差异分析工具">差异分析工具</a></li>
+        <li><a href="#换行符配置">换行符配置</a>
+          <ul>
+            <li><a href="#autocrlf">AutoCRLF</a></li>
+            <li><a href="#safecrlf">SafeCRLF</a></li>
+          </ul>
+        </li>
+        <li><a href="#修正空白符">修正空白符</a></li>
+        <li><a href="#配置快捷操作">配置快捷操作</a></li>
+        <li><a href="#配置在-windows-下-ascii-字符的文件名正确显示">配置在 Windows 下 ASCII 字符的文件名正确显示</a></li>
+        <li><a href="#配置对大小写敏感">配置对大小写敏感</a></li>
+        <li><a href="#配置菜色显示">配置菜色显示</a></li>
+      </ul>
+    </li>
+    <li><a href="#以-https-方式进行连接时记住密码">以 https 方式进行连接时，记住密码</a>
+      <ul>
+        <li><a href="#查看配置信息">查看配置信息</a></li>
+        <li><a href="#解决目录卡顿问题">解决目录卡顿问题</a></li>
+        <li><a href="#帮助命令">帮助命令</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Git 是一种在全球范围都广受欢迎的版本控制系统。在开发过程中，为了跟踪代码，文档，项目等信息中的变化，版本控制变得前所未有的重要。但跟踪变化远远不能满足现代软件开发行业的协同需求，基于 Git 的 Workflow 满足了合作编程的需求，让开发从此变得更加高效和有趣。相比集中式版本控制系统如 SVN ，分布式版本控制系统 Git 拥有更强大的分支管理与合并能力，支持离线开发，并良好地保留了提交过程，让您和您的团队在开发过程中如虎添翼。</p>
+<ul>
+<li><strong>Git 起步</strong></li>
+<li><a href="https://imajinyun.xyz/2018/01/23/git-basic/" target="_blank" rel="noopener noreffer"><code>Git 基本操作</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/24/git-log/" target="_blank" rel="noopener noreffer"><code>Git 查看日志</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/25/git-branch/" target="_blank" rel="noopener noreffer"><code>Git 分支</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/27/git-multiple-accounts/" target="_blank" rel="noopener noreffer"><code>Git 中一个客户端设置多个账号</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/05/01/git-workflow/" target="_blank" rel="noopener noreffer"><code>Git Workflow</code></a></li>
+<li><a href="https://imajinyun.xyz/2020/09/07/git-collection-command/" target="_blank" rel="noopener noreffer"><code>Git 命令大全</code></a></li>
+</ul>
+<h2 id="概述">概述</h2>
+<h3 id="设计初衷">设计初衷</h3>
+<ul>
+<li>为速度而生</li>
+<li>简单的设计</li>
+<li>对非线性开发模式的强力支持（允许上千个并行开发的分支）</li>
+<li>完全分布式</li>
+<li>有能力高效管理类似 <code>Linux</code> 内核一样的超大规模的项目（速度和数量）</li>
+</ul>
+<h3 id="一些特性">一些特性</h3>
+<ul>
+<li>优越的存储能力</li>
+<li>直接记录快照，而非差异比较</li>
+<li>离线操作，几乎所有操作都是本地执行</li>
+<li>时刻保持数据完整性</li>
+<li>多数操作仅添加数据</li>
+<li>开源</li>
+</ul>
+<p><code>git</code> 中文件的三种状态：工作目录，暂存区域和本地仓库：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-three-status.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-three-status.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-three-status.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-three-status.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-three-status.png"
+        title="git-three-status.png" /></p>
+<h3 id="工作流程">工作流程</h3>
+<ul>
+<li>在工作目录中修改某些文件</li>
+<li>对修改后的文件进行快照，然后保存到暂存区域</li>
+<li>提交更新，将保存在暂存区域的文件快照永久转储到 <code>git</code> 目录中</li>
+</ul>
+<h2 id="关于版本控制">关于版本控制</h2>
+<h3 id="集中化的版本控制系统">集中化的版本控制系统</h3>
+<p><code>CVCS - Centralized Version Control Systems</code></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/centralized-vcs.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/centralized-vcs.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/centralized-vcs.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/centralized-vcs.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/centralized-vcs.png"
+        title="centralized-vcs.png" /></p>
+<h3 id="分布式版本控制系统">分布式版本控制系统</h3>
+<p><code>DVCS - Distributed Version Control System</code></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/distributed-vcs.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/distributed-vcs.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/distributed-vcs.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/distributed-vcs.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/distributed-vcs.png"
+        title="distributed-vcs.png" /></p>
+<h2 id="安装">安装</h2>
+<h3 id="linux-安装">Linux 安装</h3>
+<h4 id="安装依赖">安装依赖</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// CentOS
+</span></span><span class="line"><span class="cl">$ sudo yum install curl-devel expat-devel gettext-devel openssl-devel zlib-devel
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Ubuntu
+</span></span><span class="line"><span class="cl">$ sudo apt-get install libcurl4-gnutls-dev libexpat1-dev gettext libz-dev libssl-dev
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="手动编译安装">手动编译安装</h4>
+<blockquote>
+<p><a href="https://github.com/git/git/releases" target="_blank" rel="noopener noreffer">去这里下载 <code>git</code></a></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 解压后进行编译安装
+</span></span><span class="line"><span class="cl">$ tar -zxf v2.16.1.tar.gz
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> v2.16.1
+</span></span><span class="line"><span class="cl">$ make <span class="nv">prefix</span><span class="o">=</span>/usr/local all
+</span></span><span class="line"><span class="cl">$ sudo make <span class="nv">prefix</span><span class="o">=</span>/usr/local install
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="包管理器安装">包管理器安装</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// CentOS
+</span></span><span class="line"><span class="cl">$ yum install git-core
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// Ubuntu
+</span></span><span class="line"><span class="cl">$ apt-get install git
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="mac-安装">Mac 安装</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 使用 brew 安装 git
+</span></span><span class="line"><span class="cl">$ brew install git
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="windows-安装">Windows 安装</h3>
+<blockquote>
+<p><a href="http://gitforwindows.org/" target="_blank" rel="noopener noreffer"><code>We bring the awesome Git SCM to Windows</code></a></p>
+</blockquote>
+<h2 id="配置">配置</h2>
+<h3 id="三种配置">三种配置</h3>
+<ul>
+<li>全局配置：当前用户的所有仓库有效，存储配置的文件为 <code>~/.gitconfig</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 查看全局配置
+</span></span><span class="line"><span class="cl">$ git config --global -l
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ git config --list --global
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>局部配置：当前用户的某个仓库有效，存储配置的文件为 <code>.git/config</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 查看局部配置
+</span></span><span class="line"><span class="cl">$ git config --local -l
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ git config --list --local
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>系统配置：系统所有用户有效，存储配置的文件为 <code>/etc/gitconfig</code></li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 查看系统配置
+</span></span><span class="line"><span class="cl">$ git config --system -l
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ git config --list --system
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="用户信息">用户信息</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 配置全局的用户名称
+</span></span><span class="line"><span class="cl">$ git config --global user.name <span class="s2">&#34;Your Name&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 配置全局的邮箱地址
+</span></span><span class="line"><span class="cl">$ git config --global user.email <span class="s2">&#34;Your Email&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 取消全局配置的用户名称
+</span></span><span class="line"><span class="cl">$ git config --global --unset user.name
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 取消全局配置的邮箱地址
+</span></span><span class="line"><span class="cl">$ git config --global --unset user.email
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 配置某个仓库的用户名称
+</span></span><span class="line"><span class="cl">$ git config --local user.name <span class="s2">&#34;Your Name&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 配置某个仓库的邮箱地址
+</span></span><span class="line"><span class="cl">$ git config --local user.email <span class="s2">&#34;Your Email&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="文本编辑器">文本编辑器</h3>
+<blockquote>
+<p><a href="https://github.com/VundleVim/Vundle.vim/issues/167" target="_blank" rel="noopener noreffer"><code>Git Commit Problem: &quot;error: There was a problem with the editor 'vi'&quot;</code></a></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 配置 vim 为 git 默认的编辑器，为满足在 git 中输入一些额外消息的时候，自动调用一个外部文本编辑器的需要
+</span></span><span class="line"><span class="cl">$ git config --global core.editor <span class="k">$(</span>which vim<span class="k">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="差异分析工具">差异分析工具</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 配置解决合并冲突时使用哪种差异分析工具
+</span></span><span class="line"><span class="cl">$ git config --global merge.tool vimdiff
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="换行符配置">换行符配置</h3>
+<blockquote>
+<p>操作系统对回车 <code>CR</code> 和换行 <code>LF</code> 定义是有差异的。</p>
+</blockquote>
+<h4 id="autocrlf">AutoCRLF</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 提交时转换为 LF，检出时转换为 CRLF
+</span></span><span class="line"><span class="cl">$ git config --global core.autocrlf <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交时转换为 LF，检出时不转换
+</span></span><span class="line"><span class="cl">$ git config --global core.autocrlf input
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交检出均不转换
+</span></span><span class="line"><span class="cl">$ git config --global core.autocrlf <span class="nb">false</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="safecrlf">SafeCRLF</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 拒绝提交包含混合换行符的文件
+</span></span><span class="line"><span class="cl">$ git config --global core.safecrlf <span class="nb">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 允许提交包含混合换行符的文件
+</span></span><span class="line"><span class="cl">$ git config --global core.safecrlf <span class="nb">false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交包含混合换行符的文件时给出警告
+</span></span><span class="line"><span class="cl">$ git config --global core.safecrlf warn
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="修正空白符">修正空白符</h3>
+<p><code>git</code> 预先设置了一些选项来探测和修正空白问题</p>
+<blockquote>
+<ul>
+<li>默认打开的 <code>2</code> 个选项是 <code>trailing-space</code> 和 <code>space-before-tab</code>，<code>trailing-space</code> 会查找每行结尾的空格，<code>space-before-tab</code> 会查找每行开头的制表符前的空格</li>
+<li>默认关闭的 <code>2</code> 个选项是 <code>indent-with-non-tab</code> 和 <code>cr-at-eol</code>，<code>indent-with-non-tab</code> 会查找 <code>8</code> 个以上空格（非制表符）开头的行，<code>cr-at-eol</code> 让 <code>git</code> 知道行尾回车符是合法的</li>
+</ul>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 全局配置修正空白符
+</span></span><span class="line"><span class="cl">$ git config --global core.whitespace trailing-space,space-before-tab
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="配置快捷操作">配置快捷操作</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 为 git 命令创建一个快捷方式
+</span></span><span class="line"><span class="cl">$ git config --global alias.&lt;alias-name&gt; &lt;git-command&gt;
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 检出快捷方式设置
+</span></span><span class="line"><span class="cl">$ git config --global alias.co checkout
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交快捷方式设置
+</span></span><span class="line"><span class="cl">$ git config --global alias.ci commit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 状态快捷方式设置
+</span></span><span class="line"><span class="cl">$ git config --global alias.st status
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 分支快捷方式设置
+</span></span><span class="line"><span class="cl">$ git config --global alias.br branch
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="配置在-windows-下-ascii-字符的文件名正确显示">配置在 Windows 下 ASCII 字符的文件名正确显示</h3>
+<p><a href="https://blog.zengrong.net/post/1249.html" target="_blank" rel="noopener noreffer">git 乱码解决方案汇总</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 一个显示乱码的实例
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">On branch master
+</span></span><span class="line"><span class="cl">Your branch is up to date with <span class="s1">&#39;gitee/master&#39;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Changes not staged <span class="k">for</span> commit:
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git add/rm &lt;file&gt;...&#34;</span> to update what will be committed<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git checkout -- &lt;file&gt;...&#34;</span> to discard changes in working directory<span class="o">)</span>
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>commit or discard the untracked or modified content in submodules<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   deleted:    <span class="s2">&#34;xxx-\345\210\235\350\257\206.xx&#34;</span> // 中文文件名显示不正常
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Untracked files:
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git add &lt;file&gt;...&#34;</span> to include in what will be committed<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 全局配置以解决 Windows Git Bash、Linux 下的中文转码问题
+</span></span><span class="line"><span class="cl">$ git config --global core.quotepath <span class="nb">false</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="配置对大小写敏感">配置对大小写敏感</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 全局配置对大小写敏感，保持 Mac/Win/Linux 一致性
+</span></span><span class="line"><span class="cl">$ git config --global core.ignorecase <span class="nb">false</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="配置菜色显示">配置菜色显示</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 全局配置菜色显示
+</span></span><span class="line"><span class="cl">$ git config --global color.ui auto
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="以-https-方式进行连接时记住密码">以 https 方式进行连接时，记住密码</h2>
+<blockquote>
+<p>为当前仓库设置记住密码，设置后，只要在推送一次，以后就不需要用户名和密码了</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 设置保存密码到硬盘，如果是 macOS，选项可以改为 osxkeychain
+</span></span><span class="line"><span class="cl">$ git config credential.helper store
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 设置保存密码的超时时间
+</span></span><span class="line"><span class="cl">$ git config credential.helper <span class="s1">&#39;cache --timeout=36000&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 查看密码文件（以明文的方式保存的）
+</span></span><span class="line"><span class="cl">$ cat ~/.git-credentials
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="查看配置信息">查看配置信息</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ git config --list
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ git config -l
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="解决目录卡顿问题">解决目录卡顿问题</h3>
+<p>主要解决在 <code>zsh</code> 下，在 <code>git</code> 版本控制的目录输入命令执行缓慢的问题。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 不读取文件变化信息（针对当前用户当前项目）
+</span></span><span class="line"><span class="cl">$ git config --add oh-my-zsh.hide-dirty <span class="m">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-dirty.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-dirty.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-dirty.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-dirty.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-dirty.png"
+        title="git-zsh-dirty.png" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 不读取任何 git 信息（针对当前用户所有项目）
+</span></span><span class="line"><span class="cl">$ git config --global --add oh-my-zsh.hide-status <span class="m">1</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-status.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-status.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-status.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-status.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/git-zsh-status.png"
+        title="git-zsh-status.png" /></p>
+<h3 id="帮助命令">帮助命令</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ git <span class="nb">help</span> &lt;verb&gt;
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ git &lt;verb&gt; --help
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ man git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 查看帮助命令
+</span></span><span class="line"><span class="cl">$ git --help
+</span></span><span class="line"><span class="cl">usage: git <span class="o">[</span>--version<span class="o">]</span> <span class="o">[</span>--help<span class="o">]</span> <span class="o">[</span>-C &lt;path&gt;<span class="o">]</span> <span class="o">[</span>-c &lt;name&gt;<span class="o">=</span>&lt;value&gt;<span class="o">]</span>
+</span></span><span class="line"><span class="cl">           <span class="o">[</span>--exec-path<span class="o">[=</span>&lt;path&gt;<span class="o">]]</span> <span class="o">[</span>--html-path<span class="o">]</span> <span class="o">[</span>--man-path<span class="o">]</span> <span class="o">[</span>--info-path<span class="o">]</span>
+</span></span><span class="line"><span class="cl">           <span class="o">[</span>-p <span class="p">|</span> --paginate <span class="p">|</span> --no-pager<span class="o">]</span> <span class="o">[</span>--no-replace-objects<span class="o">]</span> <span class="o">[</span>--bare<span class="o">]</span>
+</span></span><span class="line"><span class="cl">           <span class="o">[</span>--git-dir<span class="o">=</span>&lt;path&gt;<span class="o">]</span> <span class="o">[</span>--work-tree<span class="o">=</span>&lt;path&gt;<span class="o">]</span> <span class="o">[</span>--namespace<span class="o">=</span>&lt;name&gt;<span class="o">]</span>
+</span></span><span class="line"><span class="cl">           &lt;command&gt; <span class="o">[</span>&lt;args&gt;<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">These are common Git commands used in various situations:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">start a working area <span class="o">(</span>see also: git <span class="nb">help</span> tutorial<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   clone      Clone a repository into a new directory
+</span></span><span class="line"><span class="cl">   init       Create an empty Git repository or reinitialize an existing one
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">work on the current change <span class="o">(</span>see also: git <span class="nb">help</span> everyday<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   add        Add file contents to the index
+</span></span><span class="line"><span class="cl">   mv         Move or rename a file, a directory, or a symlink
+</span></span><span class="line"><span class="cl">   reset      Reset current HEAD to the specified state
+</span></span><span class="line"><span class="cl">   rm         Remove files from the working tree and from the index
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">examine the <span class="nb">history</span> and state <span class="o">(</span>see also: git <span class="nb">help</span> revisions<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   bisect     Use binary search to find the commit that introduced a bug
+</span></span><span class="line"><span class="cl">   grep       Print lines matching a pattern
+</span></span><span class="line"><span class="cl">   log        Show commit logs
+</span></span><span class="line"><span class="cl">   show       Show various types of objects
+</span></span><span class="line"><span class="cl">   status     Show the working tree status
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">grow, mark and tweak your common <span class="nb">history</span>
+</span></span><span class="line"><span class="cl">   branch     List, create, or delete branches
+</span></span><span class="line"><span class="cl">   checkout   Switch branches or restore working tree files
+</span></span><span class="line"><span class="cl">   commit     Record changes to the repository
+</span></span><span class="line"><span class="cl">   diff       Show changes between commits, commit and working tree, etc
+</span></span><span class="line"><span class="cl">   merge      Join two or more development histories together
+</span></span><span class="line"><span class="cl">   rebase     Reapply commits on top of another base tip
+</span></span><span class="line"><span class="cl">   tag        Create, list, delete or verify a tag object signed with GPG
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">collaborate <span class="o">(</span>see also: git <span class="nb">help</span> workflows<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   fetch      Download objects and refs from another repository
+</span></span><span class="line"><span class="cl">   pull       Fetch from and integrate with another repository or a <span class="nb">local</span> branch
+</span></span><span class="line"><span class="cl">   push       Update remote refs along with associated objects
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="s1">&#39;git help -a&#39;</span> and <span class="s1">&#39;git help -g&#39;</span> list available subcommands and some
+</span></span><span class="line"><span class="cl">concept guides. See <span class="s1">&#39;git help &lt;command&gt;&#39;</span> or <span class="s1">&#39;git help &lt;concept&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">to <span class="nb">read</span> about a specific subcommand or concept.
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2018-01-22</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://alphabeter.github.io/posts/git-started/" data-title="Git 起步" data-hashtags="Git"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://alphabeter.github.io/posts/git-started/" data-hashtag="Git"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://alphabeter.github.io/posts/git-started/" data-title="Git 起步"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://alphabeter.github.io/posts/git-started/" data-title="Git 起步"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://alphabeter.github.io/posts/git-started/" data-title="Git 起步"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="https://alphabeter.github.io/tags/git/">Git</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://alphabeter.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="https://alphabeter.github.io/posts/mac-homestead/" class="prev" rel="prev" title="Mac 搭建 Homestead 集成开发环境"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Mac 搭建 Homestead 集成开发环境</a>
+            <a href="https://alphabeter.github.io/posts/git-basic/" class="next" rel="next" title="Git 基本操作">Git 基本操作<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://alphabeter.github.io/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://alphabeter.github.io/js/theme.min.js"></script></body>
+</html>

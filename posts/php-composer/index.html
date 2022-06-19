@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>PHP 依赖管理器 - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="PHP 依赖管理器" />
+<meta property="og:description" content="Composer 是 PHP 的一个依赖管理工具。它允许你申明项目所依赖的代码库，它会在你的项目中为你安装他们。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://alphabeter.github.io/posts/php-composer/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-01-18T17:38:40+08:00" />
+<meta property="article:modified_time" content="2018-01-18T17:38:40+08:00" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
+<meta property="og:see_also" content="https://alphabeter.github.io/posts/php-src-learning2/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/php-src-learning1/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/php-array-sort/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/php-some-ingenious-ways/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/php-php74-new-features/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/php-swoole-get-started/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PHP 依赖管理器"/>
+<meta name="twitter:description" content="Composer 是 PHP 的一个依赖管理工具。它允许你申明项目所依赖的代码库，它会在你的项目中为你安装他们。"/>
+<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
+<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://alphabeter.github.io/apple-touch-icon.png"><link rel="mask-icon" href="https://alphabeter.github.io/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://alphabeter.github.io/site.webmanifest"><link rel="canonical" href="https://alphabeter.github.io/posts/php-composer/" /><link rel="prev" href="https://alphabeter.github.io/posts/php-magic-methods/" /><link rel="next" href="https://alphabeter.github.io/posts/mysql-max-min-query/" /><link rel="stylesheet" href="https://alphabeter.github.io/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "PHP 依赖管理器",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/alphabeter.github.io\/posts\/php-composer\/"
+        },"genre": "posts","keywords": "PHP","wordcount":  579 ,
+        "url": "https:\/\/alphabeter.github.io\/posts\/php-composer\/","datePublished": "2018-01-18T17:38:40+08:00","dateModified": "2018-01-18T17:38:40+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="https://alphabeter.github.io/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://alphabeter.github.io/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://alphabeter.github.io/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://alphabeter.github.io/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://alphabeter.github.io/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://alphabeter.github.io/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="https://alphabeter.github.io/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://alphabeter.github.io/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://alphabeter.github.io/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://alphabeter.github.io/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://alphabeter.github.io/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://alphabeter.github.io/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">PHP 依赖管理器</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://alphabeter.github.io/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="https://alphabeter.github.io/categories/php/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>PHP</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-01-18">2018-01-18</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 579 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装">安装</a>
+      <ul>
+        <li><a href="#linux">Linux</a>
+          <ul>
+            <li><a href="#局部安装">局部安装</a></li>
+            <li><a href="#全局安装">全局安装</a></li>
+          </ul>
+        </li>
+        <li><a href="#mac">Mac</a></li>
+        <li><a href="#windows">Windows</a>
+          <ul>
+            <li><a href="#自动安装">自动安装</a></li>
+            <li><a href="#手动安装">手动安装</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#使用">使用</a>
+      <ul>
+        <li><a href="#创建项目依赖">创建项目依赖</a></li>
+        <li><a href="#安装项目依赖">安装项目依赖</a></li>
+        <li><a href="#更新项目依赖">更新项目依赖</a></li>
+      </ul>
+    </li>
+    <li><a href="#镜像">镜像</a>
+      <ul>
+        <li><a href="#系统全局配置">系统全局配置</a></li>
+        <li><a href="#单个项目配置">单个项目配置</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Composer 是 PHP 的一个依赖管理工具。它允许你申明项目所依赖的代码库，它会在你的项目中为你安装他们。</p>
+<blockquote>
+<ul>
+<li><a href="https://getcomposer.org/" target="_blank" rel="noopener noreffer">Composer Homepage</a></li>
+<li><a href="https://github.com/composer/composer" target="_blank" rel="noopener noreffer">Composer GitHub</a></li>
+<li><a href="https://getcomposer.org/doc/" target="_blank" rel="noopener noreffer">Composer 英文文档</a></li>
+<li><a href="http://docs.phpcomposer.com/" target="_blank" rel="noopener noreffer">Composer 中文文档</a></li>
+<li><a href="https://pkg.phpcomposer.com/" target="_blank" rel="noopener noreffer">Coomposer 中国全量镜像</a></li>
+</ul>
+</blockquote>
+<h2 id="安装">安装</h2>
+<h3 id="linux">Linux</h3>
+<h4 id="局部安装">局部安装</h4>
+<blockquote>
+<p>局部安装一般指当前下载安装的目录。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 命令安装
+</span></span><span class="line"><span class="cl">$ curl -sS https://getcomposer.org/installer <span class="p">|</span> php
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 获取更多的信息
+</span></span><span class="line"><span class="cl">$ curl -sS https://getcomposer.org/installer <span class="p">|</span> php -- --help
+</span></span></code></pre></td></tr></table>
+</div>
+</div><blockquote>
+<p>如果上述方法安装失败，可使用 <code>php</code> 命令下载安装</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ php -r <span class="s2">&#34;readfile(&#39;https://getcomposer.org/installer&#39;);&#34;</span> <span class="p">|</span> php
+</span></span><span class="line"><span class="cl">或者
+</span></span><span class="line"><span class="cl">$ php -r <span class="s2">&#34;copy(&#39;https://getcomposer.org/installer&#39;, &#39;composer-setup.php&#39;);&#34;</span>
+</span></span><span class="line"><span class="cl">$ php -r <span class="s2">&#34;if (hash_file(&#39;SHA384&#39;, &#39;composer-setup.php&#39;) === &#39;544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061&#39;) { echo &#39;Installer verified&#39;; } else { echo &#39;Installer corrupt&#39;; unlink(&#39;composer-setup.php&#39;); } echo PHP_EOL;&#34;</span>
+</span></span><span class="line"><span class="cl">$ php composer-setup.php
+</span></span><span class="line"><span class="cl">$ php -r <span class="s2">&#34;unlink(&#39;composer-setup.php&#39;);&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="全局安装">全局安装</h4>
+<blockquote>
+<p>全局安装其实就是把 <code>composer</code> 命令放到环境系统变量识别的路径中。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo mv composer.phar /usr/local/bin/composer
+</span></span><span class="line"><span class="cl">$ sudo chmod +x /usr/local/bin/composer
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>如果命令因为权限执行失败，请使用 <code>sudo</code> 再次尝试运行 <code>mv</code> 那行命令。</p>
+<h3 id="mac">Mac</h3>
+<blockquote>
+<p>默认情况下，通过 <code>brew</code> 安装的可执行命令在 <code>/usr/local/bin</code> 目录中做了软链。</p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ brew search composer
+</span></span><span class="line"><span class="cl">$ brew install composer
+</span></span><span class="line"><span class="cl">$ composer -V
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="windows">Windows</h3>
+<h4 id="自动安装">自动安装</h4>
+<p>下载 <code>Composer-Setup.exe</code>，双击直接安装即可</p>
+<h4 id="手动安装">手动安装</h4>
+<blockquote>
+<p>如果收到 <code>readfile</code> 错误提示，使用 <code>http</code> 链接或者在 <code>php.ini</code> 中开启 <code>php_openssl.dll</code></p>
+</blockquote>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\u</span>sername&gt;cd C:<span class="se">\b</span>in
+</span></span><span class="line"><span class="cl">C:<span class="se">\b</span>in&gt;php -r <span class="s2">&#34;readfile(&#39;https://getcomposer.org/installer&#39;);&#34;</span> <span class="p">|</span> php
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>在 <code>composer.phar</code> 同级目录下新建文件 <code>composer.bat</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">C:<span class="se">\b</span>in&gt;echo @php <span class="s2">&#34;%~dp0composer.phar&#34;</span> %*&gt;composer.bat
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>关闭当前的命令行窗口，打开新的命令行窗口进行测试</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">C:<span class="se">\U</span>sers<span class="se">\u</span>sername&gt;composer -V
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="使用">使用</h2>
+<h3 id="创建项目依赖">创建项目依赖</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 创建 composer.json 文件
+</span></span><span class="line"><span class="cl">$ composer init
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="安装项目依赖">安装项目依赖</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 安装依赖
+</span></span><span class="line"><span class="cl">$ composer install
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="更新项目依赖">更新项目依赖</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 更新依赖
+</span></span><span class="line"><span class="cl">$ composer update
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="镜像">镜像</h2>
+<h3 id="系统全局配置">系统全局配置</h3>
+<p>将配置信息添加到 <code>Composer</code> 的全局配置文件 <code>config.json</code> 中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ composer config -g repo.packagist composer https://packagist.phpcomposer.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="单个项目配置">单个项目配置</h3>
+<p>将配置信息添加到某个项目的 <code>composer.json</code> 文件中：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ composer config repo.packagist composer https://packagist.phpcomposer.com
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>上述命令将会在项目的 <code>composer.json</code> 文件的末尾自动添加镜像的配置信息：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="s2">&#34;repositories&#34;</span><span class="err">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;packagist&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;composer&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;https://packagist.phpcomposer.com&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2018-01-18</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://alphabeter.github.io/posts/php-composer/" data-title="PHP 依赖管理器" data-hashtags="PHP"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://alphabeter.github.io/posts/php-composer/" data-hashtag="PHP"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://alphabeter.github.io/posts/php-composer/" data-title="PHP 依赖管理器"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://alphabeter.github.io/posts/php-composer/" data-title="PHP 依赖管理器"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://alphabeter.github.io/posts/php-composer/" data-title="PHP 依赖管理器"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="https://alphabeter.github.io/tags/php/">PHP</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://alphabeter.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="https://alphabeter.github.io/posts/php-magic-methods/" class="prev" rel="prev" title="PHP 魔术方法"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>PHP 魔术方法</a>
+            <a href="https://alphabeter.github.io/posts/mysql-max-min-query/" class="next" rel="next" title="MySQL 最值查询">MySQL 最值查询<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://alphabeter.github.io/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://alphabeter.github.io/js/theme.min.js"></script></body>
+</html>

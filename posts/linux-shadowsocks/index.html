@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Ubuntu 安装配置 Shadowsocks - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Ubuntu 安装配置 Shadowsocks" />
+<meta property="og:description" content="Shadowsocks 是一种基于 Socks5 代理方式的加密传输协议，也可以指实现这个协议的各种开发包。当前包使用 Python、C、C&#43;&#43;、C#、Go 语言等编程语言开发，大" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://alphabeter.github.io/posts/linux-shadowsocks/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-01-02T08:09:14+08:00" />
+<meta property="article:modified_time" content="2019-01-02T08:09:14+08:00" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
+<meta property="og:see_also" content="https://alphabeter.github.io/posts/linux-network-io-model/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/linux-crontab-command/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/linux-network-conf-tools/" /><meta property="og:see_also" content="https://alphabeter.github.io/posts/linux-common-commands/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Ubuntu 安装配置 Shadowsocks"/>
+<meta name="twitter:description" content="Shadowsocks 是一种基于 Socks5 代理方式的加密传输协议，也可以指实现这个协议的各种开发包。当前包使用 Python、C、C&#43;&#43;、C#、Go 语言等编程语言开发，大"/>
+<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
+<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://alphabeter.github.io/apple-touch-icon.png"><link rel="mask-icon" href="https://alphabeter.github.io/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://alphabeter.github.io/site.webmanifest"><link rel="canonical" href="https://alphabeter.github.io/posts/linux-shadowsocks/" /><link rel="prev" href="https://alphabeter.github.io/posts/mac-vscode-snippets/" /><link rel="next" href="https://alphabeter.github.io/posts/mac-common-commands-1/" /><link rel="stylesheet" href="https://alphabeter.github.io/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Ubuntu 安装配置 Shadowsocks",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/alphabeter.github.io\/posts\/linux-shadowsocks\/"
+        },"genre": "posts","keywords": "Linux","wordcount":  695 ,
+        "url": "https:\/\/alphabeter.github.io\/posts\/linux-shadowsocks\/","datePublished": "2019-01-02T08:09:14+08:00","dateModified": "2019-01-02T08:09:14+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="https://alphabeter.github.io/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://alphabeter.github.io/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://alphabeter.github.io/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://alphabeter.github.io/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://alphabeter.github.io/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://alphabeter.github.io/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="https://alphabeter.github.io/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://alphabeter.github.io/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://alphabeter.github.io/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://alphabeter.github.io/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://alphabeter.github.io/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://alphabeter.github.io/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Ubuntu 安装配置 Shadowsocks</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://alphabeter.github.io/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="https://alphabeter.github.io/categories/linux/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Linux</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2019-01-02">2019-01-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 695 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#服务端">服务端</a>
+      <ul>
+        <li><a href="#服务端安装">服务端安装</a></li>
+        <li><a href="#服务端配置">服务端配置</a></li>
+        <li><a href="#服务启动">服务启动</a></li>
+        <li><a href="#开机启动配置">开机启动配置</a>
+          <ul>
+            <li><a href="#配置文件">配置文件</a></li>
+            <li><a href="#设置启动">设置启动</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#客户端">客户端</a>
+      <ul>
+        <li><a href="#客户端安装">客户端安装</a></li>
+        <li><a href="#客户端配置">客户端配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>Shadowsocks 是一种基于 Socks5 代理方式的加密传输协议，也可以指实现这个协议的各种开发包。当前包使用 Python、C、C++、C#、Go 语言等编程语言开发，大部分主要实现（iOS 平台的除外）采用 Apache 许可证、GPL、MIT 许可证等多种自由软件许可协议开放源代码。Shadowsocks 分为服务器端和客户端，在使用之前，需要先将服务器端部署到服务器上面，然后通过客户端连接并创建本地代理。不多说，你懂得。</p>
+<h2 id="服务端">服务端</h2>
+<h3 id="服务端安装">服务端安装</h3>
+<p><a href="https://shadowsocks.org/en/download/servers.html" target="_blank" rel="noopener noreffer">参见不同支持语言的安装方式</a></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 安装 pip3
+</span></span><span class="line"><span class="cl">$ sudo apt install python3-pip
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 安装 shadowsocks
+</span></span><span class="line"><span class="cl">$ pip3 install https://github.com/shadowsocks/shadowsocks/archive/master.zip
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 检查 shadowsocks 版本
+</span></span><span class="line"><span class="cl">$ ssserver --version
+</span></span><span class="line"><span class="cl">Shadowsocks 3.0.0
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="服务端配置">服务端配置</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ sudo mkdir /etc/shadowsocks
+</span></span><span class="line"><span class="cl">$ sudo vim /etc/shadowsocks/shadowsocks.json
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;server&#34;</span>: <span class="s2">&#34;server_ip&#34;</span>, // 服务端监听 IP 地址，有人填 0.0.0.0 据说也可以
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;server_port&#34;</span>: 9009, // 服务器监听端口号，一般自定义
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;local_address&#34;</span>: <span class="s2">&#34;127.0.0.1&#34;</span>, // 本地代理 IP 地址
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;local_port&#34;</span>: 1080, // 本地代理端口号
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;password&#34;</span>: <span class="s2">&#34;password&#34;</span>, // 服务端密码
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;timeout&#34;</span>: 300, // 超时时间，以秒为单位
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;method&#34;</span>: <span class="s2">&#34;aes-256-cfb&#34;</span>, // 加密方式，据说 rc4-md5 的加密方式速度要快
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;mode&#34;</span>: <span class="s2">&#34;udp&#34;</span> // 运行模式
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="服务启动">服务启动</h3>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 加载配置启动服务
+</span></span><span class="line"><span class="cl">$ sudo ssserver -c /etc/shadowsocks/shadowsocks.json -d start
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ sudo ssserver -s 0.0.0.0 -p <span class="m">443</span> -k password -m rc4-md5 -t <span class="m">300</span> --user nobody -d start
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 后台一直运行 Shadowsocks 服务
+</span></span><span class="line"><span class="cl">$ sudo nohup ssserver -c /etc/shadowsocks/shadowsocks.json &gt; /dev/null 2&gt;<span class="p">&amp;</span><span class="m">1</span> <span class="p">&amp;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 停止服务
+</span></span><span class="line"><span class="cl">$ sudo ssserver -d stop
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 查看日志
+</span></span><span class="line"><span class="cl">$ cat /var/log/shadowsocks.log
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="开机启动配置">开机启动配置</h3>
+<h4 id="配置文件">配置文件</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 在 /lib/systemd/system 下创建文件并粘贴如下内容
+</span></span><span class="line"><span class="cl">$ sudo vim /lib/systemd/system/shadowsocks.service
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Unit<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">Description</span><span class="o">=</span>Shadowsocks Server
+</span></span><span class="line"><span class="cl"><span class="nv">After</span><span class="o">=</span>network.target
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Service<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">ExecStart</span><span class="o">=</span>/usr/local/bin/ssserver -c /etc/shadowsocks/shadowsocks.json
+</span></span><span class="line"><span class="cl"><span class="nv">Restart</span><span class="o">=</span>on-abort
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">[</span>Install<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="设置启动">设置启动</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 设置开机启动
+</span></span><span class="line"><span class="cl">$ sudo systemctl <span class="nb">enable</span> shadowsocks.service
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 启动
+</span></span><span class="line"><span class="cl">$ sudo systemctl start shadowsocks.service
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 状态
+</span></span><span class="line"><span class="cl">$ sudo systemctl status shadowsocks.service
+</span></span><span class="line"><span class="cl">● shadowsocks.service - Shadowsocks Server
+</span></span><span class="line"><span class="cl">   Loaded: loaded <span class="o">(</span>/lib/systemd/system/shadowsocks.service<span class="p">;</span> enabled<span class="p">;</span> vendor preset: enabled<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   Active: active <span class="o">(</span>running<span class="o">)</span> since Tue 2019-01-01 21:45:35 EST<span class="p">;</span> 48min ago
+</span></span><span class="line"><span class="cl"> Main PID: <span class="m">446</span> <span class="o">(</span>ssserver<span class="o">)</span>
+</span></span><span class="line"><span class="cl">    Tasks: <span class="m">1</span> <span class="o">(</span>limit: 1175<span class="o">)</span>
+</span></span><span class="line"><span class="cl">   CGroup: /system.slice/shadowsocks.service
+</span></span><span class="line"><span class="cl">           └─446 /usr/bin/python3 /usr/local/bin/ssserver -c /etc/shadowsocks/shadowsocks.json
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 重启
+</span></span><span class="line"><span class="cl">$ sudo systemctl restart shadowsocks.service
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 停止
+</span></span><span class="line"><span class="cl">$ sudo systemctl stop shadowsocks.service
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="客户端">客户端</h2>
+<h3 id="客户端安装">客户端安装</h3>
+<p><a href="https://shadowsocks.org/en/download/clients.html" target="_blank" rel="noopener noreffer">下载对应平台的安装包安装即可</a></p>
+<h3 id="客户端配置">客户端配置</h3>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/linux/201901/shadowsocks-client-config.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/linux/201901/shadowsocks-client-config.png, https://inotes.oss-cn-beijing.aliyuncs.com/linux/201901/shadowsocks-client-config.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/linux/201901/shadowsocks-client-config.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/linux/201901/shadowsocks-client-config.png"
+        title="shadowsocks-client-config.png" /></p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://wiki.archlinux.org/index.php/Shadowsocks_%28%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87%29" target="_blank" rel="noopener noreffer">Shadowsocks (简体中文)</a></li>
+<li><a href="https://leihungjyu.com/post/ubuntu-install-shadowsocks.html" target="_blank" rel="noopener noreffer">Ubuntu 18.04安装配置Shadowsocks实现科学上网</a></li>
+</ul>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2019-01-02</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://alphabeter.github.io/posts/linux-shadowsocks/" data-title="Ubuntu 安装配置 Shadowsocks" data-hashtags="Linux"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://alphabeter.github.io/posts/linux-shadowsocks/" data-hashtag="Linux"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://alphabeter.github.io/posts/linux-shadowsocks/" data-title="Ubuntu 安装配置 Shadowsocks"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://alphabeter.github.io/posts/linux-shadowsocks/" data-title="Ubuntu 安装配置 Shadowsocks"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://alphabeter.github.io/posts/linux-shadowsocks/" data-title="Ubuntu 安装配置 Shadowsocks"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="https://alphabeter.github.io/tags/linux/">Linux</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://alphabeter.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="https://alphabeter.github.io/posts/mac-vscode-snippets/" class="prev" rel="prev" title="Mac VSCode 代码片段"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Mac VSCode 代码片段</a>
+            <a href="https://alphabeter.github.io/posts/mac-common-commands-1/" class="next" rel="next" title="Mac 实用命令收集一">Mac 实用命令收集一<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://alphabeter.github.io/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://alphabeter.github.io/js/theme.min.js"></script></body>
+</html>

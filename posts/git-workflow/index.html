@@ -1,0 +1,1930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Git Workflow - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Git Workflow" />
+<meta property="og:description" content="工作流 - Workflow：是对工作流程及其各操作步骤之间业务规则的抽象、概括描述。工作流建模，即将工作流程中的工作如何前后组织在一起的逻辑和规则，在计算机中以恰当的模型表达并对其实施计算。工作流要解决的主要问题是：为实现某个业务目标，利用计算机在多个参与者之间按某种预定规则自动传递文档、信息或者任务。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://alphabeter.github.io/posts/git-workflow/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-05-01T21:16:45+08:00" />
+<meta property="article:modified_time" content="2018-05-01T21:16:45+08:00" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Git Workflow"/>
+<meta name="twitter:description" content="工作流 - Workflow：是对工作流程及其各操作步骤之间业务规则的抽象、概括描述。工作流建模，即将工作流程中的工作如何前后组织在一起的逻辑和规则，在计算机中以恰当的模型表达并对其实施计算。工作流要解决的主要问题是：为实现某个业务目标，利用计算机在多个参与者之间按某种预定规则自动传递文档、信息或者任务。"/>
+<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
+<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://alphabeter.github.io/apple-touch-icon.png"><link rel="mask-icon" href="https://alphabeter.github.io/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://alphabeter.github.io/site.webmanifest"><link rel="canonical" href="https://alphabeter.github.io/posts/git-workflow/" /><link rel="prev" href="https://alphabeter.github.io/posts/php-shallow-and-deep-clone/" /><link rel="next" href="https://alphabeter.github.io/posts/php-range-overlap/" /><link rel="stylesheet" href="https://alphabeter.github.io/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Git Workflow",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/alphabeter.github.io\/posts\/git-workflow\/"
+        },"genre": "posts","keywords": "Git","wordcount":  7556 ,
+        "url": "https:\/\/alphabeter.github.io\/posts\/git-workflow\/","datePublished": "2018-05-01T21:16:45+08:00","dateModified": "2018-05-01T21:16:45+08:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "作者"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="https://alphabeter.github.io/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://alphabeter.github.io/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://alphabeter.github.io/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://alphabeter.github.io/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://alphabeter.github.io/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://alphabeter.github.io/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="https://alphabeter.github.io/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://alphabeter.github.io/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://alphabeter.github.io/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://alphabeter.github.io/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://alphabeter.github.io/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://alphabeter.github.io/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Git Workflow</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="https://alphabeter.github.io/" title="Author" rel=" author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>作者</a></span>&nbsp;<span class="post-category">收录于 <a href="https://alphabeter.github.io/categories/git/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Git</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2018-05-01">2018-05-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 7556 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 16 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#git-workflow">Git Workflow</a></li>
+    <li><a href="#常见的工作流">常见的工作流</a>
+      <ul>
+        <li><a href="#集中式工作流">集中式工作流</a>
+          <ul>
+            <li><a href="#创建中央仓库">创建中央仓库</a></li>
+            <li><a href="#开发人员介入">开发人员介入</a>
+              <ul>
+                <li><a href="#第一阶段本地开发">第一阶段：本地开发</a></li>
+                <li><a href="#第二阶段远程同步">第二阶段：远程同步</a></li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+        <li><a href="#gitflow-工作流">Gitflow 工作流</a>
+          <ul>
+            <li><a href="#拉取远程仓库">拉取远程仓库</a></li>
+            <li><a href="#gitflow-工具安装">Gitflow 工具安装</a></li>
+            <li><a href="#gitflow-初始化">Gitflow 初始化</a></li>
+            <li><a href="#开发阶段">开发阶段</a></li>
+          </ul>
+        </li>
+        <li><a href="#forking-工作流">Forking 工作流</a>
+          <ul>
+            <li><a href="#创建远程仓库">创建远程仓库</a></li>
+            <li><a href="#功能开发">功能开发</a></li>
+            <li><a href="#发起-pull-request">发起 Pull Request</a></li>
+          </ul>
+        </li>
+        <li><a href="#feature-branching-工作流">Feature branching 工作流</a>
+          <ul>
+            <li><a href="#特性分支下拉取远程仓库">特性分支下拉取远程仓库</a></li>
+            <li><a href="#功性分支下开发阶段">功性分支下开发阶段</a></li>
+            <li><a href="#通过-pull-requests-讨论">通过 Pull Requests 讨论</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>工作流 - <code>Workflow</code>：是对工作流程及其各操作步骤之间业务规则的抽象、概括描述。工作流建模，即将工作流程中的工作如何前后组织在一起的逻辑和规则，在计算机中以恰当的模型表达并对其实施计算。工作流要解决的主要问题是：为实现某个业务目标，利用计算机在多个参与者之间按某种预定规则自动传递文档、信息或者任务。</p>
+<ul>
+<li><a href="https://imajinyun.xyz/2018/01/22/git-started/" target="_blank" rel="noopener noreffer"><code>Git 起步</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/23/git-basic/" target="_blank" rel="noopener noreffer"><code>Git 基本操作</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/24/git-log/" target="_blank" rel="noopener noreffer"><code>Git 查看日志</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/25/git-branch/" target="_blank" rel="noopener noreffer"><code>Git 分支</code></a></li>
+<li><a href="https://imajinyun.xyz/2018/01/27/git-multiple-accounts/" target="_blank" rel="noopener noreffer"><code>Git 中一个客户端设置多个账号</code></a></li>
+<li><strong>Git Workflow</strong></li>
+<li><a href="https://imajinyun.xyz/2020/09/07/git-collection-command/" target="_blank" rel="noopener noreffer"><code>Git 命令大全</code></a></li>
+</ul>
+<h2 id="git-workflow">Git Workflow</h2>
+<p>为了让大家有效地合作，使得项目井井有条地发展下去而抽象出来的一系列 <code>git</code> 操作步骤及流程，没错，是针对 <code>git</code> 的操作使用流程。</p>
+<h2 id="常见的工作流">常见的工作流</h2>
+<h3 id="集中式工作流">集中式工作流</h3>
+<blockquote>
+<p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows#centralized-workflow" target="_blank" rel="noopener noreffer">集中式工作流 - <code>Centralized Workflow</code></a></p>
+</blockquote>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1006-centralized-workflow.svg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1006-centralized-workflow.svg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1006-centralized-workflow.svg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1006-centralized-workflow.svg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1006-centralized-workflow.svg"
+        title="1006-centralized-workflow.svg" /></p>
+<h4 id="创建中央仓库">创建中央仓库</h4>
+<p>假定 <code>git</code> 创建了一个裸仓库：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ ssh git@host
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> mkdir -pv repository
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 创建一个裸仓库，按照约定，加上 .git 扩展名
+</span></span><span class="line"><span class="cl">$ git init --bare /home/git/repository/repo.git
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="开发人员介入">开发人员介入</h4>
+<h5 id="第一阶段本地开发">第一阶段：本地开发</h5>
+<div class="details admonition tip open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-lightbulb fa-fw" aria-hidden="true"></i>技巧<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content">这一阶段，<code>qwert</code> 可以按自己需求反复操作多次，而不用担心中央仓库上有了什么操作，同样的情况也适用于 <code>poiuy</code>。</div>
+        </div>
+    </div>
+<p>开发者 <code>qwert</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 拉取代码
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 查看状态
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 创建 README.md 文件
+</span></span><span class="line"><span class="cl">$ touch README.md
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 将 README.md 文件加入暂存区
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 设置用户名和邮箱
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;qwert@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;qwert&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交代码到本地仓库
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Add README.md&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>开发者 <code>poiuy</code></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 拉取代码
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 查看状态
+</span></span><span class="line"><span class="cl">$ git status
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 创建 README.md 文件
+</span></span><span class="line"><span class="cl">$ touch README.md
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 将 README.md 文件加入暂存区
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the first commit.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 设置用户名和邮箱
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;poiuy@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;poiuy&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交代码到本地仓库
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Add README.md&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>直到这时两个人都相安无事，在各自的本地仓库玩的尽心。但事情不会就这样了结了，否则，我就没法往下写了。</p>
+<h5 id="第二阶段远程同步">第二阶段：远程同步</h5>
+<p>这时起，情况就变的有些复杂了，还好局面可控。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 提交代码到远程仓库
+</span></span><span class="line"><span class="cl">$ git push origin master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 接下来，poiuy 也将代码提交到远程仓库，这时真正的悲剧产生了
+</span></span><span class="line"><span class="cl">$ git push origin master
+</span></span><span class="line"><span class="cl">To ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl"> ! <span class="o">[</span>rejected<span class="o">]</span>        master -&gt; master <span class="o">(</span>fetch first<span class="o">)</span>
+</span></span><span class="line"><span class="cl">error: failed to push some refs to <span class="s1">&#39;ssh://git@host/home/git/repository/repo.git&#39;</span>
+</span></span><span class="line"><span class="cl">hint: Updates were rejected because the remote contains work that you <span class="k">do</span>
+</span></span><span class="line"><span class="cl">hint: not have locally. This is usually caused by another repository pushing
+</span></span><span class="line"><span class="cl">hint: to the same ref. You may want to first merge the remote changes <span class="o">(</span>e.g.,
+</span></span><span class="line"><span class="cl">hint: <span class="s1">&#39;git pull&#39;</span><span class="o">)</span> before pushing again.
+</span></span><span class="line"><span class="cl">hint: See the <span class="s1">&#39;Note about fast-forwards&#39;</span> in <span class="s1">&#39;git push --help&#39;</span> <span class="k">for</span> details.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 也就是说，poiuy 得先拉一下远程仓库的代码到本地，再进行提交，因为你在人家 push 后面进行 push 的，这不怪你
+</span></span><span class="line"><span class="cl">$ git pull --rebase origin master
+</span></span><span class="line"><span class="cl">warning: no common commits
+</span></span><span class="line"><span class="cl">remote: Counting objects: 3, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Total <span class="m">3</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Unpacking objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl"> * branch            master     -&gt; FETCH_HEAD
+</span></span><span class="line"><span class="cl">First, rewinding head to replay your work on top of it...
+</span></span><span class="line"><span class="cl">Applying: Add README.md
+</span></span><span class="line"><span class="cl">Using index info to reconstruct a base tree...
+</span></span><span class="line"><span class="cl">Falling back to patching base and 3-way merge...
+</span></span><span class="line"><span class="cl">Auto-merging README.md
+</span></span></code></pre></td></tr></table>
+</div>
+</div><div class="details admonition warning open">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden="true"></i>警告<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><code>--rebase</code>：这个选项就是告诉 <code>Git</code> 把 <code>poiuy</code> 的提交移到同步了中央仓库修改后的 <code>master</code> 分支的顶部。如果你忘加了这个选项，<code>pull</code> 操作仍然可以完成，但每次 <code>pull</code> 操作要同步中央仓库中别人修改时，提交历史会以一个多余的『合并提交』结尾。对于集中式工作流，最好是使用 <code>rebase</code> 而不是生成一个合并提交。</div>
+        </div>
+    </div>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 续续编辑文件 README.md 并提交推送到远程
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit. <span class="c1"># 只将单词 first 改为 second</span>
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push origin master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 使用 git pull 同步远程代码到本地，这将产生一个冲突
+</span></span><span class="line"><span class="cl">$ git pull origin master
+</span></span><span class="line"><span class="cl">remote: Counting objects: 5, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Total <span class="m">3</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Unpacking objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl"> * <span class="o">[</span>new branch<span class="o">]</span>      master     -&gt; origin/master
+</span></span><span class="line"><span class="cl">Auto-merging README.md
+</span></span><span class="line"><span class="cl">CONFLICT <span class="o">(</span>content<span class="o">)</span>: Merge conflict in README.md
+</span></span><span class="line"><span class="cl">Automatic merge failed<span class="p">;</span> fix conflicts and <span class="k">then</span> commit the result.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 使用 git pull --rebase 同步远程代码到本地，托 --rebase 的福没有产生冲突
+</span></span><span class="line"><span class="cl">$ git pull --rebase origin master
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl"> * branch            master     -&gt; FETCH_HEAD
+</span></span><span class="line"><span class="cl">First, rewinding head to replay your work on top of it...
+</span></span><span class="line"><span class="cl">Fast-forwarded master to 3a24fcf204956f97a7499393fbca68e3a77df040.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 继续编辑 README.md
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy <span class="c1"># 新增一行</span>
+</span></span><span class="line"><span class="cl">$ git add .
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push origin master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 继续编辑 README.md
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. qwert <span class="c1"># 新增一行</span>
+</span></span><span class="line"><span class="cl">$ git add .
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push origin master <span class="c1"># 这时远程仓库拒绝 qwert 的提交，因为 poiuy 已经将最新改动提交到远程了，qwert 必须将远程同步到本地</span>
+</span></span><span class="line"><span class="cl">To ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl"> ! <span class="o">[</span>rejected<span class="o">]</span>        master -&gt; master <span class="o">(</span>fetch first<span class="o">)</span>
+</span></span><span class="line"><span class="cl">error: failed to push some refs to <span class="s1">&#39;ssh://git@host/home/git/repository/repo.git&#39;</span>
+</span></span><span class="line"><span class="cl">hint: Updates were rejected because the remote contains work that you <span class="k">do</span>
+</span></span><span class="line"><span class="cl">hint: not have locally. This is usually caused by another repository pushing
+</span></span><span class="line"><span class="cl">hint: to the same ref. You may want to first merge the remote changes <span class="o">(</span>e.g.,
+</span></span><span class="line"><span class="cl">hint: <span class="s1">&#39;git pull&#39;</span><span class="o">)</span> before pushing again.
+</span></span><span class="line"><span class="cl">hint: See the <span class="s1">&#39;Note about fast-forwards&#39;</span> in <span class="s1">&#39;git push --help&#39;</span> <span class="k">for</span> details.
+</span></span><span class="line"><span class="cl">$ git pull --rebase origin master <span class="c1"># 不是说拉取的姿势不对，而是两者都对同一行内容进行编辑，冲突无疑呀</span>
+</span></span><span class="line"><span class="cl">remote: Counting objects: 5, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Total <span class="m">3</span> <span class="o">(</span>delta 0<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Unpacking objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl"> * branch            master     -&gt; FETCH_HEAD
+</span></span><span class="line"><span class="cl">First, rewinding head to replay your work on top of it...
+</span></span><span class="line"><span class="cl">Applying: Update README.md
+</span></span><span class="line"><span class="cl">Using index info to reconstruct a base tree...
+</span></span><span class="line"><span class="cl">M  README.md
+</span></span><span class="line"><span class="cl">Falling back to patching base and 3-way merge...
+</span></span><span class="line"><span class="cl">Auto-merging README.md
+</span></span><span class="line"><span class="cl">CONFLICT <span class="o">(</span>content<span class="o">)</span>: Merge conflict in README.md
+</span></span><span class="line"><span class="cl">Failed to merge in the changes.
+</span></span><span class="line"><span class="cl">Patch failed at <span class="m">0001</span> Update README.md
+</span></span><span class="line"><span class="cl">The copy of the patch that failed is found in:
+</span></span><span class="line"><span class="cl">   /home/qwert/repo/.git/rebase-apply/patch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">When you have resolved this problem, run <span class="s2">&#34;git rebase --continue&#34;</span>.
+</span></span><span class="line"><span class="cl">If you prefer to skip this patch, run <span class="s2">&#34;git rebase --skip&#34;</span> instead.
+</span></span><span class="line"><span class="cl">To check out the original branch and stop rebasing, run <span class="s2">&#34;git rebase --abort&#34;</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 解决冲突，解决一个冲突
+</span></span><span class="line"><span class="cl">$ git add &lt;conflict-to-resolve-file&gt;
+</span></span><span class="line"><span class="cl">$ git rebase --continue <span class="c1"># 直到出现 No rebase in progress?</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 在解决冲突的过程中，发现有些搞不定，弄乱了，还可以撤销
+</span></span><span class="line"><span class="cl">$ git rebase --abort
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 如果 qwert 顺利解决了所有冲突，就愉快地发布他的修改
+</span></span><span class="line"><span class="cl">$ git push origin master
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>正如引用文章中提到的，仅使用几个 <code>Git</code> 命令我们就可以模拟出传统 <code>Subversion</code> 开发环境。对于要从 <code>SVN</code> 迁移过来的团队来说这太好了，但没有发挥出 <code>Git</code> 分布式本质的优势。</p>
+<p>集中式工作流的使用场景：</p>
+<ul>
+<li>团队人数少</li>
+<li>开发不是很频繁</li>
+<li>团队沟通方便</li>
+<li>不需同时维护多个版本</li>
+</ul>
+<h3 id="gitflow-工作流">Gitflow 工作流</h3>
+<blockquote>
+<p><a href="https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow" target="_blank" rel="noopener noreffer">Gitflow 工作流 - <code>Gitflow Workflow</code></a></p>
+</blockquote>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1007-gitflow-workflow.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1007-gitflow-workflow.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1007-gitflow-workflow.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1007-gitflow-workflow.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1007-gitflow-workflow.png"
+        title="1007-gitflow-workflow.png" /></p>
+<h4 id="拉取远程仓库">拉取远程仓库</h4>
+<p><code>Gitflow</code> 工作流仍然用中央仓库作为所有开发者的交互中心。这里我沿用集中式工作流中创建的仓库。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 工作准备
+</span></span><span class="line"><span class="cl">$ ssh qwert@host <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;qwert&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;qwert@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 工作准备
+</span></span><span class="line"><span class="cl">$ ssh poiuy@host <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;poiuy&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;poiuy@example.com&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="gitflow-工具安装">Gitflow 工具安装</h4>
+<blockquote>
+<ul>
+<li><a href="https://github.com/petervanderdoes/gitflow-avh/wiki/Installation" target="_blank" rel="noopener noreffer">AVH Edition 安装说明</a></li>
+<li><a href="https://danielkummer.github.io/git-flow-cheatsheet/index.zh_CN.html" target="_blank" rel="noopener noreffer">git-flow 备忘清单</a></li>
+</ul>
+</blockquote>
+<p>Gitflow 两个长期分支：</p>
+<ul>
+<li>主分支 <code>master</code></li>
+<li>开发分支 <code>develop</code></li>
+</ul>
+<p>Gitflow 三个短期分支：</p>
+<ul>
+<li>功能分支 <code>feature branch</code></li>
+<li>补丁分支 <code>hotfix branch</code></li>
+<li>预发分支 <code>release branch</code></li>
+</ul>
+<p>关于 <code>git-flow</code> 这篇 <a href="https://www.git-tower.com/learn/git/ebook/cn/command-line/advanced-topics/git-flow" target="_blank" rel="noopener noreffer">Learn Version Control with Git</a> 说的非常到位。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// Linux 下安装
+</span></span><span class="line"><span class="cl">$ curl --insecure --silent --location  https://raw.githubusercontent.com/petervanderdoes/gitflow-avh/develop/contrib/gitflow-installer.sh --output ./gitflow-installer.sh
+</span></span><span class="line"><span class="cl">$ chmod +x ./gitflow-installer.sh
+</span></span><span class="line"><span class="cl">$ sudo ./gitflow-installer.sh install stable
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="gitflow-初始化">Gitflow 初始化</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 用户初始化 git-flow
+</span></span><span class="line"><span class="cl">$ git flow init
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Which branch should be used <span class="k">for</span> bringing forth production releases?
+</span></span><span class="line"><span class="cl">   - master
+</span></span><span class="line"><span class="cl">Branch name <span class="k">for</span> production releases: <span class="o">[</span>master<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Branch name <span class="k">for</span> <span class="s2">&#34;next release&#34;</span> development: <span class="o">[</span>develop<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">How to name your supporting branch prefixes?
+</span></span><span class="line"><span class="cl">Feature branches? <span class="o">[</span>feature/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Bugfix branches? <span class="o">[</span>bugfix/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Release branches? <span class="o">[</span>release/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Hotfix branches? <span class="o">[</span>hotfix/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Support branches? <span class="o">[</span>support/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Version tag prefix? <span class="o">[]</span>
+</span></span><span class="line"><span class="cl">Hooks and filters directory? <span class="o">[</span>/home/qwert/repo/.git/hooks<span class="o">]</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin develop <span class="c1"># 将 develop 分支提交到远程仓库</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 用户初始化 git-flow
+</span></span><span class="line"><span class="cl">$ git flow init
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Which branch should be used <span class="k">for</span> bringing forth production releases?
+</span></span><span class="line"><span class="cl">   - master
+</span></span><span class="line"><span class="cl">Branch name <span class="k">for</span> production releases: <span class="o">[</span>master<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Branch name <span class="k">for</span> <span class="s2">&#34;next release&#34;</span> development: <span class="o">[</span>develop<span class="o">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">How to name your supporting branch prefixes?
+</span></span><span class="line"><span class="cl">Feature branches? <span class="o">[</span>feature/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Bugfix branches? <span class="o">[</span>bugfix/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Release branches? <span class="o">[</span>release/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Hotfix branches? <span class="o">[</span>hotfix/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Support branches? <span class="o">[</span>support/<span class="o">]</span>
+</span></span><span class="line"><span class="cl">Version tag prefix? <span class="o">[]</span>
+</span></span><span class="line"><span class="cl">Hooks and filters directory? <span class="o">[</span>/home/poiuy/repo/.git/hooks<span class="o">]</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="开发阶段">开发阶段</h4>
+<p>开发者 <code>qwert</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 开启一个功能分支，进行项目某个功能开发
+</span></span><span class="line"><span class="cl">$ git flow feature start feature-qwert
+</span></span><span class="line"><span class="cl">Switched to a new branch <span class="s1">&#39;feature/feature-qwert&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- A new branch <span class="s1">&#39;feature/feature-qwert&#39;</span> was created, based on <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;feature/feature-qwert&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Now, start committing on your feature. When <span class="k">done</span>, use:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     git flow feature finish feature-qwert
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 操作
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. qwert feature start.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git flow feature finish feature-qwert <span class="c1"># 此时 qwert 将完成开发结束任务，feature-qwert 分支的使命就此完结</span>
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">Updating d62035e..ced573c
+</span></span><span class="line"><span class="cl">Fast-forward
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">1</span> +
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Deleted branch feature/feature-qwert <span class="o">(</span>was ced573c<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- The feature branch <span class="s1">&#39;feature/feature-qwert&#39;</span> was merged into <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">- Feature branch <span class="s1">&#39;feature/feature-qwert&#39;</span> has been locally deleted
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">$ git push origin develop <span class="c1"># 将 develop 分支提交到远程仓库</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>开发者 <code>poiuy</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// poiuy 开启一个功能分支，进行项目另一个功能开发
+</span></span><span class="line"><span class="cl">$ git flow feature start feature-poiuy
+</span></span><span class="line"><span class="cl">Switched to a new branch <span class="s1">&#39;feature/feature-poiuy&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- A new branch <span class="s1">&#39;feature/feature-poiuy&#39;</span> was created, based on <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;feature/feature-poiuy&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Now, start committing on your feature. When <span class="k">done</span>, use:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     git flow feature finish feature-poiuy
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 操作
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. poiuy feature start.
+</span></span><span class="line"><span class="cl">$ git README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git flow feature finish feature-poiuy <span class="c1"># 此时 poiuy 将完成开发结束任务，feature-poiuy 分支的使命就此完结</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 跟踪远程分支
+</span></span><span class="line"><span class="cl">$ git branch --set-upstream-to<span class="o">=</span>origin/develop develop
+</span></span><span class="line"><span class="cl">Branch develop <span class="nb">set</span> up to track remote branch develop from origin.
+</span></span><span class="line"><span class="cl">$ git push origin develop <span class="c1"># poiuy 将开发好的功能推送到远程，但抱歉的时，此时远程 develop 已经向前滚动，因为不只是你一个人在开发</span>
+</span></span><span class="line"><span class="cl">To ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl"> ! <span class="o">[</span>rejected<span class="o">]</span>        develop -&gt; develop <span class="o">(</span>non-fast-forward<span class="o">)</span>
+</span></span><span class="line"><span class="cl">error: failed to push some refs to <span class="s1">&#39;ssh://git@host/home/git/repository/repo.git&#39;</span>
+</span></span><span class="line"><span class="cl">hint: Updates were rejected because the tip of your current branch is behind
+</span></span><span class="line"><span class="cl">hint: its remote counterpart. Merge the remote changes <span class="o">(</span>e.g. <span class="s1">&#39;git pull&#39;</span><span class="o">)</span>
+</span></span><span class="line"><span class="cl">hint: before pushing again.
+</span></span><span class="line"><span class="cl">hint: See the <span class="s1">&#39;Note about fast-forwards&#39;</span> in <span class="s1">&#39;git push --help&#39;</span> <span class="k">for</span> details.
+</span></span><span class="line"><span class="cl">$ git pull origin develop <span class="c1"># 那就先拉取一下，这时如果和其它人对同一块内容做过改动，冲突是没有悬念的</span>
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl"> * branch            develop    -&gt; FETCH_HEAD
+</span></span><span class="line"><span class="cl">Auto-merging README.md
+</span></span><span class="line"><span class="cl">CONFLICT <span class="o">(</span>content<span class="o">)</span>: Merge conflict in README.md
+</span></span><span class="line"><span class="cl">Automatic merge failed<span class="p">;</span> fix conflicts and <span class="k">then</span> commit the result.
+</span></span><span class="line"><span class="cl">$ git push origin develop <span class="c1"># poiuy 只能吭哧吭哧解决完冲突，再推送到远程</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>这时，开发者 <code>qwert</code> 又开发完一个新的功能，准备要发布</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 在开启新的功能分支之前，先从 develop 分支拉取最新的代码
+</span></span><span class="line"><span class="cl">$ git pull origin develop
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 开启新的功能分支
+</span></span><span class="line"><span class="cl">$ git flow feature start feature-something
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. qwert feature start.
+</span></span><span class="line"><span class="cl">5. poiuy feature start.
+</span></span><span class="line"><span class="cl">6. qwert another feature start.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 将开发完的新功能分支发布到远程仓库，这个分支可以发布到测试或者仿真环境进行测试
+</span></span><span class="line"><span class="cl">$ git flow feature publish feature-something
+</span></span><span class="line"><span class="cl">Counting objects: 5, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Compressing objects: 100% <span class="o">(</span>2/2<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="m">303</span> bytes <span class="p">|</span> <span class="m">0</span> bytes/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">3</span> <span class="o">(</span>delta 1<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">To ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl"> * <span class="o">[</span>new branch<span class="o">]</span>      feature/feature-something -&gt; feature/feature-something
+</span></span><span class="line"><span class="cl">Branch feature/feature-something <span class="nb">set</span> up to track remote branch feature/feature-something from origin.
+</span></span><span class="line"><span class="cl">Already on <span class="s1">&#39;feature/feature-something&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- The remote branch <span class="s1">&#39;feature/feature-something&#39;</span> was created or updated
+</span></span><span class="line"><span class="cl">- The <span class="nb">local</span> branch <span class="s1">&#39;feature/feature-something&#39;</span> was configured to track the remote branch
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;feature/feature-something&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 如果这个功能有多个人员参与，那么其它人可以拉取这个新功能分支进行相关的开发
+</span></span><span class="line"><span class="cl">$ git flow feature pull origin feature-something
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 也可以跟踪在 origin 上的新功能分支
+</span></span><span class="line"><span class="cl">$ git flow feature track feature-something
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 经过测试发现这个新功能分支没什么大的问题，开发者将完成的新功能合并到 develop 分支并删除新功能分支
+</span></span><span class="line"><span class="cl">$ git flow feature finish feature-something
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 开始从 develop 准备 release 版本
+</span></span><span class="line"><span class="cl">$ git flow release start v1.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 创建之后可以立即发布允许其它用户向这个 release 分支提交内容，将这个 release 发布出去，允许更新提交，确保新功能正常，万一新功能有隐患的 bug，可以就近修复
+</span></span><span class="line"><span class="cl">$ git flow release publish v1.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 可以通过 track 命令签出 release 版本的远程变更
+</span></span><span class="line"><span class="cl">$ git flow release track v1.0
+</span></span><span class="line"><span class="cl">$ vim README.md <span class="c1"># poiuy 跟踪 release v1.0 版本后，又进行了一些提交</span>
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. qwert feature start.
+</span></span><span class="line"><span class="cl">5. poiuy feature start.
+</span></span><span class="line"><span class="cl">6. qwert another feature start.
+</span></span><span class="line"><span class="cl">7. poiuy tract release v1.0
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 经过灰度的测试后，发布的 release 符合上线的要求，qwert 拉取 release v1.0 的更新，完成 release 版本。至此新功能才能算是上线了
+</span></span><span class="line"><span class="cl">$ git flow release finish v1.0
+</span></span><span class="line"><span class="cl">Branches <span class="s1">&#39;develop&#39;</span> and <span class="s1">&#39;origin/develop&#39;</span> have diverged.
+</span></span><span class="line"><span class="cl">And <span class="nb">local</span> branch <span class="s1">&#39;develop&#39;</span> is ahead of <span class="s1">&#39;origin/develop&#39;</span>.
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">Merge made by the <span class="s1">&#39;recursive&#39;</span> strategy.
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">4</span> ++++
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">4</span> insertions<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Already on <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">Your branch is ahead of <span class="s1">&#39;origin/master&#39;</span> by <span class="m">6</span> commits.
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git push&#34;</span> to publish your <span class="nb">local</span> commits<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">Your branch is ahead of <span class="s1">&#39;origin/develop&#39;</span> by <span class="m">1</span> commit.
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git push&#34;</span> to publish your <span class="nb">local</span> commits<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Merge made by the <span class="s1">&#39;recursive&#39;</span> strategy.
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">1</span> +
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">To ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl"> - <span class="o">[</span>deleted<span class="o">]</span>         release/v1.0
+</span></span><span class="line"><span class="cl">Deleted branch release/v1.0 <span class="o">(</span>was 77da54a<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- Release branch <span class="s1">&#39;release/v1.0&#39;</span> has been merged into <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">- The release was tagged <span class="s1">&#39;v1.0&#39;</span>
+</span></span><span class="line"><span class="cl">- Release tag <span class="s1">&#39;v1.0&#39;</span> has been back-merged into <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">- Release branch <span class="s1">&#39;release/v1.0&#39;</span> has been locally deleted<span class="p">;</span> it has been remotely deleted from <span class="s1">&#39;origin&#39;</span>
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 将 tag 推送到远程仓库
+</span></span><span class="line"><span class="cl">$ git push origin --tags
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 没过多久，生产环境出现了一个致命的 bug 需要紧急修复，qwert 开启一个修复分支
+</span></span><span class="line"><span class="cl">$ git flow hotfix start issue-1
+</span></span><span class="line"><span class="cl">Branches <span class="s1">&#39;master&#39;</span> and <span class="s1">&#39;origin/master&#39;</span> have diverged.
+</span></span><span class="line"><span class="cl">And <span class="nb">local</span> branch <span class="s1">&#39;master&#39;</span> is ahead of <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">Switched to a new branch <span class="s1">&#39;hotfix/issue-1&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- A new branch <span class="s1">&#39;hotfix/issue-1&#39;</span> was created, based on <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;hotfix/issue-1&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Follow-up actions:
+</span></span><span class="line"><span class="cl">- Start committing your hot fixes
+</span></span><span class="line"><span class="cl">- Bump the version number now!
+</span></span><span class="line"><span class="cl">- When <span class="k">done</span>, run:
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">     git flow hotfix finish <span class="s1">&#39;issue-1&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 开始修复 bug，完成后结束 hotfix 分支
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. qwert feature start.
+</span></span><span class="line"><span class="cl">5. poiuy feature start.
+</span></span><span class="line"><span class="cl">6. qwert another feature start.
+</span></span><span class="line"><span class="cl">7. poiuy tract release v1.0
+</span></span><span class="line"><span class="cl">8. qwert hotfix start.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git flow hotfix finish <span class="s1">&#39;issue-1&#39;</span> <span class="c1"># 结束 hotfix 分支的 bug 修复</span>
+</span></span><span class="line"><span class="cl">Branches <span class="s1">&#39;master&#39;</span> and <span class="s1">&#39;origin/master&#39;</span> have diverged.
+</span></span><span class="line"><span class="cl">And <span class="nb">local</span> branch <span class="s1">&#39;master&#39;</span> is ahead of <span class="s1">&#39;origin/master&#39;</span>.
+</span></span><span class="line"><span class="cl">Branches <span class="s1">&#39;develop&#39;</span> and <span class="s1">&#39;origin/develop&#39;</span> have diverged.
+</span></span><span class="line"><span class="cl">And <span class="nb">local</span> branch <span class="s1">&#39;develop&#39;</span> is ahead of <span class="s1">&#39;origin/develop&#39;</span>.
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">Your branch is ahead of <span class="s1">&#39;origin/master&#39;</span> by <span class="m">6</span> commits.
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git push&#34;</span> to publish your <span class="nb">local</span> commits<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Merge made by the <span class="s1">&#39;recursive&#39;</span> strategy.
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">1</span> +
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">Your branch is ahead of <span class="s1">&#39;origin/develop&#39;</span> by <span class="m">3</span> commits.
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git push&#34;</span> to publish your <span class="nb">local</span> commits<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Merge made by the <span class="s1">&#39;recursive&#39;</span> strategy.
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">1</span> +
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Deleted branch hotfix/issue-1 <span class="o">(</span>was e4ac4c3<span class="o">)</span>.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">Summary of actions:
+</span></span><span class="line"><span class="cl">- Hotfix branch <span class="s1">&#39;hotfix/issue-1&#39;</span> has been merged into <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">- The hotfix was tagged <span class="s1">&#39;issue-1&#39;</span>
+</span></span><span class="line"><span class="cl">- Hotfix tag <span class="s1">&#39;issue-1&#39;</span> has been back-merged into <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">- Hotfix branch <span class="s1">&#39;hotfix/issue-1&#39;</span> has been locally deleted
+</span></span><span class="line"><span class="cl">- You are now on branch <span class="s1">&#39;develop&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 提交修复的代码到远程 develop 分支
+</span></span><span class="line"><span class="cl">$ git push origin develop
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 将修复后的 tag 提交到远程仓库，这样生产环境就可以拉取 issue-1 标签修复之前的 bug
+</span></span><span class="line"><span class="cl">$ git push origin --tags
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>以下的这副图就是对 <code>git flow</code> 重要命令的诠释：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1008-gitflow-commands.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1008-gitflow-commands.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1008-gitflow-commands.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1008-gitflow-commands.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1008-gitflow-commands.png"
+        title="1008-gitflow-commands.png" /></p>
+<p>通过这些操作，我们看到 <code>Gitflow</code> 工作流自始至终一直维护 <code>master</code> 和 <code>develop</code> 分支，而 <code>feature</code> 和 <code>hotfix</code> 分支只是短暂的出现，待功能完成后合并到 <code>develop</code> 分支，修复完成后，同时合并到 <code>master</code> 和 <code>develop</code> 分支。同时我们也看到新功能提交从不直接与 <code>master</code> 分支交互，所有的功能分支都基于 <code>develop</code> 分支，当 <code>feature</code> 达到上线的要求后，才结束 <code>feature</code>，并将 <code>feature</code> 分支合并回 <code>master</code> 和 <code>develop</code> 分支，释放出一个版本供生产发布。这样明晰的功能分支提供了一个健壮的用于管理大型项目的框架。当然，要长期维护两个分支也比较麻烦，大多数管理工具都将 <code>master</code> 当作默认分支，可是开发是在 <code>develop</code> 分支进行的，这导致经常要切换分支，稍不注意就弄错分支，非常恼人，也说明了这种工作流程终究是不合适小团队的中小型项目。</p>
+<p><code>Gitflow</code> 工作流的使用场景：</p>
+<ul>
+<li>认为额外学习 <code>Gitflow</code> 不是什么问题的</li>
+<li>有专门的代码仓库管理员的</li>
+<li>开发团队相对固定，而且有一定规模</li>
+<li>常常有并行开发需求</li>
+<li>团队对于 <code>Release</code>、<code>Bug</code>、<code>Feature</code> 这些概念有统一定义标准的</li>
+</ul>
+<h3 id="forking-工作流">Forking 工作流</h3>
+<blockquote>
+<p><a href="https://github.com/oldratlee/translations/blob/master/git-workflows-and-tutorials/workflow-forking.md" target="_blank" rel="noopener noreffer">Forking Workflow</a></p>
+</blockquote>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1009-git-forking-workflow.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1009-git-forking-workflow.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1009-git-forking-workflow.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1009-git-forking-workflow.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1009-git-forking-workflow.png"
+        title="1009-git-forking-workflow.png" /></p>
+<p>为了演示 <code>Forking Workflow</code> 的工作流程，我准备了三个 <code>github</code> 账号，假设为维护者 <code>git</code>、开发者 <code>qwert</code> 和 <code>poiuy</code>。</p>
+<h4 id="创建远程仓库">创建远程仓库</h4>
+<p>维护者 <code>git</code> 创建一个公开的远程仓库：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1010-git-forking-create.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1010-git-forking-create.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1010-git-forking-create.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1010-git-forking-create.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1010-git-forking-create.jpg"
+        title="1010-git-forking-create.jpg" /></p>
+<p>开发者 <code>qwert</code> 去 <code>Fork</code> 维护者 <code>git</code> 创建的项目，当然，开发者 <code>poiuy</code> 也和 <code>qwert</code> 一样去 <code>Fork</code> 仓库：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1011-git-forking-repo.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1011-git-forking-repo.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1011-git-forking-repo.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1011-git-forking-repo.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1011-git-forking-repo.jpg"
+        title="1011-git-forking-repo.jpg" /></p>
+<p>完成之后，<code>qwert</code> 和 <code>poiuy</code> 相当于把远程 <code>git</code> 创建的项目克隆到各自的远程仓库</p>
+<h4 id="功能开发">功能开发</h4>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 拉取远程仓库代码到本地
+</span></span><span class="line"><span class="cl">$ git clone https://github.com/qwert/repo.git
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;qwert&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;qwert@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl"><span class="c1"># repo</span>
+</span></span><span class="line"><span class="cl">This is a forking workflow<span class="se">\&#39;</span>s demo.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## Develop Feature</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">1. this is written by Quert.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 拉取远程仓库代码到本地
+</span></span><span class="line"><span class="cl">$ git clone https://github.com/poiuy/repo.git
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;poiuy&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;poiuy@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl"><span class="c1"># repo</span>
+</span></span><span class="line"><span class="cl">This is a forking workflow<span class="se">\&#39;</span>s demo.
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## Develop Feature</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">1. this is written by Poiuy.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Update README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin master
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="发起-pull-request">发起 Pull Request</h4>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1012-git-forking-pr-create.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1012-git-forking-pr-create.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1012-git-forking-pr-create.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1012-git-forking-pr-create.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1012-git-forking-pr-create.jpg"
+        title="1012-git-forking-pr-create.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1013-git-forking-pr-open.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1013-git-forking-pr-open.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1013-git-forking-pr-open.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1013-git-forking-pr-open.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1013-git-forking-pr-open.jpg"
+        title="1013-git-forking-pr-open.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1014-git-forking-pr-show.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1014-git-forking-pr-show.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1014-git-forking-pr-show.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1014-git-forking-pr-show.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1014-git-forking-pr-show.jpg"
+        title="1014-git-forking-pr-show.jpg" /></p>
+<p>可以看到开发者 <code>qwert</code> 没有权限合并代码，此时只有维护者 <code>git</code> 才能合并代码，维护者 <code>git</code> 去合并代码：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1015-git-forking-merged.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1015-git-forking-merged.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1015-git-forking-merged.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1015-git-forking-merged.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1015-git-forking-merged.jpg"
+        title="1015-git-forking-merged.jpg" /></p>
+<p>开发者 <code>poiuy</code> 也采取和 <code>qwert</code> 一样的流程，但是当他申请合并时，出现了冲突，这是预科中的事，因为两人同时对一个文件相同的区域进行了编辑：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1016-git-forking-conflicts.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1016-git-forking-conflicts.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1016-git-forking-conflicts.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1016-git-forking-conflicts.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1016-git-forking-conflicts.jpg"
+        title="1016-git-forking-conflicts.jpg" /></p>
+<p><code>poiuy</code> 去解决冲突：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1017-git-forking-resolved-conflicts.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1017-git-forking-resolved-conflicts.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1017-git-forking-resolved-conflicts.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1017-git-forking-resolved-conflicts.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1017-git-forking-resolved-conflicts.jpg"
+        title="1017-git-forking-resolved-conflicts.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1018-git-forking-mark-resolved.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1018-git-forking-mark-resolved.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1018-git-forking-mark-resolved.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1018-git-forking-mark-resolved.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1018-git-forking-mark-resolved.jpg"
+        title="1018-git-forking-mark-resolved.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1019-git-forking-resolved-conflicts-merged.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1019-git-forking-resolved-conflicts-merged.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1019-git-forking-resolved-conflicts-merged.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1019-git-forking-resolved-conflicts-merged.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1019-git-forking-resolved-conflicts-merged.jpg"
+        title="1019-git-forking-resolved-conflicts-merged.jpg" /></p>
+<p>可以看到开发者 <code>poiuy</code> 也没有权限合并代码，此时也只有维护者 <code>git</code> 才能合并代码：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1020-forking-feature-merged.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1020-forking-feature-merged.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1020-forking-feature-merged.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1020-forking-feature-merged.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1020-forking-feature-merged.jpg"
+        title="1020-git-forking-feature-merged.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1021-forking-close-merged.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1021-forking-close-merged.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1021-forking-close-merged.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1021-forking-close-merged.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1021-forking-close-merged.jpg"
+        title="1021-forking-close-merged.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1022-forking-feature.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1022-forking-feature.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1022-forking-feature.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1022-forking-feature.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1022-forking-feature.jpg"
+        title="1022-forking-feature.jpg" /></p>
+<p>至此，<code>qwert</code> 和 <code>poiuy</code> 开发的新功能都合并到远程维护者的 <code>master</code> 分支，这一阶段的开发告一段落。</p>
+<p><code>Forking</code> 工作流的使用场景：</p>
+<ul>
+<li>常用于开源软件</li>
+<li>开发者有需要衍生出自己的衍生版的</li>
+<li>开发者不固定，可能是任意一个远程工作者</li>
+</ul>
+<h3 id="feature-branching-工作流">Feature branching 工作流</h3>
+<blockquote>
+<p><a href="https://github.com/oldratlee/translations/blob/master/git-workflows-and-tutorials/workflow-feature-branch.md" target="_blank" rel="noopener noreffer">Feature Branching Workflow</a></p>
+</blockquote>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1023-feature-branch-workflow.png"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1023-feature-branch-workflow.png, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1023-feature-branch-workflow.png 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1023-feature-branch-workflow.png 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1023-feature-branch-workflow.png"
+        title="1023-feature-branch-workflow.png" /></p>
+<p>这个流程大概算是 <code>Gitflow</code> 的简化版，不再需要安装额外 <code>Git</code> 插件，这个流程配合一些代码托管平台可以玩的风生水起。</p>
+<h4 id="特性分支下拉取远程仓库">特性分支下拉取远程仓库</h4>
+<p>功能分支工作流中我们仍然使用之前创建的中央仓库，并且 <code>master</code> 分支还是代表了正式项目的历史。这种工作流不是直接提交本地历史到各自的本地 <code>master</code> 分支，开发者每次在开始新功能前先基于 <code>master</code> 创建一个新分支，给分支起一个描述性的名称，这样分支用途就比较明显。</p>
+<p>准备工作还是老套路</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 工作准备
+</span></span><span class="line"><span class="cl">$ ssh qwert@host <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;qwert&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;qwert@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 工作准备
+</span></span><span class="line"><span class="cl">$ ssh poiuy@host <span class="o">&amp;&amp;</span> <span class="nb">cd</span> ~ <span class="o">&amp;&amp;</span> git clone ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;poiuy&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;poiuy@example.com&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h4 id="功性分支下开发阶段">功性分支下开发阶段</h4>
+<p>开发者 <code>qwert</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 创建功能分支
+</span></span><span class="line"><span class="cl">$ git checkout -b dev-user-menu
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. qwert feature start.
+</span></span><span class="line"><span class="cl">5. poiuy feature start.
+</span></span><span class="line"><span class="cl">6. qwert another feature start.
+</span></span><span class="line"><span class="cl">7. poiuy tract release v1.0
+</span></span><span class="line"><span class="cl">8. qwert hotfix start.
+</span></span><span class="line"><span class="cl">9. qwert develop user menu.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Develop user menu.&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin master
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>开发者 <code>poiuy</code>：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 创建功能分支
+</span></span><span class="line"><span class="cl">$ git checkout -b dev-user-auth
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. this is the second commit.
+</span></span><span class="line"><span class="cl">2. poiuy
+</span></span><span class="line"><span class="cl">3. qwert
+</span></span><span class="line"><span class="cl">4. qwert feature start.
+</span></span><span class="line"><span class="cl">5. poiuy feature start.
+</span></span><span class="line"><span class="cl">6. qwert another feature start.
+</span></span><span class="line"><span class="cl">7. poiuy tract release v1.0
+</span></span><span class="line"><span class="cl">8. qwert hotfix start.
+</span></span><span class="line"><span class="cl">9. poiuy develop user auth.
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Develop user auth&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin dev-user-auth
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>一段时间以后，<code>qwert</code> 和 <code>poiuy</code> 都声称把各个负责的功能开发完成，并提交到远程仓库了</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span><span class="lnt">28
+</span><span class="lnt">29
+</span><span class="lnt">30
+</span><span class="lnt">31
+</span><span class="lnt">32
+</span><span class="lnt">33
+</span><span class="lnt">34
+</span><span class="lnt">35
+</span><span class="lnt">36
+</span><span class="lnt">37
+</span><span class="lnt">38
+</span><span class="lnt">39
+</span><span class="lnt">40
+</span><span class="lnt">41
+</span><span class="lnt">42
+</span><span class="lnt">43
+</span><span class="lnt">44
+</span><span class="lnt">45
+</span><span class="lnt">46
+</span><span class="lnt">47
+</span><span class="lnt">48
+</span><span class="lnt">49
+</span><span class="lnt">50
+</span><span class="lnt">51
+</span><span class="lnt">52
+</span><span class="lnt">53
+</span><span class="lnt">54
+</span><span class="lnt">55
+</span><span class="lnt">56
+</span><span class="lnt">57
+</span><span class="lnt">58
+</span><span class="lnt">59
+</span><span class="lnt">60
+</span><span class="lnt">61
+</span><span class="lnt">62
+</span><span class="lnt">63
+</span><span class="lnt">64
+</span><span class="lnt">65
+</span><span class="lnt">66
+</span><span class="lnt">67
+</span><span class="lnt">68
+</span><span class="lnt">69
+</span><span class="lnt">70
+</span><span class="lnt">71
+</span><span class="lnt">72
+</span><span class="lnt">73
+</span><span class="lnt">74
+</span><span class="lnt">75
+</span><span class="lnt">76
+</span><span class="lnt">77
+</span><span class="lnt">78
+</span><span class="lnt">79
+</span><span class="lnt">80
+</span><span class="lnt">81
+</span><span class="lnt">82
+</span><span class="lnt">83
+</span><span class="lnt">84
+</span><span class="lnt">85
+</span><span class="lnt">86
+</span><span class="lnt">87
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// 发布开发者 qwert 的功能到测试环境测试，测试通过后合并到 master 分支
+</span></span><span class="line"><span class="cl">$ git checkout master
+</span></span><span class="line"><span class="cl">$ git pull <span class="c1"># 拉取其它开发者的更新</span>
+</span></span><span class="line"><span class="cl">remote: Counting objects: 5, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Compressing objects: 100% <span class="o">(</span>2/2<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Total <span class="m">3</span> <span class="o">(</span>delta 1<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Unpacking objects: 100% <span class="o">(</span>3/3<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl"> * <span class="o">[</span>new branch<span class="o">]</span>      dev-user-auth -&gt; origin/dev-user-auth
+</span></span><span class="line"><span class="cl">Already up-to-date.
+</span></span><span class="line"><span class="cl">$ git checkout dev-user-menu
+</span></span><span class="line"><span class="cl">$ git rebase master <span class="c1"># 用 rebase 合并主干的修改，如果有冲突在此时解决</span>
+</span></span><span class="line"><span class="cl">$ git checkout master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 将 qwert 新开发的功能合并到 master 分支
+</span></span><span class="line"><span class="cl">$ git merge dev-user-menu
+</span></span><span class="line"><span class="cl">Updating 40e19f1..4f92cff
+</span></span><span class="line"><span class="cl">Fast-forward
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">1</span> +
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">$ git push origin master <span class="c1"># 将合并后的提交到远程 master 分支</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 开发者 poiuy 的也通过测试，需要将代码合并到 master 分支
+</span></span><span class="line"><span class="cl">$ git checkout master
+</span></span><span class="line"><span class="cl">Switched to branch <span class="s1">&#39;master&#39;</span>
+</span></span><span class="line"><span class="cl">Your branch is behind <span class="s1">&#39;origin/master&#39;</span> by <span class="m">1</span> commit, and can be fast-forwarded.
+</span></span><span class="line"><span class="cl">  <span class="o">(</span>use <span class="s2">&#34;git pull&#34;</span> to update your <span class="nb">local</span> branch<span class="o">)</span>
+</span></span><span class="line"><span class="cl">$ git pull
+</span></span><span class="line"><span class="cl">From ssh://host/home/git/repository/repo
+</span></span><span class="line"><span class="cl">   40e19f1..4f92cff  master     -&gt; origin/master
+</span></span><span class="line"><span class="cl">Updating 40e19f1..4f92cff
+</span></span><span class="line"><span class="cl">Fast-forward
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">1</span> +
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">1</span> insertion<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 切换到功能分支，用 rebase 合并主干的修改，之前由于 qwert 和 poiuy 编辑同一个区域，无疑会产生冲突
+</span></span><span class="line"><span class="cl">$ git checkout dev-user-auth
+</span></span><span class="line"><span class="cl">$ git rebase master <span class="c1"># 用 rebase 合并主干的修改，如果有冲突在此时解决</span>
+</span></span><span class="line"><span class="cl">First, rewinding head to replay your work on top of it...
+</span></span><span class="line"><span class="cl">Applying: Develop user auth
+</span></span><span class="line"><span class="cl">Using index info to reconstruct a base tree...
+</span></span><span class="line"><span class="cl">M  README.md
+</span></span><span class="line"><span class="cl">Falling back to patching base and 3-way merge...
+</span></span><span class="line"><span class="cl">Auto-merging README.md
+</span></span><span class="line"><span class="cl">CONFLICT <span class="o">(</span>content<span class="o">)</span>: Merge conflict in README.md
+</span></span><span class="line"><span class="cl">Failed to merge in the changes.
+</span></span><span class="line"><span class="cl">Patch failed at <span class="m">0001</span> Develop user auth
+</span></span><span class="line"><span class="cl">The copy of the patch that failed is found in:
+</span></span><span class="line"><span class="cl">   /home/poiuy/repo/.git/rebase-apply/patch
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">When you have resolved this problem, run <span class="s2">&#34;git rebase --continue&#34;</span>.
+</span></span><span class="line"><span class="cl">If you prefer to skip this patch, run <span class="s2">&#34;git rebase --skip&#34;</span> instead.
+</span></span><span class="line"><span class="cl">To check out the original branch and stop rebasing, run <span class="s2">&#34;git rebase --abort&#34;</span>.
+</span></span><span class="line"><span class="cl">$ git rebase --continue <span class="c1"># 动用 rebase --continue 命令逐个修复冲突文件，直到 No rebase in progress? 为止</span>
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Conflict resolution&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push origin dev-user-auth
+</span></span><span class="line"><span class="cl">Counting objects: 10, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Compressing objects: 100% <span class="o">(</span>4/4<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Writing objects: 100% <span class="o">(</span>6/6<span class="o">)</span>, <span class="m">679</span> bytes <span class="p">|</span> <span class="m">0</span> bytes/s, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">Total <span class="m">6</span> <span class="o">(</span>delta 1<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">To ssh://git@host/home/git/repository/repo.git
+</span></span><span class="line"><span class="cl">   ccbab61..f0aea38  dev-user-auth -&gt; dev-user-auth
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 开发者 poiuy 切换到 master 分支，将冲突后的修复合并回 master
+</span></span><span class="line"><span class="cl">$ git checkou master
+</span></span><span class="line"><span class="cl">$ git merge dev-user-auth
+</span></span><span class="line"><span class="cl">Updating 4f92cff..f0aea38
+</span></span><span class="line"><span class="cl">Fast-forward
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">5</span> +++++
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">5</span> insertions<span class="o">(</span>+<span class="o">)</span>
+</span></span><span class="line"><span class="cl">$ git push origin master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// 此时 qwert 再切换到 master 进行拉取，至此两个开发者的各个功能都合并到 master 分支了，可以发布 release 了
+</span></span><span class="line"><span class="cl">$ git checkou master
+</span></span><span class="line"><span class="cl">$ git pull
+</span></span><span class="line"><span class="cl">remote: Counting objects: 10, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Compressing objects: 100% <span class="o">(</span>4/4<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">remote: Total <span class="m">6</span> <span class="o">(</span>delta 1<span class="o">)</span>, reused <span class="m">0</span> <span class="o">(</span>delta 0<span class="o">)</span>
+</span></span><span class="line"><span class="cl">Unpacking objects: 100% <span class="o">(</span>6/6<span class="o">)</span>, <span class="k">done</span>.
+</span></span><span class="line"><span class="cl">From ssh://localhost/home/git/repository/repo
+</span></span><span class="line"><span class="cl">   4f92cff..f0aea38  master     -&gt; origin/master
+</span></span><span class="line"><span class="cl">   ccbab61..f0aea38  dev-user-auth -&gt; origin/dev-user-auth
+</span></span><span class="line"><span class="cl">Updating 4f92cff..f0aea38
+</span></span><span class="line"><span class="cl">Fast-forward
+</span></span><span class="line"><span class="cl"> README.md <span class="p">|</span> <span class="m">5</span> +++++
+</span></span><span class="line"><span class="cl"> <span class="m">1</span> file changed, <span class="m">5</span> insertions<span class="o">(</span>+<span class="o">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>显而易见，这个分支只需要维护 <code>master</code> 分支就可以了，也就是说，在合并到 <code>master</code> 分支之前，需要确保对功能进行充分的测试，因为 <code>master</code> 分支是可以随时 <code>release</code> 的，而发布和相关的补丁都基于 <code>master</code> 分支，所以在分支达到生产要求后，就要立即合并到 <code>master</code> 分支，删除功能分支，再基于 <code>master</code> 分支创建新的分支进行新一轮的开发。当然，这个流程有个弊端就是，当我们 <code>Code Review</code> 之后，准备在 <code>master</code> 释放 <code>release</code> 时，又有人向 <code>master</code> 分支提交了新的完成功能，或者有些公司指定日期时间发布，等到指定的那个时间，<code>master</code> 分支已经有了新的合并而打乱最初的发布意图。因为这个时候，我们的本意是把上一个功能完全发布后再进行下一个版本的发布。为了应付这种情况，就需要在 <code>master</code> 分支以外，新建一个 <code>production</code> 分支来跟踪线上版本，也就是说，在 <code>git</code> 这儿没有什么是一个分支搞不定的，如果有，哪就再创建一个分支。</p>
+<p>功能分支工作流的使用场景：</p>
+<ul>
+<li>开发团队相对固定，而且有一定规模</li>
+<li>常常有多个功能，多个问题并行开发</li>
+<li>对代码审查有较高要求</li>
+<li>更注重团队效率</li>
+</ul>
+<h4 id="通过-pull-requests-讨论">通过 Pull Requests 讨论</h4>
+<blockquote>
+<p>一旦某个开发者完成一个功能，不是立即合并到 <code>master</code>，而是 <code>push</code> 到远程仓库的功能分支上并发起一个 <code>Pull Request</code> 请求去合并修改到 <code>master</code>。在修改成为主干代码前，这让其它的开发者有机会先去 <code>Review</code> 变更。</p>
+</blockquote>
+<p><code>Pull Request</code> 可以和 <code>feature</code> 分支工作流、<code>Gitflow</code> 工作流或者 <code>Forking</code> 工作流一起使用。但 <code>Pull Request</code> 需要两个不同的分支或是两个不同的仓库，因此它们不能和中心化的工作流一起使用。在不同的工作流中使用 <code>Pull Request</code> 有些不同，但大致的流程如下：</p>
+<ul>
+<li>开发者在他们的本地仓库中为某个功能创建一个专门的分支</li>
+<li>开发者将分支推送到公共的 <code>GitHub</code> 仓库</li>
+<li>开发者用 <code>GitHub</code> 发起一个 <code>Pull Request</code></li>
+<li>其余的团队成员审查代码，讨论并且做出修改</li>
+<li>项目维护者将这个功能并入官方的仓库，然后关闭这个 <code>Pull Request</code></li>
+</ul>
+<p>为了演示这个功能，我注册了两个 <code>GitHub</code> 来说明这个情况，假设 <code>qwert</code> 和 <code>poiuy</code> 是两个 <code>GitHub</code> 用户，并且已经注册</p>
+<ul>
+<li>创建项目</li>
+</ul>
+<p><code>qwert</code> 创建一个项目</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1024-fb-pr-pro-create.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1024-fb-pr-pro-create.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1024-fb-pr-pro-create.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1024-fb-pr-pro-create.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1024-fb-pr-pro-create.jpg"
+        title="1024-fb-pr-pro-create.jpg" /></p>
+<p>随后 <code>qwert</code> 邀请 <code>poiuy</code> 加入</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1025-fb-pr-collaborator.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1025-fb-pr-collaborator.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1025-fb-pr-collaborator.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1025-fb-pr-collaborator.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1025-fb-pr-collaborator.jpg"
+        title="1025-fb-pr-collaborator.jpg" /></p>
+<p><code>poiuy</code> 接受邀请</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1026-fb-pr-invitation.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1026-fb-pr-invitation.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1026-fb-pr-invitation.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1026-fb-pr-invitation.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1026-fb-pr-invitation.jpg"
+        title="1026-fb-pr-invitation.jpg" /></p>
+<ul>
+<li>拉取项目</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 拉取项目
+</span></span><span class="line"><span class="cl">$ git clone https://github.com/imajinyun/test.git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 设置用户名邮箱
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> <span class="nb">test</span>
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;qwert&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;qwert@example.com&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// qwert 初始化项目
+</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> <span class="s2">&#34;1. initialize project.&#34;</span> &gt;&gt; README.md
+</span></span><span class="line"><span class="cl">$ git add README.md
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Add README.md&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin master
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 拉取项目
+</span></span><span class="line"><span class="cl">$ git clone https://github.com/imajinyun/test.git
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 设置用户名邮箱
+</span></span><span class="line"><span class="cl">$ <span class="nb">cd</span> <span class="nb">test</span>
+</span></span><span class="line"><span class="cl">$ git config user.name <span class="s2">&#34;poiuy&#34;</span>
+</span></span><span class="line"><span class="cl">$ git config user.email <span class="s2">&#34;poiuy@example.com&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>功能开发</li>
+</ul>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">// qwert 开发某个功能
+</span></span><span class="line"><span class="cl">$ git pull
+</span></span><span class="line"><span class="cl">$ git checkou -b dev-user-menu
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. initialize project.
+</span></span><span class="line"><span class="cl">2. qwert develop user menu.
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Develop user menu.&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin dev-user-menu
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">// poiuy 开发某个功能
+</span></span><span class="line"><span class="cl">$ git pull
+</span></span><span class="line"><span class="cl">$ git checkou -b dev-user-auth
+</span></span><span class="line"><span class="cl">$ vim README.md
+</span></span><span class="line"><span class="cl">1. initialize project.
+</span></span><span class="line"><span class="cl">2. poiuy develop user auth.
+</span></span><span class="line"><span class="cl">$ git commit -m <span class="s2">&#34;Develop user auth.&#34;</span>
+</span></span><span class="line"><span class="cl">$ git push -u origin dev-user-auth
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>各自发起 <code>Pull Request</code></li>
+</ul>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1027-fb-pr-new.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1027-fb-pr-new.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1027-fb-pr-new.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1027-fb-pr-new.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1027-fb-pr-new.jpg"
+        title="1027-fb-pr-new.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1028-fb-pr-finish.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1028-fb-pr-finish.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1028-fb-pr-finish.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1028-fb-pr-finish.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1028-fb-pr-finish.jpg"
+        title="1028-fb-pr-finish.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1029-fb-pr-open.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1029-fb-pr-open.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1029-fb-pr-open.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1029-fb-pr-open.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1029-fb-pr-open.jpg"
+        title="1029-fb-pr-open.jpg" /></p>
+<ul>
+<li><code>qwert</code> 对发起的 <code>Pull Request</code> 进行合并</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1030-fb-pr-merged-by-qwert.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1030-fb-pr-merged-by-qwert.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1030-fb-pr-merged-by-qwert.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1030-fb-pr-merged-by-qwert.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1030-fb-pr-merged-by-qwert.jpg"
+        title="1030-fb-pr-merged-by-qwert.jpg" /></p>
+<ul>
+<li><code>poiuy</code> 对发起的 <code>Pull Request</code> 进行合并</li>
+</ul>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1031-fb-pr-resolved-by-poiuy.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1031-fb-pr-resolved-by-poiuy.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1031-fb-pr-resolved-by-poiuy.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1031-fb-pr-resolved-by-poiuy.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1031-fb-pr-resolved-by-poiuy.jpg"
+        title="1031-fb-pr-resolved-by-poiuy.jpg" /></p>
+<p>这时我们发现冲突了，需要先解决冲突再合并：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1032-fb-pr-mark-resolved.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1032-fb-pr-mark-resolved.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1032-fb-pr-mark-resolved.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1032-fb-pr-mark-resolved.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1032-fb-pr-mark-resolved.jpg"
+        title="1032-fb-pr-mark-resolved.jpg" /></p>
+<p><code>poiuy</code> 解决完冲突进行合并：</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1033-fb-pr-resolved-conflicts.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1033-fb-pr-resolved-conflicts.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1033-fb-pr-resolved-conflicts.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1033-fb-pr-resolved-conflicts.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1033-fb-pr-resolved-conflicts.jpg"
+        title="1033-fb-pr-resolved-conflicts.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1034-fb-pr-resolved-conflicts-merged.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1034-fb-pr-resolved-conflicts-merged.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1034-fb-pr-resolved-conflicts-merged.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1034-fb-pr-resolved-conflicts-merged.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1034-fb-pr-resolved-conflicts-merged.jpg"
+        title="1034-fb-pr-resolved-conflicts-merged.jpg" /></p>
+<p>终于两个功能都合并到 <code>master</code> 分支了。</p>
+<p><img
+        class="lazyload"
+        src="https://alphabeter.github.io/svg/loading.min.svg"
+        data-src="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1035-fb-pr-master.jpg"
+        data-srcset="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1035-fb-pr-master.jpg, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1035-fb-pr-master.jpg 1.5x, https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1035-fb-pr-master.jpg 2x"
+        data-sizes="auto"
+        alt="https://inotes.oss-cn-beijing.aliyuncs.com/git/201812/1035-fb-pr-master.jpg"
+        title="1035-fb-pr-master.jpg" /></p>
+<p>至此 <code>Pull Request</code> 算是完结了，至于其它两个工作流程上都差不多，就不再赘述了。</p>
+<p>用一篇文章说清楚 <code>Git Workflow</code> 是不太现实的，我吭哧吭哧的写了一堆，仅代表我对 <code>Git Workflow</code> 的理解和使用方法。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2018-05-01</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="https://alphabeter.github.io/posts/git-workflow/" data-title="Git Workflow" data-hashtags="Git"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="https://alphabeter.github.io/posts/git-workflow/" data-hashtag="Git"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Hacker News" data-sharer="hackernews" data-url="https://alphabeter.github.io/posts/git-workflow/" data-title="Git Workflow"><i class="fab fa-hacker-news fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Line" data-sharer="line" data-url="https://alphabeter.github.io/posts/git-workflow/" data-title="Git Workflow"><i data-svg-src="https://cdn.jsdelivr.net/npm/simple-icons@7.0.0/icons/line.svg" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 微博" data-sharer="weibo" data-url="https://alphabeter.github.io/posts/git-workflow/" data-title="Git Workflow"><i class="fab fa-weibo fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="https://alphabeter.github.io/tags/git/">Git</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="https://alphabeter.github.io/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="https://alphabeter.github.io/posts/php-shallow-and-deep-clone/" class="prev" rel="prev" title="PHP 中的浅克隆和深克隆"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>PHP 中的浅克隆和深克隆</a>
+            <a href="https://alphabeter.github.io/posts/php-range-overlap/" class="next" rel="next" title="PHP 范围中的重叠关系">PHP 范围中的重叠关系<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://alphabeter.github.io/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://alphabeter.github.io/js/theme.min.js"></script></body>
+</html>

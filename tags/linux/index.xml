@@ -1,0 +1,47 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Linux - 标签 - Jinyun&#39;s Notes</title>
+        <link>https://alphabeter.github.io/tags/linux/</link>
+        <description>Linux - 标签 - Jinyun&#39;s Notes</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Thu, 21 Jan 2021 08:47:32 &#43;0800</lastBuildDate><atom:link href="https://alphabeter.github.io/tags/linux/" rel="self" type="application/rss+xml" /><item>
+    <title>Linux 网络 IO 模型</title>
+    <link>https://alphabeter.github.io/posts/linux-network-io-model/</link>
+    <pubDate>Thu, 21 Jan 2021 08:47:32 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/linux-network-io-model/</guid>
+    <description><![CDATA[Linux 的内核将所有外部设备都看做一个文件来操作（一切皆文件），对一个 File 的读写操作会调用内核提供的系统命令，返回一个 File Descriptor（FD 文]]></description>
+</item>
+<item>
+    <title>Linux crontab 命令</title>
+    <link>https://alphabeter.github.io/posts/linux-crontab-command/</link>
+    <pubDate>Sun, 29 Dec 2019 11:26:32 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/linux-crontab-command/</guid>
+    <description><![CDATA[Crontab 命令被用来提交和管理用户的需要周期性执行的任务。 简介 通过 crontab 命令，我们可以在固定的间隔时间执行指定的系统指令或 shell script 脚本。时间间隔的单位可以是]]></description>
+</item>
+<item>
+    <title>Linux 网络配置工具</title>
+    <link>https://alphabeter.github.io/posts/linux-network-conf-tools/</link>
+    <pubDate>Wed, 04 Dec 2019 20:38:50 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/linux-network-conf-tools/</guid>
+    <description><![CDATA[是时候体验下 iproute2 网络配置工具全家桶了，net-tools 家族有的 iproute2 一样也不差。我起初也不知道，直到新买的百度云服务器查看地址时出现comman]]></description>
+</item>
+<item>
+    <title>Ubuntu 安装配置 Shadowsocks</title>
+    <link>https://alphabeter.github.io/posts/linux-shadowsocks/</link>
+    <pubDate>Wed, 02 Jan 2019 08:09:14 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/linux-shadowsocks/</guid>
+    <description><![CDATA[Shadowsocks 是一种基于 Socks5 代理方式的加密传输协议，也可以指实现这个协议的各种开发包。当前包使用 Python、C、C++、C#、Go 语言等编程语言开发，大]]></description>
+</item>
+<item>
+    <title>Linux - 常用命令</title>
+    <link>https://alphabeter.github.io/posts/linux-common-commands/</link>
+    <pubDate>Tue, 13 Feb 2018 18:57:45 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/linux-common-commands/</guid>
+    <description><![CDATA[旨在收集一些常用的 Linux 命令于此，方便以后快速查询及使用。其中有些命令在 CentOS 7 及以上的版本中并不能正常使用，需要安装相应的包才能工作。 命令技巧 命令]]></description>
+</item>
+</channel>
+</rss>

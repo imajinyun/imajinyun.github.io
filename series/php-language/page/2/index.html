@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>PHP Language - series - Jinyun&#39;s Notes</title><meta name="Description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="PHP Language" />
+<meta property="og:description" content="进一寸有进一寸的欢喜，退一步有退一步的从容" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://alphabeter.github.io/series/php-language/" /><meta property="og:site_name" content="Jinyun&#39;s Notes" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="PHP Language"/>
+<meta name="twitter:description" content="进一寸有进一寸的欢喜，退一步有退一步的从容"/>
+<meta name="application-name" content="进一寸有进一寸的欢喜，退一步有退一步的从容">
+<meta name="apple-mobile-web-app-title" content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg"><link rel="apple-touch-icon" sizes="180x180" href="https://alphabeter.github.io/apple-touch-icon.png"><link rel="mask-icon" href="https://alphabeter.github.io/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="https://alphabeter.github.io/site.webmanifest"><link rel="canonical" href="https://alphabeter.github.io/series/php-language/" /><link rel="alternate" href="https://alphabeter.github.io/series/php-language/index.xml" type="application/rss+xml" title="Jinyun&#39;s Notes">
+    <link rel="feed" href="https://alphabeter.github.io/series/php-language/index.xml" type="application/rss+xml" title="Jinyun&#39;s Notes"><link rel="stylesheet" href="https://alphabeter.github.io/css/style.min.css"><link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css"></noscript><link rel="preload" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"></noscript></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="https://alphabeter.github.io/posts/"><i class='fa-solid fa-sun'></i> 笔记 </a><a class="menu-item" href="https://alphabeter.github.io/tags/"><i class='fa-solid fa-tags'></i> 标签 </a><a class="menu-item" href="https://alphabeter.github.io/categories/"><i class='fa-solid fa-layer-group'></i> 分类 </a><a class="menu-item" href="https://alphabeter.github.io/docs/"><i class='fa-solid fa-file-word'></i> 文档 </a><a class="menu-item" href="https://alphabeter.github.io/links/"><i class='fa fa-link'></i> 友链 </a><a class="menu-item" href="https://alphabeter.github.io/about/"><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="https://alphabeter.github.io/" title="Jinyun&#39;s Notes"><span class="header-title-pre"><i class='fa fa-charging-station'></i></span>Jinyun&#39;s Notes</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="https://alphabeter.github.io/posts/" title=""><i class='fa-solid fa-sun'></i>笔记</a><a class="menu-item" href="https://alphabeter.github.io/tags/" title=""><i class='fa-solid fa-tags'></i>标签</a><a class="menu-item" href="https://alphabeter.github.io/categories/" title=""><i class='fa-solid fa-layer-group'></i>分类</a><a class="menu-item" href="https://alphabeter.github.io/docs/" title=""><i class='fa-solid fa-file-word'></i>文档</a><a class="menu-item" href="https://alphabeter.github.io/links/" title=""><i class='fa fa-link'></i>友链</a><a class="menu-item" href="https://alphabeter.github.io/about/" title=""><i class='fa fa-paper-plane'></i>关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="page archive"><h2 class="single-title animate__animated animate__pulse animate__faster">series - PHP Language</h2><h3 class="group-title">2018</h3><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-highlight/" class="archive-item-link">PHP - 输出中的代码语法高亮</a>
+                        <span class="archive-item-date">03-18</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-phalcon-command/" class="archive-item-link">Phalcon 框架之命令行</a>
+                        <span class="archive-item-date">03-07</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-phalcon-bootstrap/" class="archive-item-link">Phalcon 框架之启动流程</a>
+                        <span class="archive-item-date">03-06</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-output-buffer/" class="archive-item-link">PHP 中的输出缓冲区</a>
+                        <span class="archive-item-date">03-05</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-method-detection-function/" class="archive-item-link">PHP 方法检测函数</a>
+                        <span class="archive-item-date">03-04</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-php7-list/" class="archive-item-link">PHP7 中的 list</a>
+                        <span class="archive-item-date">03-01</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-toolkit/" class="archive-item-link">PHP - 开发工具包</a>
+                        <span class="archive-item-date">02-28</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-coding-standards-plugin/" class="archive-item-link">PHP 编码标准插件</a>
+                        <span class="archive-item-date">02-07</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-xdebug/" class="archive-item-link">PHP 安装 Xdebug 扩展来调试程序</a>
+                        <span class="archive-item-date">01-30</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-phpstorm/" class="archive-item-link">PHP 开发利器之 PhpStorm</a>
+                        <span class="archive-item-date">01-21</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-php7-new-features/" class="archive-item-link">PHP7 新特性</a>
+                        <span class="archive-item-date">01-19</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-composer/" class="archive-item-link">PHP 依赖管理器</a>
+                        <span class="archive-item-date">01-18</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-magic-methods/" class="archive-item-link">PHP 魔术方法</a>
+                        <span class="archive-item-date">01-18</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-cli/" class="archive-item-link">PHP Command Line Interface</a>
+                        <span class="archive-item-date">01-18</span>
+                    </article><article class="archive-item">
+                        <a href="https://alphabeter.github.io/posts/php-calculate-date/" class="archive-item-link">PHP - 计算出两个日期之间的差值</a>
+                        <span class="archive-item-date">01-15</span>
+                    </article><ul class="pagination"><li class="page-item ">
+                    <span class="page-link">
+                        <a href="https://alphabeter.github.io/series/php-language/">1</a>
+                    </span>
+                </li><li class="page-item active">
+                    <span class="page-link">
+                        <a href="https://alphabeter.github.io/series/php-language/page/2/">2</a>
+                    </span>
+                </li></ul></div></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.100.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2018 - 2022</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="https://alphabeter.github.io/" target="_blank"></a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lunr@2.3.9/lunr.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.stemmer.support.min.js"></script><script type="text/javascript" src="https://alphabeter.github.io/lib/lunr/lunr.zh.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js"></script><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":30,"type":"lunr"}};</script><script type="text/javascript" src="https://alphabeter.github.io/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,87 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>PHP - 标签 - Jinyun&#39;s Notes</title>
+        <link>https://alphabeter.github.io/tags/php/</link>
+        <description>PHP - 标签 - Jinyun&#39;s Notes</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><lastBuildDate>Mon, 13 Sep 2021 08:52:15 &#43;0800</lastBuildDate><atom:link href="https://alphabeter.github.io/tags/php/" rel="self" type="application/rss+xml" /><item>
+    <title>PHP 源码学习二</title>
+    <link>https://alphabeter.github.io/posts/php-src-learning2/</link>
+    <pubDate>Mon, 13 Sep 2021 08:52:15 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-src-learning2/</guid>
+    <description><![CDATA[<p>通过 GDB 跟踪调试来了解一下 <code>Zend String</code> 和 <code>Zend Array</code>。</p>]]></description>
+</item>
+<item>
+    <title>PHP 源码学习一</title>
+    <link>https://alphabeter.github.io/posts/php-src-learning1/</link>
+    <pubDate>Sun, 12 Sep 2021 13:02:17 &#43;0000</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-src-learning1/</guid>
+    <description><![CDATA[<p>看到慕课网有大佬讲解 PHP 源码，既然来了，那就看看吧，以下为整理的笔记。</p>]]></description>
+</item>
+<item>
+    <title>PHP 数组排序</title>
+    <link>https://alphabeter.github.io/posts/php-array-sort/</link>
+    <pubDate>Fri, 02 Jul 2021 10:43:25 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-array-sort/</guid>
+    <description><![CDATA[<p>在 PHP 中有很多针对数组的排序函数，非常方便。这些函数对一维数组进行关键字排序、按值排序、逆排序等。但对于多维数组的按需排序需要自己编写特定的函数去现实。</p>]]></description>
+</item>
+<item>
+    <title>PHP 中的一些巧妙写法</title>
+    <link>https://alphabeter.github.io/posts/php-some-ingenious-ways/</link>
+    <pubDate>Mon, 02 Dec 2019 12:31:41 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-some-ingenious-ways/</guid>
+    <description><![CDATA[<p>每当看到 PHP 写的很冗长奇臭的代码亦或片段，我就有一股将它斩成几节的冲动，无奈中自有一种拔剑四顾心茫然之感（由于不同的 PHP 版本，加上语法的限制）。我在开发工具上是一个比较挑剔的人，在 macOS 也花了不少钱购置工具，每次看到其它人为了破解工具折腾的死去活来痛不欲生时，我巴不得他们多折腾一会儿。</p>]]></description>
+</item>
+<item>
+    <title>PHP74 新特性</title>
+    <link>https://alphabeter.github.io/posts/php-php74-new-features/</link>
+    <pubDate>Fri, 29 Nov 2019 18:53:50 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-php74-new-features/</guid>
+    <description><![CDATA[<p>整理一下 PHP-7.4.0 提供的一些改进和新特性。</p>]]></description>
+</item>
+<item>
+    <title>Swoole 起步</title>
+    <link>https://alphabeter.github.io/posts/php-swoole-get-started/</link>
+    <pubDate>Sun, 27 Oct 2019 13:02:07 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-swoole-get-started/</guid>
+    <description><![CDATA[<p>Swoole 虽然是标准的 PHP 扩展，实际上与普通的扩展不同。普通的扩展只是提供一个库函数。而 Swoole 扩展在运行后会接管 PHP 的控制权，进入事件循环。当 IO 事件发生后底层会自动回调指定的 PHP 函数。说它重新定义了 PHP，一点也不夸张。</p>]]></description>
+</item>
+<item>
+    <title>PHP 从路径中获取文件的扩展名</title>
+    <link>https://alphabeter.github.io/posts/php-get-file-extension/</link>
+    <pubDate>Wed, 05 Sep 2018 14:41:31 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-get-file-extension/</guid>
+    <description><![CDATA[<p>这是一道妥妥的字符串操作题呀，源于某道面试题，玩一玩，开心就好。</p>]]></description>
+</item>
+<item>
+    <title>PHP 遍历目录下的文件</title>
+    <link>https://alphabeter.github.io/posts/php-traversing-directory-files/</link>
+    <pubDate>Wed, 05 Sep 2018 14:03:04 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-traversing-directory-files/</guid>
+    <description><![CDATA[<p>主要归功于<strong>递归</strong> - <code>Recursion</code>，又译为递回，在数学与计算机科学中，是指在函数的定义中使用函数自身的方法。递归一词还较常用于描述以自相似方法重复事物的过程。例如，当两面镜子相互之间近似平行时，镜中嵌套的图像是以无限递归的形式出现的。也可以理解为自我复制的过程。</p>]]></description>
+</item>
+<item>
+    <title>PHP 中发送 HTTP 请求的方式</title>
+    <link>https://alphabeter.github.io/posts/php-send-http-request/</link>
+    <pubDate>Thu, 21 Jun 2018 20:30:21 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-send-http-request/</guid>
+    <description><![CDATA[<p>通常情况下，我们发送 <code>HTTP</code> 请求采用 <code>PHP</code> 封装的 <code>cURL</code> 扩展函数来实现。</p>]]></description>
+</item>
+<item>
+    <title>PHP 中的函数式编程</title>
+    <link>https://alphabeter.github.io/posts/php-functional-programming/</link>
+    <pubDate>Fri, 01 Jun 2018 20:09:09 &#43;0800</pubDate>
+    <author>作者</author>
+    <guid>https://alphabeter.github.io/posts/php-functional-programming/</guid>
+    <description><![CDATA[在最近的学习中，不断听到看到函数式编程，据说常见的编程范式有命令式编程、函数式编程、逻辑式编程等，而常见的面向对象编程居然是一种命令式编程。]]></description>
+</item>
+</channel>
+</rss>
