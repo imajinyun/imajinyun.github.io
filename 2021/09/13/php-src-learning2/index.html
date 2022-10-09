@@ -1566,7 +1566,7 @@
 </span></span><span class=line><span class=cl><span class=c1>#8  0x0000555555b81550 in do_cli (argc=2, argv=0x55555678a980) at /vagrant/php-8.0.10/sapi/cli/php_cli.c:949</span>
 </span></span><span class=line><span class=cl><span class=c1>#9  0x0000555555b82596 in main (argc=2, argv=0x55555678a980) at /vagrant/php-8.0.10/sapi/cli/php_cli.c:1337</span>
 </span></span><span class=line><span class=cl><span class=o>(</span>gdb<span class=o>)</span> n
-</span></span><span class=line><span class=cl>252		GC_TYPE_INFO<span class=o>(</span>ht<span class=o>)</span> <span class=o>=</span> GC_ARRAY <span class=p>|</span> <span class=o>(</span>persistent ? <span class=o>((</span>GC_PERSISTENT<span class=p>|</span>GC_NOT_COLLECTABLE<span class=o>)</span> &lt;&lt; GC_FLAGS_SHIFT<span class=o>)</span> : 0<span class=o>)</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>252		GC_TYPE_INFO<span class=o>(</span>ht<span class=o>)</span> <span class=o>=</span> GC_ARRAY <span class=p>|</span> <span class=o>(</span>persistent ? <span class=o>((</span>GC_PERSISTENT<span class=p>|</span>GC_NOT_COLLECTABLE<span class=o>)</span> <span class=s>&lt;&lt; GC_FLAG</span>S_SHIFT<span class=o>)</span> : 0<span class=o>)</span><span class=p>;</span>
 </span></span><span class=line><span class=cl><span class=o>(</span>gdb<span class=o>)</span> p ht
 </span></span><span class=line><span class=cl><span class=nv>$1</span> <span class=o>=</span> <span class=o>(</span>HashTable *<span class=o>)</span> 0x555556773ab0 &lt;compiler_globals+272&gt;
 </span></span><span class=line><span class=cl><span class=o>(</span>gdb<span class=o>)</span> p *ht
