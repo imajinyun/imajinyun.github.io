@@ -32,25 +32,25 @@
 </span><span class=lnt>21
 </span><span class=lnt>22
 </span><span class=lnt>23
-</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>                           +---------------------sysmon-------------------+
-</span></span><span class=line><span class=cl>                           <span class=p>|</span>                                              <span class=p>|</span>
-</span></span><span class=line><span class=cl>                           <span class=p>|</span>                                              <span class=p>|</span>
-</span></span><span class=line><span class=cl>               +---+   +---<span class=p>|</span>-------+                 +--------+       +---<span class=p>|</span>---+
-</span></span><span class=line><span class=cl>go func<span class=o>()</span> ----&gt;<span class=p>|</span> G <span class=p>|</span>--&gt;<span class=p>|</span> P <span class=p>|</span> Local <span class=p>|</span> &lt;<span class=o>==</span> <span class=nv>balance</span> <span class=o>==</span>&gt; <span class=p>|</span> global <span class=p>|</span> &lt;----&gt;<span class=p>|</span> P <span class=p>|</span> M <span class=p>|</span>
-</span></span><span class=line><span class=cl>               +---+   +-----------+                 +--------+       +---<span class=p>|</span>---+
-</span></span><span class=line><span class=cl>						     <span class=p>|</span>                                        <span class=p>|</span>               <span class=p>|</span>
-</span></span><span class=line><span class=cl>							   <span class=p>|</span>    +---+                               <span class=p>|</span>               <span class=p>|</span>
-</span></span><span class=line><span class=cl>							   +---&gt;<span class=p>|</span> M <span class=p>|</span> &lt;--- find runnable -----------+----- steal &lt;--+
-</span></span><span class=line><span class=cl>							        +---+
-</span></span><span class=line><span class=cl>										    <span class=p>|</span>
-</span></span><span class=line><span class=cl>											  <span class=p>|</span>
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-text data-lang=text><span class=line><span class=cl>                           +---------------------sysmon-------------------+
+</span></span><span class=line><span class=cl>                           |                                              |
+</span></span><span class=line><span class=cl>                           |                                              |
+</span></span><span class=line><span class=cl>               +---+   +---|-------+                 +--------+       +---|---+
+</span></span><span class=line><span class=cl>go func() ----&gt;| G |--&gt;| P | Local | &lt;== balance ==&gt; | global | &lt;----&gt;| P | M |
+</span></span><span class=line><span class=cl>               +---+   +-----------+                 +--------+       +---|---+
+</span></span><span class=line><span class=cl>                 |                                        |               |
+</span></span><span class=line><span class=cl>                 |    +---+                               |               |
+</span></span><span class=line><span class=cl>                 +---&gt;| M | &lt;--- find runnable -----------+----- steal &lt;--+
+</span></span><span class=line><span class=cl>                      +---+
+</span></span><span class=line><span class=cl>                        |
+</span></span><span class=line><span class=cl>                        |
 </span></span><span class=line><span class=cl>  +----execute &lt;----schedule--+
-</span></span><span class=line><span class=cl>	<span class=p>|</span>                           <span class=p>|</span>
-</span></span><span class=line><span class=cl>	<span class=p>|</span>                           <span class=p>|</span>
-</span></span><span class=line><span class=cl>	+---&gt; G.fn ---&gt; goexit -----+
+</span></span><span class=line><span class=cl>  |                           |
+</span></span><span class=line><span class=cl>  |                           |
+</span></span><span class=line><span class=cl>  +---&gt; G.fn ---&gt; goexit -----+
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>1. go creates a new goroutine
-</span></span><span class=line><span class=cl>2. newly created goroutine being put into <span class=nb>local</span> or global queue
+</span></span><span class=line><span class=cl>2. newly created goroutine being put into local or global queue
 </span></span><span class=line><span class=cl>3. a M is being waken or created to execute goroutine
 </span></span><span class=line><span class=cl>4. schedule loop
 </span></span><span class=line><span class=cl>5. try its best to get a goroutine to execute
