@@ -1,0 +1,338 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Go 其它测试 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Go 其它测试"><meta property="og:description" content="Go 的 testing 包除了测试，还提供了运行并验证示例的功能。一方面是文档的效果，是关于某个功能的使用例子；另一方面，可以被当做测试运行。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/post/go-other-test/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-07-22T08:43:23+08:00"><meta property="article:modified_time" content="2021-07-22T08:43:23+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-gpm-model/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-grpc/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-concat-string/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-correct-posture/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-benchmark-test/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go 其它测试"><meta name=twitter:description content="Go 的 testing 包除了测试，还提供了运行并验证示例的功能。一方面是文档的效果，是关于某个功能的使用例子；另一方面，可以被当做测试运行。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/post/go-other-test/><link rel=prev href=https://imajinyun.xyz/post/go-benchmark-test/><link rel=next href=https://imajinyun.xyz/post/go-correct-posture/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go 其它测试","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/post\/go-other-test\/"},"genre":"posts","keywords":"Go","wordcount":1164,"url":"https:\/\/imajinyun.xyz\/post\/go-other-test\/","datePublished":"2021-07-22T08:43:23+08:00","dateModified":"2021-07-22T08:43:23+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go 其它测试</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/go/><i class="far fa-folder fa-fw" aria-hidden=true></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2021-07-22>2021-07-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 1164 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 3 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#示例测试>示例测试</a><ul><li><a href=#示例测试函数格式>示例测试函数格式</a></li><li><a href=#示例测试实例>示例测试实例</a><ul><li><a href=#示例一>示例一</a></li><li><a href=#示例二>示例二</a></li></ul></li><li><a href=#实例三>实例三</a></li></ul></li><li><a href=#主函数测试>主函数测试</a></li></ul></nav></div></div><div class=content id=content><p>Go 的 testing 包除了测试，还提供了运行并验证示例的功能。一方面是文档的效果，是关于某个功能的使用例子；另一方面，可以被当做测试运行。</p><ul><li><a href=https://imajinyun.xyz/2021/06/26/go-get-started/ target=_blank rel="noopener noreffer">Go 起步</a></li><li><a href=https://imajinyun.xyz/2021/07/02/go-data-type/ target=_blank rel="noopener noreffer">Go 数据类型</a></li><li><a href=https://imajinyun.xyz/2021/07/11/go-date-time/ target=_blank rel="noopener noreffer">Go 日期时间</a></li><li><a href=https://imajinyun.xyz/2021/07/14/go-random-number/ target=_blank rel="noopener noreffer">Go 随机数</a></li><li><a href=https://imajinyun.xyz/2021/07/16/go-unit-test/ target=_blank rel="noopener noreffer">Go 单元测试</a></li><li><a href=https://imajinyun.xyz/2021/07/17/go-benchmark-test/ target=_blank rel="noopener noreffer">Go 基准测试</a></li><li><strong>Go 其它测试</strong></li><li><a href=https://imajinyun.xyz/2021/07/24/go-correct-posture/ target=_blank rel="noopener noreffer">Go 正确姿势</a></li><li><a href=https://imajinyun.xyz/2021/07/25/go-concat-string/ target=_blank rel="noopener noreffer">Go 连接字符串</a></li></ul><h2 id=示例测试>示例测试</h2><h3 id=示例测试函数格式>示例测试函数格式</h3><p>Go 语言通过大量的命名约定来简化工具的复杂度，规范代码的风格。对示例函数的命名有如下约定：</p><ul><li>包级别的示例函数，直接命名为：<code>func Example() { ... }</code>；</li><li>函数 <code>F</code> 的示例，命名为：<code>func ExampleF() { ... }</code>；</li><li>类型 <code>T</code> 的示例，命名为：<code>func ExampleT() { ... }</code>；</li><li>类型 <code>T</code> 上的方法 <code>M</code> 的示例，命名为：<code>func ExampleT_M() { ... }</code>；</li></ul><p>有时，我们想要给 <code>包/类型/函数/方法</code> 提供多个示例，可以通过在示例函数名称后附加一个不同的后缀来实现，但这种后缀必须以小写字母开头，如：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Example_suffix</span><span class=p>()</span>    <span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ExampleF_suffix</span><span class=p>()</span>   <span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ExampleT_suffix</span><span class=p>()</span>   <span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ExampleT_M_suffix</span><span class=p>()</span> <span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=示例测试实例>示例测试实例</h3><h4 id=示例一>示例一</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>hello</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;strings&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ExampleToUpper</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>strings</span><span class=p>.</span><span class=nf>ToUpper</span><span class=p>(</span><span class=s>&#34;foo&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Output: FOO
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ExampleToUpperFail</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>strings</span><span class=p>.</span><span class=nf>ToUpper</span><span class=p>(</span><span class=s>&#34;bar&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Output: Bar
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go <span class=nb>test</span> -v -timeout 30s -run <span class=s1>&#39;^(ExampleToUpper|ExampleToUpperFail)$&#39;</span> example.com/hello
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>===</span> RUN   ExampleToUpper
+</span></span><span class=line><span class=cl>--- PASS: ExampleToUpper <span class=o>(</span>0.00s<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=o>===</span> RUN   ExampleToUpperFail
+</span></span><span class=line><span class=cl>--- FAIL: ExampleToUpperFail <span class=o>(</span>0.00s<span class=o>)</span>
+</span></span><span class=line><span class=cl>got:
+</span></span><span class=line><span class=cl>BAR
+</span></span><span class=line><span class=cl>want:
+</span></span><span class=line><span class=cl>Bar
+</span></span><span class=line><span class=cl>FAIL
+</span></span><span class=line><span class=cl>FAIL	example.com/hello	0.008s
+</span></span></code></pre></td></tr></table></div></div><h4 id=示例二>示例二</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>hello</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;sort&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Person</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>Name</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>  <span class=nx>Age</span>  <span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>p</span> <span class=nx>Person</span><span class=p>)</span> <span class=nf>String</span><span class=p>()</span> <span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;%s: %d&#34;</span><span class=p>,</span> <span class=nx>p</span><span class=p>.</span><span class=nx>Name</span><span class=p>,</span> <span class=nx>p</span><span class=p>.</span><span class=nx>Age</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// ByAge implements sort.Interface for []Person based on the Age field.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>type</span> <span class=nx>SortByAge</span> <span class=p>[]</span><span class=nx>Person</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>a</span> <span class=nx>SortByAge</span><span class=p>)</span> <span class=nf>Len</span><span class=p>()</span> <span class=kt>int</span>           <span class=p>{</span> <span class=k>return</span> <span class=nb>len</span><span class=p>(</span><span class=nx>a</span><span class=p>)</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>a</span> <span class=nx>SortByAge</span><span class=p>)</span> <span class=nf>Swap</span><span class=p>(</span><span class=nx>i</span><span class=p>,</span> <span class=nx>j</span> <span class=kt>int</span><span class=p>)</span>      <span class=p>{</span> <span class=nx>a</span><span class=p>[</span><span class=nx>i</span><span class=p>],</span> <span class=nx>a</span><span class=p>[</span><span class=nx>j</span><span class=p>]</span> <span class=p>=</span> <span class=nx>a</span><span class=p>[</span><span class=nx>j</span><span class=p>],</span> <span class=nx>a</span><span class=p>[</span><span class=nx>i</span><span class=p>]</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>a</span> <span class=nx>SortByAge</span><span class=p>)</span> <span class=nf>Less</span><span class=p>(</span><span class=nx>i</span><span class=p>,</span> <span class=nx>j</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>bool</span> <span class=p>{</span> <span class=k>return</span> <span class=nx>a</span><span class=p>[</span><span class=nx>i</span><span class=p>].</span><span class=nx>Age</span> <span class=p>&lt;</span> <span class=nx>a</span><span class=p>[</span><span class=nx>j</span><span class=p>].</span><span class=nx>Age</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Example</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>people</span> <span class=o>:=</span> <span class=p>[]</span><span class=nx>Person</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span><span class=s>&#34;Jack&#34;</span><span class=p>,</span> <span class=mi>31</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span><span class=s>&#34;John&#34;</span><span class=p>,</span> <span class=mi>42</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span><span class=s>&#34;Acme&#34;</span><span class=p>,</span> <span class=mi>17</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span><span class=s>&#34;Pony&#34;</span><span class=p>,</span> <span class=mi>26</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span><span class=s>&#34;Wise&#34;</span><span class=p>,</span> <span class=mi>33</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>people</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>sort</span><span class=p>.</span><span class=nf>Sort</span><span class=p>(</span><span class=nf>SortByAge</span><span class=p>(</span><span class=nx>people</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>people</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Output:
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// [Jack: 31 John: 42 Acme: 17 Pony: 26 Wise: 33]
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>// [Acme: 17 Pony: 26 Jack: 31 Wise: 33 John: 42]
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go <span class=nb>test</span> -v -timeout 30s example.com/hello
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>===</span> RUN   Example
+</span></span><span class=line><span class=cl>--- PASS: Example <span class=o>(</span>0.00s<span class=o>)</span>
+</span></span><span class=line><span class=cl>PASS
+</span></span><span class=line><span class=cl>ok  	example.com/hello	0.007s
+</span></span></code></pre></td></tr></table></div></div><h3 id=实例三>实例三</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>hello</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;go/ast&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;go/parser&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ExampleAST</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>expr</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>parser</span><span class=p>.</span><span class=nf>ParseExpr</span><span class=p>(</span><span class=s>&#34;9 / (2 + 1)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>log</span><span class=p>.</span><span class=nf>Fatal</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ast</span><span class=p>.</span><span class=nf>Print</span><span class=p>(</span><span class=kc>nil</span><span class=p>,</span> <span class=nx>expr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Output: 0  *ast.BinaryExpr {
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      1  .  X: *ast.BasicLit {
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      2  .  .  ValuePos: 1
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      3  .  .  Kind: INT
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      4  .  .  Value: &#34;9&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      5  .  }
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      6  .  OpPos: 3
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      7  .  Op: /
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      8  .  Y: *ast.ParenExpr {
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//      9  .  .  Lparen: 5
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     10  .  .  X: *ast.BinaryExpr {
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     11  .  .  .  X: *ast.BasicLit {
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     12  .  .  .  .  ValuePos: 6
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     13  .  .  .  .  Kind: INT
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     14  .  .  .  .  Value: &#34;2&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     15  .  .  .  }
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     16  .  .  .  OpPos: 8
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     17  .  .  .  Op: +
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     18  .  .  .  Y: *ast.BasicLit {
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     19  .  .  .  .  ValuePos: 10
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     20  .  .  .  .  Kind: INT
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     21  .  .  .  .  Value: &#34;1&#34;
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     22  .  .  .  }
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     23  .  .  }
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     24  .  .  Rparen: 11
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     25  .  }
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=c1>//     26  }
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go <span class=nb>test</span> -v -timeout 30s -run <span class=s1>&#39;^ExampleAST$&#39;</span> example.com/hello
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>===</span> RUN   ExampleAST
+</span></span><span class=line><span class=cl>--- PASS: ExampleAST <span class=o>(</span>0.00s<span class=o>)</span>
+</span></span><span class=line><span class=cl>PASS
+</span></span><span class=line><span class=cl>ok  	example.com/hello	<span class=o>(</span>cached<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=主函数测试>主函数测试</h2><div class="details admonition warning open"><div class="details-summary admonition-title"><i class="icon fas fa-exclamation-triangle fa-fw" aria-hidden=true></i>警告<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content>注意：在 <code>TestMain</code> 函数的最后，应该使用 <code>m.Run</code> 的返回值作为参数去调用 <code>os.Exit</code>。</div></div></div><p>在写测试时，有时需要在测试之前或之后进行额外的设置（setup）或拆卸（teardown）；有时，测试还需要控制在主线程上运行的代码。为了支持这些需求，<code>testing</code> 包提供了 <code>TestMain</code> 函数（附上 <a href=https://github.com/golang/go/blob/master/src/net/http/main_test.go target=_blank rel="noopener noreffer">官方 TestMain 使用姿势</a>）：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestMain</span><span class=p>(</span><span class=nx>m</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>M</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>hello</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;os&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;testing&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestMain</span><span class=p>(</span><span class=nx>m</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>M</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Do stuff BEFORE the tests!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>exit</span> <span class=o>:=</span> <span class=nx>m</span><span class=p>.</span><span class=nf>Run</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>  <span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;Do stuff AFTER the tests!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>os</span><span class=p>.</span><span class=nf>Exit</span><span class=p>(</span><span class=nx>exit</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestA</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;TestA running&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>TestB</span><span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>testing</span><span class=p>.</span><span class=nx>T</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;TestB running&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go <span class=nb>test</span> -v -timeout 30s -run <span class=s1>&#39;^(TestMain|TestA|TestB)$&#39;</span> example.com/hello
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>2021/07/22 20:07:25 Do stuff BEFORE the tests!
+</span></span><span class=line><span class=cl><span class=o>===</span> RUN   TestA
+</span></span><span class=line><span class=cl>2021/07/22 20:07:25 TestA running
+</span></span><span class=line><span class=cl>--- PASS: TestA <span class=o>(</span>0.00s<span class=o>)</span>
+</span></span><span class=line><span class=cl><span class=o>===</span> RUN   TestB
+</span></span><span class=line><span class=cl>2021/07/22 20:07:25 TestB running
+</span></span><span class=line><span class=cl>--- PASS: TestB <span class=o>(</span>0.00s<span class=o>)</span>
+</span></span><span class=line><span class=cl>PASS
+</span></span><span class=line><span class=cl>2021/07/22 20:07:25 Do stuff AFTER the tests!
+</span></span><span class=line><span class=cl>ok  	example.com/hello	<span class=o>(</span>cached<span class=o>)</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-07-22</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/post/go-other-test/ data-title="Go 其它测试" data-hashtags=Go><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/post/go-other-test/ data-hashtag=Go><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/post/go-other-test/ data-title="Go 其它测试"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/post/go-other-test/ data-title="Go 其它测试"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/post/go-other-test/ data-title="Go 其它测试"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/post/go-benchmark-test/ class=prev rel=prev title="Go 基准测试"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Go 基准测试</a>
+<a href=https://imajinyun.xyz/post/go-correct-posture/ class=next rel=next title="Go 正确姿势">Go 正确姿势<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6cf2973a936acbed3d32667888ea2f37",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>

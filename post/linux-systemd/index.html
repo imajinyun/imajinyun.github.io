@@ -1,0 +1,387 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Linux Systemd - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Linux Systemd"><meta property="og:description" content="Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/post/linux-systemd/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-04-17T13:53:02+08:00"><meta property="article:modified_time" content="2023-04-17T13:53:02+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Linux Systemd"><meta name=twitter:description content="Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/post/linux-systemd/><link rel=prev href=https://imajinyun.xyz/post/linux-ssh-password-free-login/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Linux Systemd","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/post\/linux-systemd\/"},"genre":"posts","keywords":"Linux","wordcount":4024,"url":"https:\/\/imajinyun.xyz\/post\/linux-systemd\/","datePublished":"2023-04-17T13:53:02+08:00","dateModified":"2023-04-17T13:53:02+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Linux Systemd</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/linux/><i class="far fa-folder fa-fw" aria-hidden=true></i>Linux</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2023-04-17>2023-04-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 4024 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 9 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#systemd-背景>Systemd 背景</a></li><li><a href=#systemd-概述>Systemd 概述</a></li><li><a href=#systemd-工具>Systemd 工具</a><ul><li><a href=#systemctl>systemctl</a></li><li><a href=#systemd-analyze>systemd-analyze</a></li><li><a href=#hostnamectl>hostnamectl</a></li><li><a href=#localectl>localectl</a></li><li><a href=#timedatectl>timedatectl</a></li><li><a href=#loginctl>loginctl</a></li></ul></li><li><a href=#unit>Unit</a><ul><li><a href=#unit-类型>Unit 类型</a></li><li><a href=#unit-状态>Unit 状态</a></li><li><a href=#unit-操作>Unit 操作</a></li><li><a href=#unit-配置>Unit 配置</a><ul><li><a href=#service-unit-service>Service unit (.service)</a></li><li><a href=#socket-unit-socket>Socket unit (.socket)</a></li><li><a href=#timer-unit-timer>Timer unit (.timer)</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><p>Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。</p><h2 id=systemd-背景>Systemd 背景</h2><p>在操作系统中，<code>init</code> 进程是一个特殊的进程，它是系统启动后运行的第一个进程。<code>init</code> 进程负责启动和管理其他系统进程，并在系统运行期间一直存在。它是操作系统中所有其他进程的祖先。</p><p>关于 <code>init</code> 进程的一些信息：</p><ul><li><strong>进程标识符</strong>：<code>init</code> 进程始终具有进程标识符 (PID) 为 <strong>1</strong> 的属性。这使得其他进程可以轻松地将其子进程传递给 <code>init</code> 进程进行管理，从而避免产生僵尸进程。</li><li><strong>启动其他进程</strong>：<code>init</code> 进程负责启动其他系统进程，例如：守护进程、服务、用户空间应用程序等。通常，<code>init</code> 进程根据系统的初始化脚本或配置文件来启动这些进程。</li><li><strong>管理孤儿进程</strong>：当一个父进程终止，而其子进程仍在运行时，这些子进程会成为孤儿进程。<code>init</code> 进程会自动采纳这些孤儿进程，并负责回收它们的资源，防止系统出现僵尸进程。</li><li><strong>系统关机与重启</strong>：<code>init</code> 进程在系统关机或重启时负责正确地终止其他进程。它会按照预定顺序发送信号，通知进程执行清理操作并安全退出。</li><li><strong>不同的 <code>init</code> 系统</strong>：随着时间的推移，有多种 <code>init</code> 系统出现，包括 <code>System V init</code>、<code>Upstart</code> 和 <code>systemd</code>。其中，<code>System V init</code> 是最早的 <code>init</code> 系统，而 <code>systemd</code> 目前是许多 Linux 发行版中的默认 <code>init</code> 系统，因为它提供了许多先进功能，如并行启动、进程监控和日志管理。</li></ul><p><code>System V init</code> 的缺点：</p><ul><li><strong>启动速度</strong>：<code>System V init</code> 使用串行启动过程，即一个进程启动完成后，才能启动下一个进程。这导致了系统启动速度较慢。现代的 <code>init</code> 系统，如 <code>systemd</code>，采用并行启动策略，可以大大提高系统启动速度。</li><li><strong>依赖管理</strong>：<code>System V init</code> 对进程间的依赖关系管理不足。如果一个服务依赖于另一个服务，<code>System V init</code> 无法确保依赖项已启动。这可能导致启动失败或错误。相比之下，<code>systemd</code> 等现代 <code>init</code> 系统具有更好的依赖管理。</li><li><strong>进程监控</strong>：<code>System V init</code> 在进程崩溃时无法自动重启进程。这可能导致系统不稳定，需要手动干预。<code>systemd</code> 等替代方案提供了自动进程监控和重启功能，以提高系统的可靠性。</li><li><strong>日志管理</strong>：<code>System V init</code> 缺乏统一的日志管理。每个进程可能有自己的日志记录方式，这使得日志分析和故障排查变得困难。<code>systemd</code> 引入了 <code>journald</code>，提供了统一的日志管理，方便管理员分析问题。</li><li><strong>配置复杂</strong>：<code>System V init</code> 使用启动脚本来管理服务，这些脚本可能难以编写和维护。<code>systemd</code> 使用更简单的配置文件来管理服务，降低了维护成本。</li></ul><h2 id=systemd-概述>Systemd 概述</h2><p><code>systemd</code> 是一种现代化的 <code>init</code> 系统，用于启动、监视和管理 Linux 操作系统中的进程。它在许多主流 Linux 发行版中替代了传统的 <code>System V init</code> 系统，提供了许多改进和新功能。</p><p><code>systemd</code> 的特点：</p><ul><li><strong>并行启动</strong>：<code>systemd</code> 支持并行启动服务，这意味着它可以同时启动多个服务和进程，从而加快系统启动速度。</li><li><strong>依赖管理</strong>：<code>systemd</code> 可以自动处理服务和进程之间的依赖关系，确保按照正确的顺序启动它们。这有助于减少启动错误和服务启动失败的可能性。</li><li><strong>进程监控与自动重启</strong>：<code>systemd</code> 可以监控进程的运行状态，并在它们意外崩溃时自动重启它们。这有助于提高系统的可靠性和稳定性。</li><li><strong>资源管理</strong>：<code>systemd</code> 与 Linux 的 <strong>CGroups</strong> 功能紧密集成，允许对进程进行资源限制、隔离和管理。这有助于确保系统资源的公平分配，从而提高系统的稳定性。</li><li><strong>集中式日志管理</strong>：通过 <code>journald</code>，<code>systemd</code> 提供了一个集中式日志管理系统。<code>journald</code> 可以收集、存储和管理系统日志，方便管理员分析问题和故障排查。</li><li><strong>简化的服务配置</strong>：<code>systemd</code> 使用名为 <strong>Unit</strong> 文件的简单配置文件来管理服务。这些文件易于编写和维护，并提供了丰富的选项来定义服务的行为和属性。</li><li><strong>命令行工具</strong>：<code>systemd</code> 提供了一组强大的命令行工具，如 <code>systemctl</code> 和 <code>journalctl</code>，用于管理和查询系统服务和日志。这些工具使管理员能够轻松地控制系统服务和获取相关信息。</li><li><strong>向后兼容性</strong>：尽管 <code>systemd</code> 引入了许多新功能和改进，但它仍然保持了对传统 <code>System V init</code> 脚本的支持。这使得在过渡到 <code>systemd</code> 的过程中，现有的服务仍可以继续运行。</li></ul><p>简单来说，<code>systemd</code> 是一个工具集，涉及到系统管理的方方面面。</p><h2 id=systemd-工具>Systemd 工具</h2><h3 id=systemctl>systemctl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 重启系统
+</span></span><span class=line><span class=cl>$ sudo systemctl reboot
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 关闭系统，切断电源
+</span></span><span class=line><span class=cl>$ sudo systemctl poweroff
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// CPU 停止工作
+</span></span><span class=line><span class=cl>$ sudo systemctl halt
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 暂停系统
+</span></span><span class=line><span class=cl>$ sudo systemctl <span class=nb>suspend</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 系统进入冬眠状态
+</span></span><span class=line><span class=cl>$ sudo systemctl hibernate
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 系统进入交互式休眠状态
+</span></span><span class=line><span class=cl>$ sudo systemctl hybrid-sleep
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 启动进入救援模式（单用户状态）
+</span></span><span class=line><span class=cl>$ sudo systemctl rescue
+</span></span></code></pre></td></tr></table></div></div><h3 id=systemd-analyze>systemd-analyze</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看启动耗时
+</span></span><span class=line><span class=cl>$ systemd-analyze
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看每个服务的启动耗时
+</span></span><span class=line><span class=cl>$ systemd-analyze blame
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示瀑布状的启动过程流
+</span></span><span class=line><span class=cl>$ systemd-analyze critical-chain
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示指定服务的启动流
+</span></span><span class=line><span class=cl>$ systemd-analyze critical-chain nginx.service
+</span></span></code></pre></td></tr></table></div></div><h3 id=hostnamectl>hostnamectl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 显示当前主机的信息
+</span></span><span class=line><span class=cl>$ hostnamectl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 设置主机名称
+</span></span><span class=line><span class=cl>$ sudo hostnamectl set-hostname ecs-ubuntu
+</span></span></code></pre></td></tr></table></div></div><h3 id=localectl>localectl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看本地化设置
+</span></span><span class=line><span class=cl>$ localectl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 设置本地化参数
+</span></span><span class=line><span class=cl>$ sudo localectl set-locale <span class=nv>LANG</span><span class=o>=</span>en_GB.utf8
+</span></span><span class=line><span class=cl>$ sudo localectl set-keymap en_GB
+</span></span></code></pre></td></tr></table></div></div><h3 id=timedatectl>timedatectl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看当前时区设置
+</span></span><span class=line><span class=cl>$ timedatectl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示所有可用的时区
+</span></span><span class=line><span class=cl>$ timedatectl list-timezones
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 设置当前时区
+</span></span><span class=line><span class=cl>$ sudo timedatectl set-timezone Asia/Shanghai
+</span></span><span class=line><span class=cl>$ sudo timedatectl set-time YYYY-MM-DD
+</span></span><span class=line><span class=cl>$ sudo timedatectl set-time HH:MM:SS
+</span></span></code></pre></td></tr></table></div></div><h3 id=loginctl>loginctl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 列表当前 Session
+</span></span><span class=line><span class=cl>$ loginctl list-sessions
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出当前登录用户
+</span></span><span class=line><span class=cl>$ loginctl list-users
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出显示指定用户的信息
+</span></span><span class=line><span class=cl>$ loginctl show-user ubuntu
+</span></span></code></pre></td></tr></table></div></div><h2 id=unit>Unit</h2><h3 id=unit-类型>Unit 类型</h3><table><thead><tr><th>类型</th><th>说明</th></tr></thead><tbody><tr><td><code>Service (.service)</code></td><td><code>Service unit</code> 用于表示系统中的服务。它们描述了一个服务如何启动、停止、重启以及其依赖关系等。大多数系统服务都是通过 service unit 文件进行管理的。</td></tr><tr><td><code>Socket (.socket)</code></td><td><code>Socket unit</code> 用于表示进程间通信的 <code>socket</code>。它们允许启动一个服务，当 <code>socket</code> 收到连接请求时。这种机制可以实现按需启动服务，提高资源利用率。</td></tr><tr><td><code>Target (.target)</code></td><td><code>Target unit</code> 用于表示一组相关服务的同步点。它们通常用于定义系统的运行级别，例如，<code>multi-user.target</code> 表示多用户模式。通过定义 <code>target</code>，可以轻松地启动、停止或重新加载一组相关服务。</td></tr><tr><td><code>Device (.device)</code></td><td><code>Device unit</code> 用于表示系统中的硬件设备。它们由 <code>udev</code> 规则自动生成，并用于处理设备插入、移除等事件。</td></tr><tr><td><code>Mount (.mount)</code></td><td><code>Mount unit</code> 用于表示文件系统的挂载点。它们描述了文件系统如何挂载、卸载以及相关选项。<code>Mount unit</code> 可以用于在启动时自动挂载文件系统，或按需挂载文件系统。</td></tr><tr><td><code>Automount (.automount)</code></td><td><code>Automount unit</code> 用于表示自动挂载的文件系统。当访问相关目录时，<code>systemd</code> 会自动挂载文件系统。这有助于在需要时按需挂载文件系统，从而提高资源利用率。</td></tr><tr><td><code>Timer (.timer)</code></td><td><code>Timer unit</code> 用于在预定时间触发另一个 <code>unit</code>（通常是 <code>service unit</code>）。它们类似于 <code>cron</code> 作业，可用于定时启动服务或执行任务。</td></tr><tr><td><code>Swap (.swap)</code></td><td><code>Swap unit</code> 用于表示系统中的交换空间。它们描述了交换空间如何启用、禁用以及相关选项。<code>Swap unit</code> 可以用于在启动时自动启用交换空间，或按需启用交换空间。</td></tr><tr><td><code>Path (.path)</code></td><td><code>Path unit</code> 用于监视文件系统路径的变化。当指定的路径发生变化（例如，文件被创建或删除）时，<code>systemd</code> 可以启动相应的服务。这有助于在需要时按需启动服务。</td></tr><tr><td><code>Slice (.slice)</code></td><td><code>Slice unit</code> 用于对系统资源（如 CPU、内存等）进行分组和分配。它们可以确保资源在不同服务和用户之间公平分配，从而提高系统的稳定性。<code>Slice unit</code> 通常与 CGroups 功能一起使用。</td></tr><tr><td><code>Scope (.scope)</code></td><td><code>Scope unit</code> 用于表示一组由其他进程管理的进程。这些进程并不由 <code>systemd</code> 直接创建，但它们可以通过 <code>systemd</code> 进行资源管理和限制。<code>Scope unit</code> 可以在与其他服务和进程进行资源竞争时，确保这些进程受到适当的资源管理和限制。</td></tr><tr><td><code>Timer (.timer)</code></td><td><code>Timer unit</code> 用于在预定时间或间隔触发另一个 <code>systemd unit</code>（通常是 <code>service unit</code>）。它们类似于传统的 <code>cron</code> 作业，可用于定时启动服务、执行任务或运行脚本。<code>Timer unit</code> 可以按照一定的时间表或在某个特定的时间点触发相应的服务。</td></tr></tbody></table><h3 id=unit-状态>Unit 状态</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 列出正在运行的 Unit
+</span></span><span class=line><span class=cl>$ systemctl list-units
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出所有 Unit，包括没有找到配置文件的或者启动失败的
+</span></span><span class=line><span class=cl>$ systemctl list-units --all
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出所有没有运行的 Unit
+</span></span><span class=line><span class=cl>$ systemctl list-units --all --state<span class=o>=</span>inactive
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出所有加载失败的 Unit
+</span></span><span class=line><span class=cl>$ systemctl list-units --failed
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出所有正在运行的、类型为 service 的 Unit
+</span></span><span class=line><span class=cl>$ systemctl list-units --type<span class=o>=</span>service
+</span></span></code></pre></td></tr></table></div></div><h3 id=unit-操作>Unit 操作</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 显示系统状态
+</span></span><span class=line><span class=cl>$ systemctl status
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示单个 Unit 的状态
+</span></span><span class=line><span class=cl>$ systemctl status bluetooth.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示远程主机的某个 Unit 的状态
+</span></span><span class=line><span class=cl>$ systemctl -H root@ip status httpd.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示某个 Unit 是否正在运行
+</span></span><span class=line><span class=cl>$ systemctl is-active application.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示某个 Unit 是否处于启动失败状态
+</span></span><span class=line><span class=cl>$ systemctl is-failed application.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示某个 Unit 服务是否建立了启动链接
+</span></span><span class=line><span class=cl>$ systemctl is-enabled applicaation.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 启动一个服务
+</span></span><span class=line><span class=cl>$ sudo systemctl start nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 停止一个服务
+</span></span><span class=line><span class=cl>$ sudo systemctl stop nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 重启一个服务
+</span></span><span class=line><span class=cl>$ sudo systemctl restart nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 杀死一个服务的所有子进程
+</span></span><span class=line><span class=cl>$ sudo systemctl <span class=nb>kill</span> nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 重新加载一个服务的配置文件
+</span></span><span class=line><span class=cl>$ sudo systemctl reload nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 重载所有修改过的配置文件
+</span></span><span class=line><span class=cl>$ sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示某个 Unit 所有的底层参数
+</span></span><span class=line><span class=cl>$ sudo show nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示某个 Unit 指定的属性域值
+</span></span><span class=line><span class=cl>$ sudo show -p CPUShares nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 设置某个 Unit 指定的属性
+</span></span><span class=line><span class=cl>$ sudo systemctl set-property nginx.service <span class=nv>CPUShares</span><span class=o>=</span><span class=m>500</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出某个 Unit 的所有依赖
+</span></span><span class=line><span class=cl>$ systemctl list-dependencies nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出某个 Unit 的所有依赖（显示所有）
+</span></span><span class=line><span class=cl>$ systemctl list-dependencies --all nginx.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 开启某个 Unit 开机启动
+</span></span><span class=line><span class=cl>$ sudo systemctl <span class=nb>enable</span> name.service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 禁止某个 Unit 开机启动
+</span></span><span class=line><span class=cl>$ sudo systemctl disable name.service
+</span></span></code></pre></td></tr></table></div></div><h3 id=unit-配置>Unit 配置</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 列出所有配置文件
+</span></span><span class=line><span class=cl>$ systemctl list-unit-files
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 列出指定类型的配置文件
+</span></span><span class=line><span class=cl>$ systemctl list-unit-files --type<span class=o>=</span>service
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 一旦修改配置文件，需要重新加载配置并重启启动
+</span></span><span class=line><span class=cl>$ sudo systemctl daemon-reload
+</span></span><span class=line><span class=cl>$ sudo systemctl restart nginx.service
+</span></span></code></pre></td></tr></table></div></div><h4 id=service-unit-service>Service unit (.service)</h4><p><code>Service unit</code> 文件用于描述系统服务的启动、停止、重启等行为。一个简单的 <code>service unit</code> 示例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>Unit<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>Description</span><span class=o>=</span>My Custom Service
+</span></span><span class=line><span class=cl><span class=nv>After</span><span class=o>=</span>network.target
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Service<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>ExecStart</span><span class=o>=</span>/usr/bin/my-custom-service --option1
+</span></span><span class=line><span class=cl><span class=nv>Restart</span><span class=o>=</span>always
+</span></span><span class=line><span class=cl><span class=nv>User</span><span class=o>=</span>myuser
+</span></span><span class=line><span class=cl><span class=nv>Group</span><span class=o>=</span>mygroup
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Install<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>WantedBy</span><span class=o>=</span>multi-user.target
+</span></span></code></pre></td></tr></table></div></div><h4 id=socket-unit-socket>Socket unit (.socket)</h4><p><code>Socket unit</code> 文件用于描述进程间通信的 <code>socket</code>。一个简单的 <code>socket unit</code> 示例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>Unit<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>Description</span><span class=o>=</span>My Custom Service Socket
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Socket<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>ListenStream</span><span class=o>=</span>/run/my-custom-service/socket
+</span></span><span class=line><span class=cl><span class=nv>Accept</span><span class=o>=</span>yes
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Install<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>WantedBy</span><span class=o>=</span>sockets.target
+</span></span></code></pre></td></tr></table></div></div><h4 id=timer-unit-timer>Timer unit (.timer)</h4><p><code>Timer unit</code> 文件用于描述定时触发的任务。一个简单的 <code>timer unit</code> 示例：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>Unit<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>Description</span><span class=o>=</span>Run my custom service every hour
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Timer<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>OnCalendar</span><span class=o>=</span>*-*-* *:00:00
+</span></span><span class=line><span class=cl><span class=nv>Persistent</span><span class=o>=</span><span class=nb>true</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Install<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>WantedBy</span><span class=o>=</span>timers.target
+</span></span></code></pre></td></tr></table></div></div><p>为 <code>systemd</code> 创建和配置 <code>unit</code> 文件，需要遵循以下步骤：</p><ul><li>创建 <code>unit</code> 文件：在 <code>/etc/systemd/system</code> 目录下创建一个新的 <code>unit</code> 文件。文件名应该包含服务名称和适当的扩展名，例如 <code>my-custom-service.service</code>：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo touch /etc/systemd/system/my-custom-service.service
+</span></span></code></pre></td></tr></table></div></div><ul><li>编辑 <code>unit</code> 文件：使用文本编辑器（如 nano、vim 或 gedit）打开新创建的 <code>unit</code> 文件，并添加相应的配置：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo vim /etc/systemd/system/my-custom-service.service
+</span></span></code></pre></td></tr></table></div></div><ul><li>编写 <code>unit</code> 文件内容：根据服务的需求，在 <code>unit</code> 文件中添加相应的配置。以下是一个简单的 <code>service unit</code> 示例：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=o>[</span>Unit<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>Description</span><span class=o>=</span>My Custom Service
+</span></span><span class=line><span class=cl><span class=nv>After</span><span class=o>=</span>network.target
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Service<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>ExecStart</span><span class=o>=</span>/usr/bin/my-custom-service --option1
+</span></span><span class=line><span class=cl><span class=nv>Restart</span><span class=o>=</span>always
+</span></span><span class=line><span class=cl><span class=nv>User</span><span class=o>=</span>myuser
+</span></span><span class=line><span class=cl><span class=nv>Group</span><span class=o>=</span>mygroup
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>[</span>Install<span class=o>]</span>
+</span></span><span class=line><span class=cl><span class=nv>WantedBy</span><span class=o>=</span>multi-user.target
+</span></span></code></pre></td></tr></table></div></div><ul><li>保存并关闭 <code>unit</code> 文件：在编辑器中保存更改并关闭 <code>unit</code> 文件。</li><li>重新加载 <code>systemd</code> 配置：运行以下命令，让 <code>systemd</code> 重新加载配置：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo systemctl daemon-reload
+</span></span></code></pre></td></tr></table></div></div><ul><li>启动新创建的 <code>unit</code>：使用以下命令启动新创建的 <code>unit</code>：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo systemctl start my-custom-service
+</span></span></code></pre></td></tr></table></div></div><ul><li>设置 <code>unit</code> 开机启动（可选）：如有必要，可以使用以下命令使 <code>unit</code> 随系统启动：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo systemctl <span class=nb>enable</span> my-custom-service
+</span></span></code></pre></td></tr></table></div></div><ul><li>检查 <code>unit</code> 状态：要检查 <code>unit</code> 的状态，可以使用以下命令：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ sudo systemctl status my-custom-service
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2023-04-17</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/post/linux-systemd/ data-title="Linux Systemd" data-hashtags=Linux><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/post/linux-systemd/ data-hashtag=Linux><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/post/linux-systemd/ data-title="Linux Systemd"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/post/linux-systemd/ data-title="Linux Systemd"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/post/linux-systemd/ data-title="Linux Systemd"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/linux/>Linux</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/post/linux-ssh-password-free-login/ class=prev rel=prev title="Linux SSH 免密码登录"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>Linux SSH 免密码登录</a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6cf2973a936acbed3d32667888ea2f37",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>

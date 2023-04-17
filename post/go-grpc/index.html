@@ -1,0 +1,1071 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Go gRPC - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Go gRPC"><meta property="og:description" content="gRPC 是一个现代的开源高性能远程过程调用（RPC - Remote Procedure Call）框架，可以在任何环境中运行。它可以通过对负载平衡、跟踪、健康检查和身份验证的可插拔支持，有效地连接数据中心内和跨数据中心的服务。它也适用于分布式计算的最后一英里，将设备、移动应用程序和浏览器连接到后端服务。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/post/go-grpc/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2022-06-20T21:02:02+08:00"><meta property="article:modified_time" content="2022-06-20T21:02:02+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-gpm-model/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-concat-string/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-correct-posture/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-other-test/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-benchmark-test/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go gRPC"><meta name=twitter:description content="gRPC 是一个现代的开源高性能远程过程调用（RPC - Remote Procedure Call）框架，可以在任何环境中运行。它可以通过对负载平衡、跟踪、健康检查和身份验证的可插拔支持，有效地连接数据中心内和跨数据中心的服务。它也适用于分布式计算的最后一英里，将设备、移动应用程序和浏览器连接到后端服务。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/post/go-grpc/><link rel=prev href=https://imajinyun.xyz/post/ds-stack-queue/><link rel=next href=https://imajinyun.xyz/post/linux-reactor/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go gRPC","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/post\/go-grpc\/"},"genre":"posts","keywords":"Go","wordcount":3106,"url":"https:\/\/imajinyun.xyz\/post\/go-grpc\/","datePublished":"2022-06-20T21:02:02+08:00","dateModified":"2022-06-20T21:02:02+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go gRPC</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/go/><i class="far fa-folder fa-fw" aria-hidden=true></i>Go</a>&nbsp;<a href=https://imajinyun.xyz/categories/grpc/><i class="far fa-folder fa-fw" aria-hidden=true></i>gRPC</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2022-06-20>2022-06-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 3106 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 7 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#grpc-的特性>gRPC 的特性</a></li><li><a href=#grpc-与-rpc-的关系>gRPC 与 RPC 的关系</a></li><li><a href=#grpc-适用场景>gRPC 适用场景</a></li><li><a href=#grpc-环境配置>gRPC 环境配置</a><ul><li><a href=#安装-protobuf>安装 protobuf</a></li><li><a href=#安装-go-的协议编译器插件>安装 Go 的协议编译器插件</a></li><li><a href=#更新-path-路径>更新 PATH 路径</a></li></ul></li><li><a href=#实例>实例</a><ul><li><a href=#实例一>实例一</a><ul><li><a href=#定义服务>定义服务</a></li><li><a href=#编写服务端>编写服务端</a></li><li><a href=#编写客户端>编写客户端</a></li></ul></li><li><a href=#实例二>实例二</a><ul><li><a href=#定义服务-1>定义服务</a></li><li><a href=#编写服务端-1>编写服务端</a></li><li><a href=#编写客户端-1>编写客户端</a></li></ul></li></ul></li></ul></nav></div></div><div class=content id=content><p><code>gRPC</code> 是一个现代的开源高性能远程过程调用（<code>RPC - Remote Procedure Call</code>）框架，可以在任何环境中运行。它可以通过对负载平衡、跟踪、健康检查和身份验证的可插拔支持，有效地连接数据中心内和跨数据中心的服务。它也适用于分布式计算的最后一英里，将设备、移动应用程序和浏览器连接到后端服务。</p><h2 id=grpc-的特性>gRPC 的特性</h2><ul><li>简单服务定义：使用 <code>Protocol Buffers</code> 定义你的服务，这是一个强大的二进制序列化工具集和语言；</li><li>快速启动并扩展：只需一行代码即可安装运行时和开发环境，还可以通过该框架扩展到每秒数百万个 <code>RPCs</code>；</li><li>跨语言和平台工作：使用多种语言和平台自动为你的服务生成惯用的客户端和服务器桩；</li><li>双向流和集成身份验证：双向流式传输和完全集成的可插拔身份验证，以及基于 <code>HTTP/2</code> 的传输；</li></ul><h2 id=grpc-与-rpc-的关系>gRPC 与 RPC 的关系</h2><ul><li><code>RPC</code> 是一种协议，<code>gRPC</code> 是基于 <code>RPC</code> 协议实现的一种框架；</li><li><code>gRPC</code> 解决了 <code>RPC</code> 的三大问题：<ul><li>协议约定；</li><li>传输协议；</li><li>服务发现；</li></ul></li></ul><h2 id=grpc-适用场景>gRPC 适用场景</h2><h2 id=grpc-环境配置>gRPC 环境配置</h2><h3 id=安装-protobuf>安装 protobuf</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ brew install autoconf automake libtool
+</span></span><span class=line><span class=cl>$ brew install protobuf --HEAD
+</span></span><span class=line><span class=cl>或
+</span></span><span class=line><span class=cl>$ git clone https://github.com/protocolbuffers/protobuf.git
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> protobuf
+</span></span><span class=line><span class=cl>$ git submodule update --init --recursive
+</span></span><span class=line><span class=cl>$ ./autogen.sh
+</span></span><span class=line><span class=cl>$ ./configure
+</span></span><span class=line><span class=cl>$ make
+</span></span><span class=line><span class=cl>$ make check
+</span></span><span class=line><span class=cl>$ sudo make install
+</span></span></code></pre></td></tr></table></div></div><h3 id=安装-go-的协议编译器插件>安装 Go 的协议编译器插件</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go install github.com/golang/protobuf/protoc-gen-go@v1.5.2
+</span></span><span class=line><span class=cl>$ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0
+</span></span></code></pre></td></tr></table></div></div><h3 id=更新-path-路径>更新 PATH 路径</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ <span class=nb>export</span> <span class=nv>PATH</span><span class=o>=</span><span class=s2>&#34;</span><span class=nv>$PATH</span><span class=s2>:</span><span class=k>$(</span>go env GOPATH<span class=k>)</span><span class=s2>/bin&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=实例>实例</h2><h3 id=实例一>实例一</h3><h4 id=定义服务>定义服务</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ mkdir greeter
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> greeter
+</span></span><span class=line><span class=cl>$ mkdir hello
+</span></span></code></pre></td></tr></table></div></div><p>在 <code>hello</code> 目录下创建 <code>hello.proto</code> 文件并复制以下内容：</p><pre tabindex=0><code class=language-proto3 data-lang=proto3>syntax = &#34;proto3&#34;;
+
+option go_package = &#34;greeter.io/greeter/examples/hello/hello&#34;;
+option java_multiple_files = true;
+option java_package = &#34;io.greeter.examples.hello&#34;;
+option java_outer_classname = &#34;HelloProto&#34;;
+
+package hello;
+
+// The greeting service definition.
+service Greeter {
+  // Sends a greeting.
+  rpc hello(HelloRequest) returns (HelloResponse) {}
+}
+
+// The request message containing the user&#39;s name.
+message HelloRequest { string name = 1; }
+
+// The response message containing the greetings.
+message HelloResponse { string message = 1; }
+</code></pre><p>完成后在 <code>greeter</code> 目录下执行以下命令：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ protoc --go_out<span class=o>=</span>. --go_opt<span class=o>=</span><span class=nv>paths</span><span class=o>=</span>source_relative <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  --go-grpc_out<span class=o>=</span>. --go-grpc_opt<span class=o>=</span><span class=nv>paths</span><span class=o>=</span>source_relative <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  hello/hello.proto
+</span></span></code></pre></td></tr></table></div></div><p>命令完成后在 <code>hello</code> 目录下会生成 <code>hello_grpc.pb.go</code> 和 <code>hello.pb.go</code> 文件。</p><h4 id=编写服务端>编写服务端</h4><p>在 <code>greeter/cmd/server/main.go</code> 文件中添加以下代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;flag&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;greeter/hello&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;net&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=nx>port</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>Int</span><span class=p>(</span><span class=s>&#34;port&#34;</span><span class=p>,</span> <span class=mi>50051</span><span class=p>,</span> <span class=s>&#34;The server port&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>server</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>hello</span><span class=p>.</span><span class=nx>UnimplementedGreeterServer</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>server</span><span class=p>)</span> <span class=nf>Hello</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>in</span> <span class=o>*</span><span class=nx>hello</span><span class=p>.</span><span class=nx>HelloRequest</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>hello</span><span class=p>.</span><span class=nx>HelloResponse</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Received: %v&#34;</span><span class=p>,</span> <span class=nx>in</span><span class=p>.</span><span class=nf>GetName</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=o>&amp;</span><span class=nx>hello</span><span class=p>.</span><span class=nx>HelloResponse</span><span class=p>{</span><span class=nx>Message</span><span class=p>:</span> <span class=s>&#34;Hello &#34;</span> <span class=o>+</span> <span class=nx>in</span><span class=p>.</span><span class=nf>GetName</span><span class=p>()},</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>flag</span><span class=p>.</span><span class=nf>Parse</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>lis</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>net</span><span class=p>.</span><span class=nf>Listen</span><span class=p>(</span><span class=s>&#34;tcp&#34;</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;:%d&#34;</span><span class=p>,</span> <span class=o>*</span><span class=nx>port</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to listen: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>s</span> <span class=o>:=</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>NewServer</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>hello</span><span class=p>.</span><span class=nf>RegisterGreeterServer</span><span class=p>(</span><span class=nx>s</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>server</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Server listening at %v&#34;</span><span class=p>,</span> <span class=nx>lis</span><span class=p>.</span><span class=nf>Addr</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>s</span><span class=p>.</span><span class=nf>Serve</span><span class=p>(</span><span class=nx>lis</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to serve: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>启动 <code>grpc server</code> 服务：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go run cmd/server/main.go
+</span></span><span class=line><span class=cl>2022/06/21 13:49:19 Server listening at <span class=o>[</span>::<span class=o>]</span>:50051
+</span></span></code></pre></td></tr></table></div></div><h4 id=编写客户端>编写客户端</h4><p>在 <code>greeter/cmd/client/main.go</code> 文件中添加以下代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;flag&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;greeter/hello&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc/credentials/insecure&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>const</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=nx>defaultName</span> <span class=p>=</span> <span class=s>&#34;World, Hello Go! 🎉&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=nx>addr</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;addr&#34;</span><span class=p>,</span> <span class=s>&#34;localhost:50051&#34;</span><span class=p>,</span> <span class=s>&#34;The address to connect to&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>name</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;name&#34;</span><span class=p>,</span> <span class=nx>defaultName</span><span class=p>,</span> <span class=s>&#34;The name to greet&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>flag</span><span class=p>.</span><span class=nf>Parse</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Set up a connection to the server.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>conn</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>Dial</span><span class=p>(</span><span class=o>*</span><span class=nx>addr</span><span class=p>,</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>WithTransportCredentials</span><span class=p>(</span><span class=nx>insecure</span><span class=p>.</span><span class=nf>NewCredentials</span><span class=p>()))</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;did not connect: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>conn</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span> <span class=o>:=</span> <span class=nx>hello</span><span class=p>.</span><span class=nf>NewGreeterClient</span><span class=p>(</span><span class=nx>conn</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span><span class=p>,</span> <span class=nx>cancel</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>WithTimeout</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>(),</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nf>cancel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>r</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>Hello</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>hello</span><span class=p>.</span><span class=nx>HelloRequest</span><span class=p>{</span><span class=nx>Name</span><span class=p>:</span> <span class=o>*</span><span class=nx>name</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;could not greet: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Greeting: %s&#34;</span><span class=p>,</span> <span class=nx>r</span><span class=p>.</span><span class=nf>GetMessage</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>启动 <code>grpc client</code> 服务：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go run cmd/client/main.go --name<span class=o>=</span><span class=s2>&#34;World, Hello Go 🎉&#34;</span>
+</span></span><span class=line><span class=cl>2022/06/21 13:51:36 Greeting: Hello World, Hello Go 🎉
+</span></span></code></pre></td></tr></table></div></div><p>最终的代码目录结构：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>.
+</span></span><span class=line><span class=cl>├── cmd
+</span></span><span class=line><span class=cl>│   ├── client
+</span></span><span class=line><span class=cl>│   │   └── main.go
+</span></span><span class=line><span class=cl>│   └── server
+</span></span><span class=line><span class=cl>│       └── main.go
+</span></span><span class=line><span class=cl>├── go.mod
+</span></span><span class=line><span class=cl>├── go.sum
+</span></span><span class=line><span class=cl>└── hello
+</span></span><span class=line><span class=cl>    ├── hello.pb.go
+</span></span><span class=line><span class=cl>    ├── hello.proto
+</span></span><span class=line><span class=cl>    └── hello_grpc.pb.go
+</span></span></code></pre></td></tr></table></div></div><h3 id=实例二>实例二</h3><h4 id=定义服务-1>定义服务</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ mkdir routeguide
+</span></span><span class=line><span class=cl>$ <span class=nb>cd</span> routeguide
+</span></span><span class=line><span class=cl>$ mkdir route
+</span></span></code></pre></td></tr></table></div></div><p>在 <code>route</code> 目录下创建 <code>route.proto</code> 文件并复制以下内容：</p><pre tabindex=0><code class=language-proto3 data-lang=proto3>syntax = &#34;proto3&#34;;
+
+option go_package = &#34;routeguide/route&#34;;
+option java_multiple_files = true;
+option java_package = &#34;io.routeguide.route&#34;;
+option java_outer_classname = &#34;RouteProto&#34;;
+
+package route;
+
+// Interface exported by the server.
+service Route {
+  // A simple RPC.
+  //
+  // Obtains the feature at a given position.
+  //
+  // A feature with an empty name is returned if there&#39;s no feature
+  // at the give position.
+  rpc GetFeature(Point) returns (Feature) {}
+
+  // A server-to-client streaming RPC.
+  //
+  // Obtains the features available within the given Rectangle. Results
+  // are streamed rather than returned at once (e.g. in a response message
+  // with a repeated field), as the rectangle may cover a large area and
+  // contain a huge number of features.
+  rpc GetFeatures(Rectangle) returns (stream Feature) {}
+
+  // A client-to-server streaming RPC.
+  //
+  // Accepts a stream of Points on a route being traversed, returning
+  // a RouteSummary when traversal is completed.
+  rpc RecordRoute(stream Point) returns (RouteSummary) {}
+
+  // A Bidirectional streaming RPC.
+  //
+  // Accepts a stream of RouteNotes sent whil a route is being traversed,
+  // while receiving other RouteNotes (e.g. from other users).
+  rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
+}
+
+// Points are represented as latitude-longitude pairs in the E7 representation
+// (degrees multiplied by 10**7 and rounded to the nearest interger).
+// Latitude should be in the range +/- 90 degrees and longitude should be in
+// the range +/- 180 degrees (inclusive).
+message Point {
+  int32 latitude = 1;
+  int32 longitude = 2;
+}
+
+// A latitude-longitude rectangle, represented as two diagonally opposite
+// points &#34;lo&#34; and &#34;hi&#34;.
+message Rectangle {
+  // One corner of the rectangle.
+  Point lo = 1;
+
+  // The other corner of the rectangle.
+  Point hi = 2;
+}
+
+// A feature names something at a given point.
+//
+// If a feature could not be named, the name is empty.
+message Feature {
+  // The name of the feature.
+  string name = 1;
+
+  // The point where the feature is detected.
+  Point location = 2;
+}
+
+// A RouteNote is a message sent while at a given point.
+message RouteNote {
+  // The location from which the message is sent.
+  Point location = 1;
+
+  // The message to be sent.
+  string message = 2;
+}
+
+// A RouteSummary is received in response to a RecordRoute rpc.
+//
+// It contains the number of individual points received, the number
+// of detected features, and the total distance covered as the
+// cumulative sum of the distance between eath point.
+message RouteSummary {
+  // The number of points received.
+  int32 point_count = 1;
+
+  // The number of known features passed while traversing the route.
+  int32 feature_count = 2;
+
+  // The distance covered in metres.
+  int32 distance = 3;
+
+  // The duration of the traversal in seconds.
+  int32 elapsed_time = 4;
+}
+</code></pre><p>完成后在 <code>routeguide</code> 目录下执行以下命令：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ protoc --go_out<span class=o>=</span>. --go_opt<span class=o>=</span><span class=nv>paths</span><span class=o>=</span>source_relative <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  --go-grpc_out<span class=o>=</span>. --go-grpc_opt<span class=o>=</span><span class=nv>paths</span><span class=o>=</span>source_relative <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  route/route.proto
+</span></span></code></pre></td></tr></table></div></div><h4 id=编写服务端-1>编写服务端</h4><p>在 <code>routeguide/cmd/server/main.go</code> 文件中添加以下代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// Package main implements a simple gRPC server that demonstrates how to use gRPC-Go libraries
+</span></span></span><span class=line><span class=cl><span class=c1>// to perform unary, client streaming, server streaming and full duplex RPCs.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// It implements the route service whose definition can be found in routeguide/route.proto.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;encoding/json&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;flag&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;io&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;io/ioutil&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;math&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;net&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;sync&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;github.com/golang/protobuf/proto&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc/credentials&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;routeguide/data&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=nx>pb</span> <span class=s>&#34;routeguide/route&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=nx>tls</span>      <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>Bool</span><span class=p>(</span><span class=s>&#34;tls&#34;</span><span class=p>,</span> <span class=kc>false</span><span class=p>,</span> <span class=s>&#34;Connection uses TLS if true, else plain TCP&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>keyfile</span>  <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;keyfile&#34;</span><span class=p>,</span> <span class=s>&#34;&#34;</span><span class=p>,</span> <span class=s>&#34;The TLS key file&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>certfile</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;certfile&#34;</span><span class=p>,</span> <span class=s>&#34;&#34;</span><span class=p>,</span> <span class=s>&#34;The TLS certificate file&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>jsonfile</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;jsonfile&#34;</span><span class=p>,</span> <span class=s>&#34;&#34;</span><span class=p>,</span> <span class=s>&#34;A JSON file containing a list of features&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>port</span>     <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>Int</span><span class=p>(</span><span class=s>&#34;port&#34;</span><span class=p>,</span> <span class=mi>50051</span><span class=p>,</span> <span class=s>&#34;The server port&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>routeServer</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>pb</span><span class=p>.</span><span class=nx>UnimplementedRouteServer</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// read-only after initialized.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>savedFeatures</span> <span class=p>[]</span><span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Feature</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>routeNotes</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>][]</span><span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>RouteNote</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// protects routeNotes.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>mu</span> <span class=nx>sync</span><span class=p>.</span><span class=nx>Mutex</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// GetFeature returns the feature at the given point.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>routeServer</span><span class=p>)</span> <span class=nf>GetFeature</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>point</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Feature</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>feature</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>s</span><span class=p>.</span><span class=nx>savedFeatures</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>proto</span><span class=p>.</span><span class=nf>Equal</span><span class=p>(</span><span class=nx>feature</span><span class=p>.</span><span class=nx>Location</span><span class=p>,</span> <span class=nx>point</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=nx>feature</span><span class=p>,</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// No feature was found, return an unnamed feature
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=k>return</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Feature</span><span class=p>{</span><span class=nx>Location</span><span class=p>:</span> <span class=nx>point</span><span class=p>},</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// GetFeatures lists all features contained within the given bounding Rectangle.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>routeServer</span><span class=p>)</span> <span class=nf>GetFeatures</span><span class=p>(</span><span class=nx>rect</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Rectangle</span><span class=p>,</span> <span class=nx>stream</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>Route_GetFeaturesServer</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>feature</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>s</span><span class=p>.</span><span class=nx>savedFeatures</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nf>inRange</span><span class=p>(</span><span class=nx>feature</span><span class=p>.</span><span class=nx>Location</span><span class=p>,</span> <span class=nx>rect</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>stream</span><span class=p>.</span><span class=nf>Send</span><span class=p>(</span><span class=nx>feature</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// RecordRoute records a route composited of a sequence of points.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// It gets a stream of points, and responds with statistics about the &#34;trip&#34;:
+</span></span></span><span class=line><span class=cl><span class=c1>// number of points,  number of known features visited, total distance traveled, and
+</span></span></span><span class=line><span class=cl><span class=c1>// total time spent.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>routeServer</span><span class=p>)</span> <span class=nf>RecordRoute</span><span class=p>(</span><span class=nx>stream</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>Route_RecordRouteServer</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>pointCount</span><span class=p>,</span> <span class=nx>featureCount</span><span class=p>,</span> <span class=nx>distance</span> <span class=kt>int32</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>lastPoint</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span>
+</span></span><span class=line><span class=cl>	<span class=nx>stime</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>point</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>stream</span><span class=p>.</span><span class=nf>Recv</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>==</span> <span class=nx>io</span><span class=p>.</span><span class=nx>EOF</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>etime</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=nx>stream</span><span class=p>.</span><span class=nf>SendAndClose</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>RouteSummary</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>PointCount</span><span class=p>:</span>   <span class=nx>pointCount</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>FeatureCount</span><span class=p>:</span> <span class=nx>featureCount</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>Distance</span><span class=p>:</span>     <span class=nx>distance</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>				<span class=nx>ElapsedTime</span><span class=p>:</span>  <span class=nb>int32</span><span class=p>(</span><span class=nx>etime</span><span class=p>.</span><span class=nf>Sub</span><span class=p>(</span><span class=nx>stime</span><span class=p>).</span><span class=nf>Seconds</span><span class=p>()),</span>
+</span></span><span class=line><span class=cl>			<span class=p>})</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>pointCount</span><span class=o>++</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>feature</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>s</span><span class=p>.</span><span class=nx>savedFeatures</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>proto</span><span class=p>.</span><span class=nf>Equal</span><span class=p>(</span><span class=nx>feature</span><span class=p>.</span><span class=nx>Location</span><span class=p>,</span> <span class=nx>point</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>featureCount</span><span class=o>++</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>lastPoint</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>distance</span> <span class=o>+=</span> <span class=nf>calcDistance</span><span class=p>(</span><span class=nx>lastPoint</span><span class=p>,</span> <span class=nx>point</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>lastPoint</span> <span class=p>=</span> <span class=nx>point</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// RouteChat receives a stream of message/location pairs, and responds with
+</span></span></span><span class=line><span class=cl><span class=c1>// a stream of all previous messages at each of those locations.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>routeServer</span><span class=p>)</span> <span class=nf>RouteChat</span><span class=p>(</span><span class=nx>stream</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>Route_RouteChatServer</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>in</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>stream</span><span class=p>.</span><span class=nf>Recv</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>==</span> <span class=nx>io</span><span class=p>.</span><span class=nx>EOF</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>key</span> <span class=o>:=</span> <span class=nf>serialize</span><span class=p>(</span><span class=nx>in</span><span class=p>.</span><span class=nx>Location</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=nx>s</span><span class=p>.</span><span class=nx>mu</span><span class=p>.</span><span class=nf>Lock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nx>s</span><span class=p>.</span><span class=nx>routeNotes</span><span class=p>[</span><span class=nx>key</span><span class=p>]</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>s</span><span class=p>.</span><span class=nx>routeNotes</span><span class=p>[</span><span class=nx>key</span><span class=p>],</span> <span class=nx>in</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=c1>// Note: this copy prevents blocking other clients while serving this one.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// We don&#39;t need to do a deep copy, because elements in the slice are
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// insert-only and never modified.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>rn</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>([]</span><span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>RouteNote</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=nx>s</span><span class=p>.</span><span class=nx>routeNotes</span><span class=p>[</span><span class=nx>key</span><span class=p>]))</span>
+</span></span><span class=line><span class=cl>		<span class=nb>copy</span><span class=p>(</span><span class=nx>rn</span><span class=p>,</span> <span class=nx>s</span><span class=p>.</span><span class=nx>routeNotes</span><span class=p>[</span><span class=nx>key</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>		<span class=nx>s</span><span class=p>.</span><span class=nx>mu</span><span class=p>.</span><span class=nf>Unlock</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>note</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>rn</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>stream</span><span class=p>.</span><span class=nf>Send</span><span class=p>(</span><span class=nx>note</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// loadFeatures loads features from a JSON file.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>routeServer</span><span class=p>)</span> <span class=nf>loadFeatures</span><span class=p>(</span><span class=nx>path</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>data</span> <span class=p>[]</span><span class=kt>byte</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>path</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>path</span> <span class=p>=</span> <span class=s>&#34;./data/data.json&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>data</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>ioutil</span><span class=p>.</span><span class=nf>ReadFile</span><span class=p>(</span><span class=nx>path</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to load default features: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>json</span><span class=p>.</span><span class=nf>Unmarshal</span><span class=p>(</span><span class=nx>data</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>s</span><span class=p>.</span><span class=nx>savedFeatures</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to load default features: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// calcDistance calculates the distance between two points using the &#34;haversine&#34; formula.
+</span></span></span><span class=line><span class=cl><span class=c1>// The formula is based on http://mathforum.org/library/drmath/view/51879.html.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>calcDistance</span><span class=p>(</span><span class=nx>p1</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>,</span> <span class=nx>p2</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>)</span> <span class=kt>int32</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=kd>const</span> <span class=nx>CordFactor</span> <span class=kt>float64</span> <span class=p>=</span> <span class=mf>1e7</span>
+</span></span><span class=line><span class=cl>	<span class=kd>const</span> <span class=nx>R</span> <span class=p>=</span> <span class=nb>float64</span><span class=p>(</span><span class=mi>6371000</span><span class=p>)</span> <span class=c1>// earth radius in metres
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>	<span class=nx>lat1</span> <span class=o>:=</span> <span class=nf>toRadians</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>p1</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>)</span> <span class=o>/</span> <span class=nx>CordFactor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>lat2</span> <span class=o>:=</span> <span class=nf>toRadians</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>p2</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>)</span> <span class=o>/</span> <span class=nx>CordFactor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>lng1</span> <span class=o>:=</span> <span class=nf>toRadians</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>p1</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>)</span> <span class=o>/</span> <span class=nx>CordFactor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>lng2</span> <span class=o>:=</span> <span class=nf>toRadians</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>p2</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>)</span> <span class=o>/</span> <span class=nx>CordFactor</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>dlat</span> <span class=o>:=</span> <span class=nx>lat2</span> <span class=o>-</span> <span class=nx>lat1</span>
+</span></span><span class=line><span class=cl>	<span class=nx>dlng</span> <span class=o>:=</span> <span class=nx>lng2</span> <span class=o>-</span> <span class=nx>lng1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>a</span> <span class=o>:=</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Sin</span><span class=p>(</span><span class=nx>dlat</span><span class=o>/</span><span class=mi>2</span><span class=p>)</span><span class=o>*</span><span class=nx>math</span><span class=p>.</span><span class=nf>Sin</span><span class=p>(</span><span class=nx>dlat</span><span class=o>/</span><span class=mi>2</span><span class=p>)</span> <span class=o>+</span>
+</span></span><span class=line><span class=cl>		<span class=nx>math</span><span class=p>.</span><span class=nf>Cos</span><span class=p>(</span><span class=nx>lat1</span><span class=p>)</span><span class=o>*</span><span class=nx>math</span><span class=p>.</span><span class=nf>Cos</span><span class=p>(</span><span class=nx>lat2</span><span class=p>)</span><span class=o>*</span>
+</span></span><span class=line><span class=cl>			<span class=nx>math</span><span class=p>.</span><span class=nf>Sin</span><span class=p>(</span><span class=nx>dlng</span><span class=o>/</span><span class=mi>2</span><span class=p>)</span><span class=o>*</span><span class=nx>math</span><span class=p>.</span><span class=nf>Sin</span><span class=p>(</span><span class=nx>dlng</span><span class=o>/</span><span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span> <span class=o>:=</span> <span class=mi>2</span> <span class=o>*</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Atan2</span><span class=p>(</span><span class=nx>math</span><span class=p>.</span><span class=nf>Sqrt</span><span class=p>(</span><span class=nx>a</span><span class=p>),</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Sqrt</span><span class=p>(</span><span class=mi>1</span><span class=o>-</span><span class=nx>a</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nb>int32</span><span class=p>(</span><span class=nx>R</span> <span class=o>*</span> <span class=nx>c</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>toRadians</span><span class=p>(</span><span class=nx>num</span> <span class=kt>float64</span><span class=p>)</span> <span class=kt>float64</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>num</span> <span class=o>*</span> <span class=nx>math</span><span class=p>.</span><span class=nx>Pi</span> <span class=o>/</span> <span class=nb>float64</span><span class=p>(</span><span class=mi>180</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>inRange</span><span class=p>(</span><span class=nx>point</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>,</span> <span class=nx>rect</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Rectangle</span><span class=p>)</span> <span class=kt>bool</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>left</span> <span class=o>:=</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Min</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Lo</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>),</span> <span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Hi</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=nx>right</span> <span class=o>:=</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Max</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Lo</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>),</span> <span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Hi</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=nx>top</span> <span class=o>:=</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Min</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Lo</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>),</span> <span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Hi</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=nx>btm</span> <span class=o>:=</span> <span class=nx>math</span><span class=p>.</span><span class=nf>Max</span><span class=p>(</span><span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Lo</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>),</span> <span class=nb>float64</span><span class=p>(</span><span class=nx>rect</span><span class=p>.</span><span class=nx>Hi</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nb>float64</span><span class=p>(</span><span class=nx>point</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=nx>left</span> <span class=o>&amp;&amp;</span>
+</span></span><span class=line><span class=cl>		<span class=nb>float64</span><span class=p>(</span><span class=nx>point</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=nx>right</span> <span class=o>&amp;&amp;</span>
+</span></span><span class=line><span class=cl>		<span class=nb>float64</span><span class=p>(</span><span class=nx>point</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=nx>btm</span> <span class=o>&amp;&amp;</span>
+</span></span><span class=line><span class=cl>		<span class=nb>float64</span><span class=p>(</span><span class=nx>point</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=nx>top</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=kc>false</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>serialize</span><span class=p>(</span><span class=nx>point</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>)</span> <span class=kt>string</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;%d %d&#34;</span><span class=p>,</span> <span class=nx>point</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>,</span> <span class=nx>point</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>newServer</span><span class=p>()</span> <span class=o>*</span><span class=nx>routeServer</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>s</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>routeServer</span><span class=p>{</span><span class=nx>routeNotes</span><span class=p>:</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>][]</span><span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>RouteNote</span><span class=p>)}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>s</span><span class=p>.</span><span class=nf>loadFeatures</span><span class=p>(</span><span class=o>*</span><span class=nx>jsonfile</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>s</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>flag</span><span class=p>.</span><span class=nf>Parse</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>lis</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>net</span><span class=p>.</span><span class=nf>Listen</span><span class=p>(</span><span class=s>&#34;tcp&#34;</span><span class=p>,</span> <span class=nx>fmt</span><span class=p>.</span><span class=nf>Sprintf</span><span class=p>(</span><span class=s>&#34;localhost:%d&#34;</span><span class=p>,</span> <span class=o>*</span><span class=nx>port</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to listen: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>opts</span> <span class=p>[]</span><span class=nx>grpc</span><span class=p>.</span><span class=nx>ServerOption</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=o>*</span><span class=nx>tls</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=o>*</span><span class=nx>certfile</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=o>*</span><span class=nx>certfile</span> <span class=p>=</span> <span class=nx>data</span><span class=p>.</span><span class=nf>Path</span><span class=p>(</span><span class=s>&#34;./x509/server_cert.pem&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=o>*</span><span class=nx>keyfile</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=o>*</span><span class=nx>keyfile</span> <span class=p>=</span> <span class=nx>data</span><span class=p>.</span><span class=nf>Path</span><span class=p>(</span><span class=s>&#34;./x509/server_key.pem&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>creds</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>credentials</span><span class=p>.</span><span class=nf>NewServerTLSFromFile</span><span class=p>(</span><span class=o>*</span><span class=nx>certfile</span><span class=p>,</span> <span class=o>*</span><span class=nx>keyfile</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to generate credentials %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>opts</span> <span class=p>=</span> <span class=p>[]</span><span class=nx>grpc</span><span class=p>.</span><span class=nx>ServerOption</span><span class=p>{</span><span class=nx>grpc</span><span class=p>.</span><span class=nf>Creds</span><span class=p>(</span><span class=nx>creds</span><span class=p>)}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>srv</span> <span class=o>:=</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>NewServer</span><span class=p>(</span><span class=nx>opts</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Server listening at %v&#34;</span><span class=p>,</span> <span class=nx>lis</span><span class=p>.</span><span class=nf>Addr</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=nx>pb</span><span class=p>.</span><span class=nf>RegisterRouteServer</span><span class=p>(</span><span class=nx>srv</span><span class=p>,</span> <span class=nf>newServer</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=nx>srv</span><span class=p>.</span><span class=nf>Serve</span><span class=p>(</span><span class=nx>lis</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>启动 <code>grpc server</code> 服务：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go run cmd/server/main.go
+</span></span><span class=line><span class=cl>2022/06/25 13:53:08 Server listening at 127.0.0.1:50051
+</span></span></code></pre></td></tr></table></div></div><h4 id=编写客户端-1>编写客户端</h4><p>在 <code>routeguide/cmd/client/main.go</code> 文件中添加以下代码：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;context&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;flag&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;io&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;log&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;time&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc/credentials&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;google.golang.org/grpc/credentials/insecure&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=s>&#34;routeguide/data&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=nx>pb</span> <span class=s>&#34;routeguide/route&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>	<span class=nx>tls</span>      <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>Bool</span><span class=p>(</span><span class=s>&#34;tls&#34;</span><span class=p>,</span> <span class=kc>false</span><span class=p>,</span> <span class=s>&#34;Connection uses TLS if true, else plain TCP&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>certfile</span> <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;certfile&#34;</span><span class=p>,</span> <span class=s>&#34;&#34;</span><span class=p>,</span> <span class=s>&#34;The file containing the CA root cert file&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>srvAddr</span>  <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;addr&#34;</span><span class=p>,</span> <span class=s>&#34;localhost:50051&#34;</span><span class=p>,</span> <span class=s>&#34;The server address in the format of host:port&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>srvHost</span>  <span class=p>=</span> <span class=nx>flag</span><span class=p>.</span><span class=nf>String</span><span class=p>(</span><span class=s>&#34;host&#34;</span><span class=p>,</span> <span class=s>&#34;example.io&#34;</span><span class=p>,</span> <span class=s>&#34;The server name used to verify the hostname returned by the TLS handshake&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// printFeature gets the feature for the given point.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>printFeature</span><span class=p>(</span><span class=nx>client</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>RouteClient</span><span class=p>,</span> <span class=nx>point</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Getting feature for point (%d, %d)&#34;</span><span class=p>,</span> <span class=nx>point</span><span class=p>.</span><span class=nx>Latitude</span><span class=p>,</span> <span class=nx>point</span><span class=p>.</span><span class=nx>Longitude</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span><span class=p>,</span> <span class=nx>cancel</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>WithTimeout</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>(),</span> <span class=mi>10</span><span class=o>*</span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nf>cancel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>feature</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>client</span><span class=p>.</span><span class=nf>GetFeature</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>point</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;client.GetFeature failed: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>feature</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// printFeatures lists all the features within the given bounding Rectangle.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>printFeatures</span><span class=p>(</span><span class=nx>client</span> <span class=nx>pb</span><span class=p>.</span><span class=nx>RouteClient</span><span class=p>,</span> <span class=nx>rect</span> <span class=o>*</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Rectangle</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Looking for features within %v&#34;</span><span class=p>,</span> <span class=nx>rect</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span><span class=p>,</span> <span class=nx>cancel</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>WithTimeout</span><span class=p>(</span><span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>(),</span> <span class=mi>10</span><span class=o>*</span><span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nf>cancel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>stream</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>client</span><span class=p>.</span><span class=nf>GetFeatures</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>rect</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;client.GetFeatures failed: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>feature</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>stream</span><span class=p>.</span><span class=nf>Recv</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>==</span> <span class=nx>io</span><span class=p>.</span><span class=nx>EOF</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>break</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;client.GetFeatures failed: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Feature: name: %q, point:(%v, %v)&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>			<span class=nx>feature</span><span class=p>.</span><span class=nf>GetName</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>			<span class=nx>feature</span><span class=p>.</span><span class=nf>GetLocation</span><span class=p>().</span><span class=nf>GetLatitude</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>			<span class=nx>feature</span><span class=p>.</span><span class=nf>GetLocation</span><span class=p>().</span><span class=nf>GetLongitude</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>		<span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>flag</span><span class=p>.</span><span class=nf>Parse</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>opts</span> <span class=p>[]</span><span class=nx>grpc</span><span class=p>.</span><span class=nx>DialOption</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=o>*</span><span class=nx>tls</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=o>*</span><span class=nx>certfile</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=o>*</span><span class=nx>certfile</span> <span class=p>=</span> <span class=nx>data</span><span class=p>.</span><span class=nf>Path</span><span class=p>(</span><span class=s>&#34;./x509/ca_cert.pem&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>creds</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>credentials</span><span class=p>.</span><span class=nf>NewServerTLSFromFile</span><span class=p>(</span><span class=o>*</span><span class=nx>certfile</span><span class=p>,</span> <span class=o>*</span><span class=nx>srvHost</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;failed to generate credentials %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>opts</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>opts</span><span class=p>,</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>WithTransportCredentials</span><span class=p>(</span><span class=nx>creds</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>opts</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>opts</span><span class=p>,</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>WithTransportCredentials</span><span class=p>(</span><span class=nx>insecure</span><span class=p>.</span><span class=nf>NewCredentials</span><span class=p>()))</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>conn</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>grpc</span><span class=p>.</span><span class=nf>Dial</span><span class=p>(</span><span class=o>*</span><span class=nx>srvAddr</span><span class=p>,</span> <span class=nx>opts</span><span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>log</span><span class=p>.</span><span class=nf>Fatalf</span><span class=p>(</span><span class=s>&#34;grpc.Dial failed: %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>conn</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=nx>client</span> <span class=o>:=</span> <span class=nx>pb</span><span class=p>.</span><span class=nf>NewRouteClient</span><span class=p>(</span><span class=nx>conn</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Looking for a valid feature
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nf>printFeature</span><span class=p>(</span><span class=nx>client</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>{</span><span class=nx>Latitude</span><span class=p>:</span> <span class=mi>409146138</span><span class=p>,</span> <span class=nx>Longitude</span><span class=p>:</span> <span class=o>-</span><span class=mi>746188906</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Feature missing.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nf>printFeature</span><span class=p>(</span><span class=nx>client</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>{</span><span class=nx>Latitude</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span> <span class=nx>Longitude</span><span class=p>:</span> <span class=mi>0</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Looking for features between 40, -75 and 42, -73.
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nf>printFeatures</span><span class=p>(</span><span class=nx>client</span><span class=p>,</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Rectangle</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Lo</span><span class=p>:</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>{</span><span class=nx>Latitude</span><span class=p>:</span> <span class=mi>400000000</span><span class=p>,</span> <span class=nx>Longitude</span><span class=p>:</span> <span class=o>-</span><span class=mi>750000000</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>		<span class=nx>Hi</span><span class=p>:</span> <span class=o>&amp;</span><span class=nx>pb</span><span class=p>.</span><span class=nx>Point</span><span class=p>{</span><span class=nx>Latitude</span><span class=p>:</span> <span class=mi>420000000</span><span class=p>,</span> <span class=nx>Longitude</span><span class=p>:</span> <span class=o>-</span><span class=mi>730000000</span><span class=p>},</span>
+</span></span><span class=line><span class=cl>	<span class=p>})</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>启动 <code>grpc client</code> 服务：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ go run cmd/client/main.go
+</span></span><span class=line><span class=cl>2022/06/25 13:54:45 Getting feature <span class=k>for</span> point <span class=o>(</span>409146138, -746188906<span class=o>)</span>
+</span></span><span class=line><span class=cl>2022/06/25 13:54:45 name:<span class=s2>&#34;Berkshire Valley Management Area Trail, Jefferson, NJ, USA&#34;</span> location:<span class=o>{</span>latitude:409146138 longitude:-746188906<span class=o>}</span>
+</span></span><span class=line><span class=cl>2022/06/25 13:54:45 Getting feature <span class=k>for</span> point <span class=o>(</span>0, 0<span class=o>)</span>
+</span></span><span class=line><span class=cl>2022/06/25 13:54:45 location:<span class=o>{}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2022-06-20</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/post/go-grpc/ data-title="Go gRPC" data-hashtags=Go><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/post/go-grpc/ data-hashtag=Go><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/post/go-grpc/ data-title="Go gRPC"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/post/go-grpc/ data-title="Go gRPC"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/post/go-grpc/ data-title="Go gRPC"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/post/ds-stack-queue/ class=prev rel=prev title=栈和队列><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>栈和队列</a>
+<a href=https://imajinyun.xyz/post/linux-reactor/ class=next rel=next title="线程模型之 Reactor 模型">线程模型之 Reactor 模型<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6cf2973a936acbed3d32667888ea2f37",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>

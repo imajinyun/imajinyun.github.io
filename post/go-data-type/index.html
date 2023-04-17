@@ -1,0 +1,1128 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Go 数据类型 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Go 数据类型"><meta property="og:description" content="Go 是静态类型的编程语言，这意味着每个变量都有一种类型。从大的方面来说 Go 有两种类型，即基本类型和组合类型。数据类型指定有效的 Go 变量可以保持的数据类型。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/post/go-data-type/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-07-02T10:43:25+08:00"><meta property="article:modified_time" content="2021-07-02T10:43:25+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-gpm-model/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-grpc/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-concat-string/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-correct-posture/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-other-test/"><meta property="og:see_also" content="https://imajinyun.xyz/post/go-benchmark-test/"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go 数据类型"><meta name=twitter:description content="Go 是静态类型的编程语言，这意味着每个变量都有一种类型。从大的方面来说 Go 有两种类型，即基本类型和组合类型。数据类型指定有效的 Go 变量可以保持的数据类型。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/post/go-data-type/><link rel=prev href=https://imajinyun.xyz/post/php-array-sort/><link rel=next href=https://imajinyun.xyz/post/go-date-time/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go 数据类型","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/post\/go-data-type\/"},"genre":"posts","keywords":"Go","wordcount":4187,"url":"https:\/\/imajinyun.xyz\/post\/go-data-type\/","datePublished":"2021-07-02T10:43:25+08:00","dateModified":"2021-07-02T10:43:25+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go 数据类型</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/go/><i class="far fa-folder fa-fw" aria-hidden=true></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2021-07-02>2021-07-02</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 4187 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 9 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#按基本数据类型分类>按基本数据类型分类</a><ul><li><a href=#基本类型>基本类型</a><ul><li><a href=#布尔型>布尔型</a></li><li><a href=#数值类型>数值类型</a><ul><li><a href=#整数型>整数型</a></li><li><a href=#浮点型>浮点型</a></li><li><a href=#复数型>复数型</a></li><li><a href=#字符串型>字符串型</a></li></ul></li></ul></li><li><a href=#组合类型>组合类型</a><ul><li><a href=#非引用类型>非引用类型</a><ul><li><a href=#数组>数组</a></li><li><a href=#结构体>结构体</a></li></ul></li><li><a href=#引用类型>引用类型</a><ul><li><a href=#切片>切片</a></li><li><a href=#映射>映射</a></li><li><a href=#通道>通道</a></li><li><a href=#函数>函数</a></li><li><a href=#指针>指针</a></li></ul></li><li><a href=#interface>Interface</a></li></ul></li></ul></li><li><a href=#数值类型运算符>数值类型运算符</a></li><li><a href=#运算符优化级>运算符优化级</a></li></ul></nav></div></div><div class=content id=content><p>Go 是静态类型的编程语言，这意味着每个变量都有一种类型。从大的方面来说 Go 有两种类型，即基本类型和组合类型。数据类型指定有效的 Go 变量可以保持的数据类型。</p><ul><li><a href=https://imajinyun.xyz/2021/06/26/go-get-started/ target=_blank rel="noopener noreffer">Go 起步</a></li><li><strong>Go 数据类型</strong></li><li><a href=https://imajinyun.xyz/2021/07/11/go-date-time/ target=_blank rel="noopener noreffer">Go 日期时间</a></li><li><a href=https://imajinyun.xyz/2021/07/14/go-random-number/ target=_blank rel="noopener noreffer">Go 随机数</a></li><li><a href=https://imajinyun.xyz/2021/07/16/go-unit-test/ target=_blank rel="noopener noreffer">Go 单元测试</a></li><li><a href=https://imajinyun.xyz/2021/07/17/go-benchmark-test/ target=_blank rel="noopener noreffer">Go 基准测试</a></li><li><a href=https://imajinyun.xyz/2021/07/22/go-other-test/ target=_blank rel="noopener noreffer">Go 其它测试</a></li><li><a href=https://imajinyun.xyz/2021/07/24/go-correct-posture/ target=_blank rel="noopener noreffer">Go 正确姿势</a></li><li><a href=https://imajinyun.xyz/2021/07/25/go-concat-string/ target=_blank rel="noopener noreffer">Go 连接字符串</a></li></ul><h2 id=按基本数据类型分类>按基本数据类型分类</h2><h3 id=基本类型>基本类型</h3><h4 id=布尔型>布尔型</h4><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>bool</code> 的零值为 <code>false</code>。</div></div></div><p>仅赋值为 <code>true</code> 和 <code>false</code> 来表示真假。Go 没有定义布尔类型的字面量形式，可以将 <code>true</code> 和 <code>false</code> 这两个预声明的有名常量当作布尔类型的字面量形式。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;unsafe&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>b1</span> <span class=kt>bool</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>b2</span> <span class=o>:=</span> <span class=kc>true</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;b1: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>b1</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>b1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;b2: %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>b2</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>b2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>b1: bool type, 1 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>b2: bool type, 1 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=数值类型>数值类型</h4><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>numeric</code> 的零值为 <code>0</code>（但是不同类型的零值在内存中占用的空间可能不同）。</div></div></div><h5 id=整数型>整数型</h5><blockquote><p>包括有符号（Signed）和无符号（Unsigned）类型。</p></blockquote><table><thead><tr><th>Type</th><th>Size</th><th>Range</th><th>Description</th></tr></thead><tbody><tr><td><code>int8</code></td><td><code>1</code></td><td><code>-128~127</code> or <code>-2^7~2^7-1</code></td><td>有符号 8 位整形</td></tr><tr><td><code>uint8</code></td><td><code>1</code></td><td><code>0~255</code> or <code>2^8</code></td><td>无符号 8 位整形</td></tr><tr><td><code>int16</code></td><td><code>2</code></td><td><code>-32768~32767</code> or <code>-2^15~2^15-1</code></td><td>有符号 16 位整形</td></tr><tr><td><code>uint16</code></td><td><code>2</code></td><td><code>0~65535</code> or <code>2^16</code></td><td>无符号 16 位整形</td></tr><tr><td><code>int32</code></td><td><code>4</code></td><td><code>-2147483648~2147483647</code> or <code>-2^31~2^31-1</code></td><td>有符号 32 位整形</td></tr><tr><td><code>uint32</code></td><td><code>4</code></td><td><code>0~4294967295</code> or <code>2^31</code></td><td>无符号 32 位整形</td></tr><tr><td><code>int64</code></td><td><code>8</code></td><td><code>-9223372036854775808~9223372036854775807</code> or <code>-2^63~2^63-1</code></td><td>有符号 64 位整形</td></tr><tr><td><code>uint64</code></td><td><code>8</code></td><td><code>0~18446744073709551615</code> or <code>0~2^64</code></td><td>无符号 64 位整形</td></tr><tr><td><code>int</code></td><td><code>4 or 8</code></td><td>Platform dependent</td><td>有符号 32 或 64 位整形</td></tr><tr><td><code>uint</code></td><td><code>4 or 8</code></td><td>Platform dependent</td><td>无符号 32 或 64 位整形</td></tr><tr><td><code>uintptr</code></td><td><code>4 or 8</code></td><td>Platform dependent</td><td>用于存放一个指针</td></tr></tbody></table><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><p><code>uintptr</code> 特性：</p><ul><li>可以被转换为 <code>unsafe.Pointer</code>，反之亦然；</li><li>可以在其上执行算术运算；</li><li>即使包含指针地址，也只是一个值，也不引用任何对象。所以：<ul><li>如果相应对象移动，则不会更新其值。例如：当 Goroutine 堆栈发生变化时；</li><li>相应的对象可以是被收集的垃圾；</li></ul></li></ul><p><code>uintptr</code> 场景：</p><ul><li>其上的是与 <code>unsafe.Pointer</code> 一起主要用于不安全的内存访问；</li><li>当你想要保存指针地址值以进行打印或存储它。由于地址刚刚存储并且不引用任何内容，因此相应的对象可以是垃圾收集的；</li></ul></div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;math/bits&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;unsafe&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=nx>i8</span> <span class=kt>int8</span>
+</span></span><span class=line><span class=cl>  <span class=nx>u8</span> <span class=kt>uint8</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>i16</span> <span class=kt>int16</span>
+</span></span><span class=line><span class=cl>  <span class=nx>u16</span> <span class=kt>uint16</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>i32</span> <span class=kt>int32</span>
+</span></span><span class=line><span class=cl>  <span class=nx>u32</span> <span class=kt>uint32</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>i64</span> <span class=kt>int64</span>
+</span></span><span class=line><span class=cl>  <span class=nx>u64</span> <span class=kt>uint64</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>i</span> <span class=kt>int</span>
+</span></span><span class=line><span class=cl>  <span class=nx>u</span> <span class=kt>uint</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>student</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl>  <span class=nx>age</span>  <span class=kt>int</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;i8: %d bits, %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>i8</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>i8</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;u8: %d bits, %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>u8</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>u8</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;i16: %d bits, %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>i16</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>i16</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;u16: %d bits, %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>u16</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>u16</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;i32: %d bits, %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>i32</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>i32</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;u32: %d bits, %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>u32</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>u32</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;i64: %d bits, %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>i64</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>i64</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;u64: %d bits, %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>u64</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>u64</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;i: %d bits, %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>i</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>i</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;u: %d bits, %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>bits</span><span class=p>.</span><span class=nx>UintSize</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>u</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>u</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>s</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>student</span><span class=p>{</span><span class=nx>name</span><span class=p>:</span> <span class=s>&#34;tony&#34;</span><span class=p>,</span> <span class=nx>age</span><span class=p>:</span> <span class=mi>18</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Get the address of field name in struct s
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>p</span> <span class=o>:=</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=nb>uintptr</span><span class=p>(</span><span class=nx>unsafe</span><span class=p>.</span><span class=nf>Pointer</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span> <span class=o>+</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Offsetof</span><span class=p>(</span><span class=nx>s</span><span class=p>.</span><span class=nx>name</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Typecast it to a string pointer and print the value of it
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;p: %s&#34;</span><span class=p>,</span> <span class=o>*</span><span class=p>(</span><span class=o>*</span><span class=kt>string</span><span class=p>)(</span><span class=nx>p</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>i8: 64 bits, int8 type, 1 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>u8: 64 bits, uint8 type, 1 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>i16: 64 bits, int16 type, 2 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>u16: 64 bits, uint16 type, 2 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>i32: 64 bits, int32 type, 4 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>u32: 64 bits, uint32 type, 4 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>i64: 64 bits, int64 type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>u64: 64 bits, uint64 type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>i: 64 bits, int type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>u: 64 bits, uint type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>p: tony
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>byte</code> 为 <code>uint8</code> 的别名。因此它是一个整数值，此整数值为 8 位，它表示 0~255 之间的一个字节。单个字节可以代表 ASCII 字符。Go 没有任何 <code>char</code> 数据类型，因此字节用于表示 ASCII 字符。</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;unsafe&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>char</span> <span class=kt>byte</span> <span class=p>=</span> <span class=sc>&#39;a&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Type: %s, Size: %d\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>char</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>char</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Character: %c\n&#34;</span><span class=p>,</span> <span class=nx>char</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>s</span> <span class=o>:=</span> <span class=s>&#34;abc&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>([]</span><span class=nb>byte</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Type: uint8, Size: 1
+</span></span></span><span class=line><span class=cl><span class=cm>Character: a
+</span></span></span><span class=line><span class=cl><span class=cm>[97 98 99]
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>rune</code> 为 <code>int32</code> 的别名。因此它是一个整数值，此整数值旨在表示 Unicode Code Point。关于 Unicode 和字符集请戳 <a href=https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/ target=_blank rel="noopener noreffer">The Absolute Minimum Every Software Developer Absolutely, Positively. Must Know About Unicode and Character Sets(No Excuses!)</a>。</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;unsafe&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>char</span> <span class=o>:=</span> <span class=sc>&#39;a&#39;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Type: %s, Size: %d\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>char</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>char</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Character: %c\n&#34;</span><span class=p>,</span> <span class=nx>char</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Unicode Code Point: %U\n&#34;</span><span class=p>,</span> <span class=nx>char</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>s</span> <span class=o>:=</span> <span class=s>&#34;0b™&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// This will print the Unicode Code Point
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%U\n&#34;</span><span class=p>,</span> <span class=p>[]</span><span class=nb>rune</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// This will the decimal value of Unicode Code Point
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>([]</span><span class=nb>rune</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Type: int32, Size: 4
+</span></span></span><span class=line><span class=cl><span class=cm>Character: a
+</span></span></span><span class=line><span class=cl><span class=cm>Unicode Code Point: U+0061
+</span></span></span><span class=line><span class=cl><span class=cm>[U+0030 U+0062 U+2122]
+</span></span></span><span class=line><span class=cl><span class=cm>[48 98 8482]
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>整数类型有四种字面量形式：十进制形式（Decimal）、八进制形式（Octal）、十六进制形式（Hex）和二进制形式（Binary）；</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 十六进制表示
+</span></span><span class=line><span class=cl>0xF
+</span></span><span class=line><span class=cl>0XF
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 八进制表示（0o 或 0O 开头的八进制形式从 Go 1.13 才开始支持）
+</span></span><span class=line><span class=cl><span class=m>017</span>
+</span></span><span class=line><span class=cl>0o17
+</span></span><span class=line><span class=cl>0O17
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 二进制表示
+</span></span><span class=line><span class=cl>0b1011
+</span></span><span class=line><span class=cl>0B1011
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 十进制表示
+</span></span><span class=line><span class=cl><span class=m>32</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=浮点型>浮点型</h5><blockquote><p>在内存中，所有的浮点数都是使用 <a href=https://zh.wikipedia.org/wiki/IEEE_754 target=_blank rel="noopener noreffer">IEEE-754</a> 格式存储的。</p></blockquote><table><thead><tr><th>Type</th><th>Size</th><th>Range</th><th>Description</th></tr></thead><tbody><tr><td><code>float32</code></td><td><code>4</code></td><td><code>正负1.18*10^-38~正负3.40*10^38</code></td><td>32 位的浮点型</td></tr><tr><td><code>float64</code></td><td><code>8</code></td><td><code>正负2.23*10^-308~正负1.80*10^308</code></td><td>64 位的浮点型</td></tr></tbody></table><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;unsafe&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>f32</span> <span class=kt>float32</span>
+</span></span><span class=line><span class=cl><span class=kd>var</span> <span class=nx>f64</span> <span class=kt>float64</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>f1</span> <span class=kt>float32</span>
+</span></span><span class=line><span class=cl>  <span class=nx>f1</span> <span class=p>=</span> <span class=mf>3.1415926</span>
+</span></span><span class=line><span class=cl>  <span class=nx>f2</span> <span class=o>:=</span> <span class=mf>3.1415926</span> <span class=c1>// Default is float64
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;f32: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>f32</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>f32</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;f64: %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>f64</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>f64</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;f1: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>f1</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>f1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;f2: %s type, %d bytes\n\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>f2</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>f2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>f32: float32 type, 4 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>f64: float64 type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>f1: float32 type, 4 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>f2: float64 type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>浮点数类型值的字面量形式：一个浮点数的完整十进制字面量形式可能包含一个十进制整数部分、一个小数点、一个十进制小数部分和一个以 10 为底数的整数指数部分。整数指数部分字母 <code>e</code> 或 <code>E</code> 带一个十进制的整数字面量组成（<code>xEn</code> 表示 <code>x</code> 乘以 <code>10^n</code>，而 <code>xE-n</code> 表示 <code>x</code> 除以 <code>10^n</code>）。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>10.1234
+</span></span><span class=line><span class=cl>03.1415 // 3.1415
+</span></span><span class=line><span class=cl>.88
+</span></span><span class=line><span class=cl>99.
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>1.23e2 // 123.0
+</span></span><span class=line><span class=cl>123E2 // 12300.0
+</span></span><span class=line><span class=cl>123.E+2 // 12300.0
+</span></span><span class=line><span class=cl>1e-1 // 0.1
+</span></span><span class=line><span class=cl>.1e0 // 0.1
+</span></span><span class=line><span class=cl>0010e-2 // 0.1
+</span></span><span class=line><span class=cl>0e+5 // 0.0
+</span></span></code></pre></td></tr></table></div></div><p>一些合法的浮点数的十六进制字面量：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>0x1p-2     // <span class=o>==</span> 1.0/4 <span class=o>=</span> 0.25
+</span></span><span class=line><span class=cl>0x2.p10    // <span class=o>==</span> 2.0 * <span class=nv>1024</span> <span class=o>==</span> 2048.0
+</span></span><span class=line><span class=cl>0x1.Fp+0   // <span class=o>==</span> 1+15.0/16 <span class=o>==</span> 1.9375
+</span></span><span class=line><span class=cl>0X.8p1     // <span class=o>==</span> 8.0/16 * <span class=nv>2</span> <span class=o>==</span> 1.0
+</span></span><span class=line><span class=cl>0X1FFFP-16 // <span class=o>==</span> 0.1249847412109375
+</span></span></code></pre></td></tr></table></div></div><h5 id=复数型>复数型</h5><table><thead><tr><th>Type</th><th>Size</th><th>Range</th><th>Description</th></tr></thead><tbody><tr><td><code>complex64</code></td><td><code>8</code></td><td>N/A</td><td>64 位的复数型，由 float32 位的实部和虚部联合表示</td></tr><tr><td><code>complex128</code></td><td><code>16</code></td><td>N/A</td><td>128 位的复数型，由 float64 位的实部和虚部联合表示</td></tr></tbody></table><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;unsafe&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>a</span> <span class=kt>float32</span> <span class=p>=</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>b</span> <span class=kt>float32</span> <span class=p>=</span> <span class=mi>5</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>m</span> <span class=kt>float64</span> <span class=p>=</span> <span class=mi>3</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>n</span> <span class=kt>float64</span> <span class=p>=</span> <span class=mi>5</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>c</span> <span class=o>:=</span> <span class=nb>complex</span><span class=p>(</span><span class=nx>a</span><span class=p>,</span> <span class=nx>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>d</span> <span class=kt>complex64</span>
+</span></span><span class=line><span class=cl>  <span class=nx>d</span> <span class=p>=</span> <span class=mi>4</span> <span class=o>+</span> <span class=m>5i</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>p</span> <span class=o>:=</span> <span class=nb>complex</span><span class=p>(</span><span class=nx>m</span><span class=p>,</span> <span class=nx>n</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>q</span> <span class=o>:=</span> <span class=mi>4</span> <span class=o>+</span> <span class=m>5i</span> <span class=c1>// When don&#39;t specify a type, the default type will be complex128
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;c: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>c</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>c</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;d: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>d</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>d</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>c</span><span class=o>+</span><span class=nx>d</span><span class=p>,</span> <span class=nx>c</span><span class=o>-</span><span class=nx>d</span><span class=p>,</span> <span class=nx>c</span><span class=o>*</span><span class=nx>d</span><span class=p>,</span> <span class=nx>c</span><span class=o>/</span><span class=nx>d</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;p: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>p</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>p</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;q: %s type, %d bytes\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>q</span><span class=p>),</span> <span class=nx>unsafe</span><span class=p>.</span><span class=nf>Sizeof</span><span class=p>(</span><span class=nx>q</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>p</span><span class=o>+</span><span class=nx>q</span><span class=p>,</span> <span class=nx>p</span><span class=o>-</span><span class=nx>q</span><span class=p>,</span> <span class=nx>p</span><span class=o>*</span><span class=nx>q</span><span class=p>,</span> <span class=nx>p</span><span class=o>/</span><span class=nx>q</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>c: complex64 type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>d: complex64 type, 8 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>(7+10i) (-1+0i) (-13+35i) (0.902439+0.12195122i)
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>p: complex128 type, 16 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>q: complex128 type, 16 bytes
+</span></span></span><span class=line><span class=cl><span class=cm>(7+10i) (-1+0i) (-13+35i) (0.902439024390244+0.12195121951219513i)
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>复数虚部字面量形式：一个虚部值的字面量形式由一个浮点数字面量或者一个整数字面量和其后跟随的一个小写的字母 <code>i</code> 组成。 在 Go 1.13 之前，如果虚部中 <code>i</code> 前的部分为一个整数字面量，则其必须为并且总是被视为十进制形式。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>1.23i
+</span></span><span class=line><span class=cl>1.i
+</span></span><span class=line><span class=cl>.23i
+</span></span><span class=line><span class=cl>123i
+</span></span><span class=line><span class=cl>0123i   // <span class=o>==</span> 123i（兼容性使然。见下）
+</span></span><span class=line><span class=cl>1.23E2i // <span class=o>==</span> 123i
+</span></span><span class=line><span class=cl>1e-1i
+</span></span><span class=line><span class=cl>011i   // <span class=o>==</span> 11i（兼容性使然。见下）
+</span></span><span class=line><span class=cl>00011i // <span class=o>==</span> 11i（兼容性使然。见下）
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 下面这几行从 Go 1.13 开始才能编译通过
+</span></span><span class=line><span class=cl>0o11i    // <span class=o>==</span> 9i
+</span></span><span class=line><span class=cl>0x11i    // <span class=o>==</span> 17i
+</span></span><span class=line><span class=cl>0b11i    // <span class=o>==</span> 3i
+</span></span><span class=line><span class=cl>0X.8p-0i // <span class=o>==</span> 0.5i
+</span></span></code></pre></td></tr></table></div></div><h5 id=字符串型>字符串型</h5><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>string</code> 的零值为 <code>""</code>，即空字符串。</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>x</span> <span class=o>:=</span> <span class=s>&#34;hello\nworld&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;x: %s\n&#34;</span><span class=p>,</span> <span class=nx>x</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>y</span> <span class=o>:=</span> <span class=s>`Hello\nWorld`</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;y: %s\n&#34;</span><span class=p>,</span> <span class=nx>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>s</span> <span class=o>:=</span> <span class=s>&#34;¡Q™&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;s: %s\n&#34;</span><span class=p>,</span> <span class=nx>s</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;s length is: %d\n&#34;</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>c</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>s</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nb>string</span><span class=p>(</span><span class=nx>c</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=s>&#34;🚀&#34;</span> <span class=o>+</span> <span class=s>&#34; &#34;</span> <span class=o>+</span> <span class=s>&#34;Hello World!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>x: hello
+</span></span></span><span class=line><span class=cl><span class=cm>world
+</span></span></span><span class=line><span class=cl><span class=cm>y: Hello\nWorld
+</span></span></span><span class=line><span class=cl><span class=cm>s: ¡Q™
+</span></span></span><span class=line><span class=cl><span class=cm>s length is: 6
+</span></span></span><span class=line><span class=cl><span class=cm>¡
+</span></span></span><span class=line><span class=cl><span class=cm>Q
+</span></span></span><span class=line><span class=cl><span class=cm>™
+</span></span></span><span class=line><span class=cl><span class=cm>🚀 Hello World!
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>Go 字符串的字面量形式有两种：一种是解释型字面表示（Interpreted String Literal，双引号风格）。 另一种是直白字面表示（Raw String Literal，反引号风格）。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 解释形式
+</span></span><span class=line><span class=cl><span class=s2>&#34;Hello World!\n&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 直白形式
+</span></span><span class=line><span class=cl><span class=sb>`</span>Hello World!<span class=sb>`</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=组合类型>组合类型</h3><h4 id=非引用类型>非引用类型</h4><h5 id=数组>数组</h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>arr1</span> <span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=kt>string</span>
+</span></span><span class=line><span class=cl>  <span class=nx>arr1</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=p>=</span> <span class=s>&#34;a&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>arr1</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=p>=</span> <span class=s>&#34;b&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=s>&#34;arr1&#34;</span><span class=p>,</span> <span class=nx>arr1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>arr2</span> <span class=o>:=</span> <span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;Hello&#34;</span><span class=p>,</span> <span class=s>&#34;World&#34;</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=s>&#34;arr2&#34;</span><span class=p>,</span> <span class=nx>arr2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>dump</span><span class=p>(</span><span class=nx>name</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>array</span> <span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;%s: %v\n&#34;</span><span class=p>,</span> <span class=nx>name</span><span class=p>,</span> <span class=nx>array</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>arr1: [a b]
+</span></span></span><span class=line><span class=cl><span class=cm>arr2: [Hello World]
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=结构体>结构体</h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>employee</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>name</span>   <span class=kt>string</span>
+</span></span><span class=line><span class=cl>  <span class=nx>age</span>    <span class=kt>int</span>
+</span></span><span class=line><span class=cl>  <span class=nx>salary</span> <span class=kt>float64</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>e1</span> <span class=o>:=</span> <span class=nx>employee</span><span class=p>{</span><span class=s>&#34;John&#34;</span><span class=p>,</span> <span class=mi>28</span><span class=p>,</span> <span class=mf>12000.00</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;e1: %v\n&#34;</span><span class=p>,</span> <span class=nx>e1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>e2</span> <span class=o>:=</span> <span class=nx>employee</span><span class=p>{</span><span class=nx>name</span><span class=p>:</span> <span class=s>&#34;Jack&#34;</span><span class=p>,</span> <span class=nx>age</span><span class=p>:</span> <span class=mi>26</span><span class=p>,</span> <span class=nx>salary</span><span class=p>:</span> <span class=mf>8000.00</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;e2: %v\n&#34;</span><span class=p>,</span> <span class=nx>e2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>e3</span> <span class=o>:=</span> <span class=nx>employee</span><span class=p>{</span><span class=nx>name</span><span class=p>:</span> <span class=s>&#34;Pony&#34;</span><span class=p>,</span> <span class=nx>age</span><span class=p>:</span> <span class=mi>27</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;e3: %v\n&#34;</span><span class=p>,</span> <span class=nx>e3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>e1: {John 28 12000}
+</span></span></span><span class=line><span class=cl><span class=cm>e2: {Jack 26 8000}
+</span></span></span><span class=line><span class=cl><span class=cm>e3: {Pony 27 0}
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=引用类型>引用类型</h4><h5 id=切片>切片</h5><p>切片是动态大小的，数组是固定大小的，因此切片提供更灵活的接口。切片是引用类型，因为它在内部引用数组。它的内部表示通过三个字段：</p><ul><li>底层数组的地址；</li><li>切片的长度；</li><li>切片的容量；</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>s</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>([]</span><span class=kt>string</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Slice: %v, Type: %s, Len: %d, Cap: %d\n&#34;</span><span class=p>,</span> <span class=nx>s</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>s</span><span class=p>),</span> <span class=nb>len</span><span class=p>(</span><span class=nx>s</span><span class=p>),</span> <span class=nb>cap</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>p</span> <span class=o>:=</span> <span class=p>[]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;a&#34;</span><span class=p>,</span> <span class=s>&#34;b&#34;</span><span class=p>,</span> <span class=s>&#34;c&#34;</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Slice: %v, Type: %s, Len: %d, Cap: %d\n&#34;</span><span class=p>,</span> <span class=nx>p</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>p</span><span class=p>),</span> <span class=nb>len</span><span class=p>(</span><span class=nx>p</span><span class=p>),</span> <span class=nb>cap</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>p</span> <span class=p>=</span> <span class=nb>append</span><span class=p>(</span><span class=nx>p</span><span class=p>,</span> <span class=s>&#34;d&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Slice: %v, Type: %s, Len: %d, Cap: %d\n&#34;</span><span class=p>,</span> <span class=nx>p</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>p</span><span class=p>),</span> <span class=nb>len</span><span class=p>(</span><span class=nx>p</span><span class=p>),</span> <span class=nb>cap</span><span class=p>(</span><span class=nx>s</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>v</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>p</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Slice: [ ], Type: []string, Len: 2, Cap: 3
+</span></span></span><span class=line><span class=cl><span class=cm>Slice: [a b c], Type: []string, Len: 3, Cap: 3
+</span></span></span><span class=line><span class=cl><span class=cm>Slice: [a b c d], Type: []string, Len: 4, Cap: 3
+</span></span></span><span class=line><span class=cl><span class=cm>a
+</span></span></span><span class=line><span class=cl><span class=cm>b
+</span></span></span><span class=line><span class=cl><span class=cm>c
+</span></span></span><span class=line><span class=cl><span class=cm>d
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=映射>映射</h5><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>map</code> 的零值是 <code>nil</code>。</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;reflect&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>student</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kd>interface</span><span class=p>{}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Type: %s, Value: %v\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>student</span><span class=p>),</span> <span class=nx>student</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>stu1</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>int</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Type: %s, Value: %v\n&#34;</span><span class=p>,</span> <span class=nx>reflect</span><span class=p>.</span><span class=nf>TypeOf</span><span class=p>(</span><span class=nx>stu1</span><span class=p>),</span> <span class=nx>stu1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>stu2</span> <span class=o>:=</span> <span class=kd>map</span><span class=p>[</span><span class=kt>string</span><span class=p>]</span><span class=kt>int</span><span class=p>{</span><span class=s>&#34;John&#34;</span><span class=p>:</span> <span class=mi>18</span><span class=p>,</span> <span class=s>&#34;Jack&#34;</span><span class=p>:</span> <span class=mi>20</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>stu2</span><span class=p>[</span><span class=s>&#34;Carl&#34;</span><span class=p>]</span> <span class=p>=</span> <span class=mi>28</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;John age is %d\n&#34;</span><span class=p>,</span> <span class=nx>stu2</span><span class=p>[</span><span class=s>&#34;John&#34;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>  <span class=nb>delete</span><span class=p>(</span><span class=nx>stu2</span><span class=p>,</span> <span class=s>&#34;Carl&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;\nPrint stu2 map:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nx>stu2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Type: map[string]interface {}, Value: map[]
+</span></span></span><span class=line><span class=cl><span class=cm>Type: map[string]int, Value: map[]
+</span></span></span><span class=line><span class=cl><span class=cm>John age is 18
+</span></span></span><span class=line><span class=cl><span class=cm>
+</span></span></span><span class=line><span class=cl><span class=cm>Print stu2 map:map[Jack:20 John:18]
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=通道>通道</h5><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><p>通道提供 <code>Goroutine</code> 之间的同步和通信。你可以将其视为管道，<code>Goroutine</code> 可以发送值和接收值。操作 <code>&lt;-</code> 用于发送或接收，并指定数据流动方向的箭头方向。</p><p>两种类型的通道：</p><ul><li>无缓冲通道（Unbuffered Channel）：它没有任何容纳能力和值：<ul><li>除非有另一个 <code>Goroutine</code> 接收，否则发送在频道上是阻塞的；</li><li>接收是阻塞的，直到另一个 <code>Goroutine</code> 在一边去发送；</li></ul></li><li>带缓冲通道（Buffered Channel）：可以在此处指定缓冲区的大小：<ul><li>如果缓冲区已满，则仅发送阻塞的缓冲通道；</li><li>接收唯一的阻塞是通道的缓冲区是空的；</li></ul></li></ul></div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=p>(</span>
+</span></span><span class=line><span class=cl>  <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=c1>// Creating a buffered channel of length 4
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>bufChan</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>string</span><span class=p>,</span> <span class=mi>4</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bufChan</span> <span class=o>&lt;-</span> <span class=s>&#34;🚀 Hello &#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bufChan</span> <span class=o>&lt;-</span> <span class=s>&#34;World, &#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bufChan</span> <span class=o>&lt;-</span> <span class=s>&#34;Hello &#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bufChan</span> <span class=o>&lt;-</span> <span class=s>&#34;Go!\n&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nb>close</span><span class=p>(</span><span class=nx>bufChan</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>ch</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>bufChan</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Print</span><span class=p>(</span><span class=nx>ch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=c1>// Creating a unbuffered channel
+</span></span></span><span class=line><span class=cl><span class=c1></span>  <span class=nx>unbufChan</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>(</span><span class=kd>chan</span> <span class=kt>string</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>go</span> <span class=nf>sendChan</span><span class=p>(</span><span class=nx>unbufChan</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=k>for</span> <span class=nx>ch</span> <span class=o>:=</span> <span class=k>range</span> <span class=nx>unbufChan</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fmt</span><span class=p>.</span><span class=nf>Print</span><span class=p>(</span><span class=nx>ch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>sendChan</span><span class=p>(</span><span class=nx>ch</span> <span class=kd>chan</span><span class=o>&lt;-</span> <span class=kt>string</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ch</span> <span class=o>&lt;-</span> <span class=s>&#34;🚀 Hello &#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ch</span> <span class=o>&lt;-</span> <span class=s>&#34;World, &#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ch</span> <span class=o>&lt;-</span> <span class=s>&#34;Hello &#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>ch</span> <span class=o>&lt;-</span> <span class=s>&#34;Go!&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=nb>close</span><span class=p>(</span><span class=nx>ch</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>🚀 Hello World, Hello Go!
+</span></span></span><span class=line><span class=cl><span class=cm>🚀 Hello World, Hello Go!
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=函数>函数</h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>add</span> <span class=o>:=</span> <span class=kd>func</span><span class=p>(</span><span class=nx>x</span><span class=p>,</span> <span class=nx>y</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>x</span> <span class=o>+</span> <span class=nx>y</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Println</span><span class=p>(</span><span class=nf>doExecute</span><span class=p>(</span><span class=nx>add</span><span class=p>,</span> <span class=mi>10</span><span class=p>,</span> <span class=mi>20</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>doExecute</span><span class=p>(</span><span class=nx>fn</span> <span class=kd>func</span><span class=p>(</span><span class=kt>int</span><span class=p>,</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>y</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>int</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nf>fn</span><span class=p>(</span><span class=nx>x</span><span class=p>,</span> <span class=nx>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>30
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h5 id=指针>指针</h5><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>b</span> <span class=o>*</span><span class=kt>int</span>
+</span></span><span class=line><span class=cl>  <span class=nx>a</span> <span class=o>:=</span> <span class=mi>88</span>
+</span></span><span class=line><span class=cl>  <span class=nx>b</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>a</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;b: %v, *b: %v\n&#34;</span><span class=p>,</span> <span class=nx>b</span><span class=p>,</span> <span class=o>*</span><span class=nx>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>b</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=kt>int</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=o>*</span><span class=nx>b</span> <span class=p>=</span> <span class=mi>99</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;b: %v, *b: %v\n&#34;</span><span class=p>,</span> <span class=nx>b</span><span class=p>,</span> <span class=o>*</span><span class=nx>b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>b: 0xc0000ac008, *b: 88
+</span></span></span><span class=line><span class=cl><span class=cm>b: 0xc0000ac018, *b: 99
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=interface>Interface</h4><div class="details admonition info open"><div class="details-summary admonition-title"><i class="icon fas fa-info-circle fa-fw" aria-hidden=true></i>信息<i class="details-icon fas fa-angle-right fa-fw" aria-hidden=true></i></div><div class=details-content><div class=admonition-content><code>interface</code> 的零值是 <code>nil</code>。</div></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>shape</span> <span class=kd>interface</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nf>area</span><span class=p>()</span> <span class=kt>float64</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>square</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>side</span> <span class=kt>float64</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>triangle</span> <span class=kd>struct</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bottom</span> <span class=kt>float64</span>
+</span></span><span class=line><span class=cl>  <span class=nx>height</span> <span class=kt>float64</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>s</span> <span class=o>*</span><span class=nx>square</span><span class=p>)</span> <span class=nf>area</span><span class=p>()</span> <span class=kt>float64</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=nx>s</span><span class=p>.</span><span class=nx>side</span> <span class=o>*</span> <span class=nx>s</span><span class=p>.</span><span class=nx>side</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=p>(</span><span class=nx>t</span> <span class=o>*</span><span class=nx>triangle</span><span class=p>)</span> <span class=nf>area</span><span class=p>()</span> <span class=kt>float64</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=p>(</span><span class=nx>t</span><span class=p>.</span><span class=nx>bottom</span> <span class=o>*</span> <span class=nx>t</span><span class=p>.</span><span class=nx>height</span><span class=p>)</span> <span class=o>/</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>s</span> <span class=nx>shape</span>
+</span></span><span class=line><span class=cl>  <span class=nx>s</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>square</span><span class=p>{</span><span class=nx>side</span><span class=p>:</span> <span class=mi>4</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Square area is %v\n&#34;</span><span class=p>,</span> <span class=nx>s</span><span class=p>.</span><span class=nf>area</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nx>t</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>triangle</span><span class=p>{</span><span class=nx>bottom</span><span class=p>:</span> <span class=mi>10</span><span class=p>,</span> <span class=nx>height</span><span class=p>:</span> <span class=mi>12</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Triangle area is %v\n&#34;</span><span class=p>,</span> <span class=nx>t</span><span class=p>.</span><span class=nf>area</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Square area is 16
+</span></span></span><span class=line><span class=cl><span class=cm>Triangle area is 60
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><p>空接口的特殊情况：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>main</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=s>&#34;fmt&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>a</span> <span class=p>=</span> <span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=kt>string</span><span class=p>{</span><span class=s>&#34;go&#34;</span><span class=p>,</span> <span class=s>&#34;js&#34;</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=kd>var</span> <span class=nx>m</span> <span class=p>=</span> <span class=kd>map</span><span class=p>[</span><span class=kt>int</span><span class=p>]</span><span class=kt>string</span><span class=p>{</span><span class=mi>1</span><span class=p>:</span> <span class=s>&#34;hello&#34;</span><span class=p>,</span> <span class=mi>2</span><span class=p>:</span> <span class=s>&#34;world&#34;</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=s>&#34;🚀 Hello World, Hello Go!&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=mi>123456780</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=kc>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=nx>a</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=nf>dump</span><span class=p>(</span><span class=nx>m</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>dump</span><span class=p>(</span><span class=nx>v</span> <span class=kd>interface</span><span class=p>{})</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nx>fmt</span><span class=p>.</span><span class=nf>Printf</span><span class=p>(</span><span class=s>&#34;Type: %T, Value: %v\n&#34;</span><span class=p>,</span> <span class=nx>v</span><span class=p>,</span> <span class=nx>v</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/*
+</span></span></span><span class=line><span class=cl><span class=cm>Type: string, Value: 🚀 Hello World, Hello Go!
+</span></span></span><span class=line><span class=cl><span class=cm>Type: int, Value: 123456780
+</span></span></span><span class=line><span class=cl><span class=cm>Type: bool, Value: true
+</span></span></span><span class=line><span class=cl><span class=cm>Type: [2]string, Value: [go js]
+</span></span></span><span class=line><span class=cl><span class=cm>Type: map[int]string, Value: map[1:hello 2:world]
+</span></span></span><span class=line><span class=cl><span class=cm>*/</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=数值类型运算符>数值类型运算符</h2><ul><li>算术运算符：<code>+</code>、<code>-</code>、<code>*</code>、<code>/</code>、<code>%</code></li><li>比较运算符：<code>==</code>、<code>!=</code>、<code>></code>、<code>>=</code>、<code>&lt;=</code>、<code>&lt;</code></li><li>逻辑运算符：<code>&&</code>、<code>||</code>、<code>!</code></li><li>增减运算符：<code>++</code>、<code>--</code></li><li>按位运算符：<code>&</code>、<code>|</code>、<code>^</code>、<code>&lt;&lt;</code>、<code>>></code>、<code>&^</code></li><li>赋值运算符：<code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code>、<code>%=</code>、<code>&lt;&lt;=</code>、<code>>>=</code>、<code>&=</code>、<code>|=</code>、<code>^=</code></li></ul><h2 id=运算符优化级>运算符优化级</h2><table><thead><tr><th>Priority</th><th>Category</th><th>Operator</th><th>Associativity</th></tr></thead><tbody><tr><td>1</td><td>Postfix</td><td><code>() [] -> . ++ --</code></td><td>Left to right</td></tr><tr><td>2</td><td>Unary</td><td><code>+ - ! ~ ++ -- (type)* & sizeof</code></td><td>Right to left</td></tr><tr><td>3</td><td>Multiplicative</td><td><code>* / %</code></td><td>Left to right</td></tr><tr><td>4</td><td>Additive</td><td><code>+ -</code></td><td>Left to right</td></tr><tr><td>5</td><td>Shift</td><td><code>&lt;&lt; >></code></td><td>Left to right</td></tr><tr><td>6</td><td>Relational</td><td><code>&lt; &lt;= >= ></code></td><td>Left to right</td></tr><tr><td>7</td><td>Equality</td><td><code>== !=</code></td><td>Left to right</td></tr><tr><td>8</td><td>Bitwise AND</td><td><code>&</code></td><td>Left to right</td></tr><tr><td>9</td><td>Bitwise XOR</td><td><code>^</code></td><td>Left to right</td></tr><tr><td>10</td><td>Bitwise OR</td><td><code>⎮</code></td><td>Left to right</td></tr><tr><td>11</td><td>Logical AND</td><td><code>&&</code></td><td>Left to right</td></tr><tr><td>12</td><td>Logical OR</td><td><code>⎮⎮</code></td><td>Left to right</td></tr><tr><td>13</td><td>Assignment</td><td><code>= += -= *= /= %= = >>= &lt;&lt;= &= ^= ⎮=</code></td><td>Right to right</td></tr><tr><td>14</td><td>Comma</td><td><code>,</code></td><td>Left to right</td></tr></tbody></table></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2021-07-02</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/post/go-data-type/ data-title="Go 数据类型" data-hashtags=Go><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/post/go-data-type/ data-hashtag=Go><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/post/go-data-type/ data-title="Go 数据类型"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/post/go-data-type/ data-title="Go 数据类型"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/post/go-data-type/ data-title="Go 数据类型"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/post/php-array-sort/ class=prev rel=prev title="PHP 数组排序"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>PHP 数组排序</a>
+<a href=https://imajinyun.xyz/post/go-date-time/ class=next rel=next title="Go 日期时间">Go 日期时间<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6cf2973a936acbed3d32667888ea2f37",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>

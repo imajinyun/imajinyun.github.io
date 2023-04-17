@@ -1,0 +1,1230 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>PHP7 新特性 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="PHP7 新特性"><meta property="og:description" content="收集整理了一些 PHP7 的新特性。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/post/php-php7-new-features/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-01-19T23:53:50+08:00"><meta property="article:modified_time" content="2018-01-19T23:53:50+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-src-learning2/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-src-learning1/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-array-sort/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-some-ingenious-ways/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-php74-new-features/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-swoole-get-started/"><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP7 新特性"><meta name=twitter:description content="收集整理了一些 PHP7 的新特性。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/post/php-php7-new-features/><link rel=prev href=https://imajinyun.xyz/post/mysql-max-min-query/><link rel=next href=https://imajinyun.xyz/post/mysql-keywords-query/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"PHP7 新特性","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/post\/php-php7-new-features\/"},"genre":"posts","keywords":"PHP","wordcount":4050,"url":"https:\/\/imajinyun.xyz\/post\/php-php7-new-features\/","datePublished":"2018-01-19T23:53:50+08:00","dateModified":"2018-01-19T23:53:50+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">PHP7 新特性</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/php/><i class="far fa-folder fa-fw" aria-hidden=true></i>PHP</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-01-19>2018-01-19</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 4050 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 9 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#标量类型声明>标量类型声明</a></li><li><a href=#返回值类型声明>返回值类型声明</a></li><li><a href=#null-合并运算符>NULL 合并运算符</a></li><li><a href=#太空飞船操作符>太空飞船操作符</a></li><li><a href=#通过-define-定义常量数组>通过 define() 定义常量数组</a></li><li><a href=#匿名类>匿名类</a></li><li><a href=#unicode-codepoint-转译语法>Unicode codepoint 转译语法</a></li><li><a href=#closurecall>Closure::call()</a></li><li><a href=#为-unserialize-提供过滤>为 unserialize() 提供过滤</a></li><li><a href=#intlchar>IntlChar</a></li><li><a href=#预期>预期</a><ul><li><a href=#zendassertions-为-1>zend.assertions 为 1</a></li><li><a href=#zendassertions-为-0>zend.assertions 为 0</a></li><li><a href=#zendassertions-为--1>zend.assertions 为 -1</a></li><li><a href=#assertexception-为-1>assert.exception 为 1</a></li><li><a href=#assertexception-为-0>assert.exception 为 0</a></li></ul></li><li><a href=#use-以组声明>use 以组声明</a></li><li><a href=#生成器可以返回表达式>生成器可以返回表达式</a></li><li><a href=#生成器委托>生成器委托</a></li><li><a href=#整数除法函数-intdiv>整数除法函数 intdiv()</a></li><li><a href=#会话选项>会话选项</a></li><li><a href=#执行一个正则表达式搜索并且使用一个回调进行替换>执行一个正则表达式搜索并且使用一个回调进行替换</a></li><li><a href=#伪随机数产生器-csprng>伪随机数产生器 CSPRNG</a></li><li><a href=#错误处理方式>错误处理方式</a></li><li><a href=#弃用的功能>弃用的功能</a><ul><li><a href=#弃用-php4-风格的构造函数>弃用 PHP4 风格的构造函数</a></li><li><a href=#弃用了静态调用非静态方法>弃用了静态调用非静态方法</a></li><li><a href=#password_hash-salt-选项被弃用>password_hash() salt 选项被弃用</a></li><li><a href=#capture_session_meta-ssl-上下文选项被弃用>capture_session_meta SSL 上下文选项被弃用</a></li><li><a href=#移除的扩展>移除的扩展</a></li><li><a href=#移除的-sapi>移除的 SAPI</a></li><li><a href=#移除的函数列表>移除的函数列表</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>收集整理了一些 <code>PHP7</code> 的新特性。</p><h2 id=标量类型声明>标量类型声明</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>declare</span><span class=p>(</span><span class=nx>strict_types</span> <span class=o>=</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>paramInt</span><span class=p>(</span><span class=nx>int</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>array_sum</span><span class=p>(</span><span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>paramFloat</span><span class=p>(</span><span class=nx>float</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>array_values</span><span class=p>(</span><span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>paramString</span><span class=p>(</span><span class=nx>string</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>implode</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>,</span> <span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>paramBool</span><span class=p>(</span><span class=nx>bool</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>paramInt</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>paramFloat</span><span class=p>(</span><span class=mf>1.1</span><span class=p>,</span> <span class=mf>2.2</span><span class=p>,</span> <span class=mf>3.3</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>paramString</span><span class=p>(</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=s1>&#39;c&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>paramBool</span><span class=p>(</span><span class=k>true</span><span class=p>,</span> <span class=k>false</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=nx>int</span><span class=p>(</span><span class=mi>6</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>array</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>double</span><span class=p>(</span><span class=mf>1.1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>double</span><span class=p>(</span><span class=mf>2.2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>double</span><span class=p>(</span><span class=mf>3.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>string</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span> <span class=s2>&#34;a,b,c&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>array</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bool</span><span class=p>(</span><span class=k>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>bool</span><span class=p>(</span><span class=k>false</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=返回值类型声明>返回值类型声明</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>declare</span><span class=p>(</span><span class=nx>strict_types</span> <span class=o>=</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>returnInt</span><span class=p>(</span><span class=nx>int</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span> <span class=o>:</span> <span class=nx>int</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>array_sum</span><span class=p>(</span><span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>returnFloat</span><span class=p>(</span><span class=nx>float</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span> <span class=o>:</span> <span class=nx>float</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>array_sum</span><span class=p>(</span><span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>returnString</span><span class=p>(</span><span class=nx>string</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span> <span class=o>:</span> <span class=nx>string</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nx>implode</span><span class=p>(</span><span class=s1>&#39;,&#39;</span><span class=p>,</span> <span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>returnBool</span><span class=p>(</span><span class=nx>bool</span> <span class=nv>$value</span><span class=p>)</span> <span class=o>:</span> <span class=nx>bool</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$value</span> <span class=o>?</span> <span class=k>true</span> <span class=o>:</span> <span class=k>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>returnArray</span><span class=p>(</span><span class=k>array</span> <span class=o>...</span><span class=nv>$value</span><span class=p>)</span> <span class=o>:</span> <span class=k>array</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>returnInt</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>returnFloat</span><span class=p>(</span><span class=mf>1.1</span><span class=p>,</span> <span class=mf>2.2</span><span class=p>,</span> <span class=mf>3.3</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>returnString</span><span class=p>(</span><span class=s1>&#39;a&#39;</span><span class=p>,</span> <span class=s1>&#39;b&#39;</span><span class=p>,</span> <span class=s1>&#39;c&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>returnBool</span><span class=p>(</span><span class=k>true</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>returnArray</span><span class=p>([</span><span class=s1>&#39;hello&#39;</span><span class=p>],</span> <span class=p>[</span><span class=s1>&#39;world&#39;</span><span class=p>],</span> <span class=p>[</span><span class=s1>&#39;!&#39;</span><span class=p>]));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>int</span><span class=p>(</span><span class=mi>6</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>double</span><span class=p>(</span><span class=mf>6.6</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>string</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span> <span class=s2>&#34;a,b,c&#34;</span>
+</span></span><span class=line><span class=cl><span class=nx>bool</span><span class=p>(</span><span class=k>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>array</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=k>array</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>string</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span> <span class=s2>&#34;hello&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=k>array</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>string</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span> <span class=s2>&#34;world&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=k>array</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>string</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=s2>&#34;!&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=null-合并运算符>NULL 合并运算符</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 判断 UID 是否存在
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$uid</span> <span class=o>=</span> <span class=nx>isset</span><span class=p>(</span><span class=nv>$_REQUEST</span><span class=p>[</span><span class=s1>&#39;uid&#39;</span><span class=p>])</span> <span class=o>?</span> <span class=nv>$_REQUEST</span><span class=p>[</span><span class=s1>&#39;uid&#39;</span><span class=p>]</span> <span class=o>:</span> <span class=s1>&#39;unknown&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 上面的代码可以替换为如下代码
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$uid</span> <span class=o>=</span> <span class=nv>$_REQUEST</span><span class=p>[</span><span class=s1>&#39;uid&#39;</span><span class=p>]</span> <span class=o>??</span> <span class=s1>&#39;unknown&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 如果 SESSION 中不存在 UID，就取 REQUEST 中的 UID
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$uid</span> <span class=o>=</span> <span class=nv>$_SESSION</span><span class=p>[</span><span class=s1>&#39;uid&#39;</span><span class=p>]</span> <span class=o>??</span> <span class=nv>$_REQUEST</span><span class=p>[</span><span class=s1>&#39;uid&#39;</span><span class=p>]</span> <span class=o>??</span> <span class=s1>&#39;unknown&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nv>$uid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>string</span><span class=p>(</span><span class=mi>7</span><span class=p>)</span> <span class=s2>&#34;unknown&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=太空飞船操作符>太空飞船操作符</h2><p>还有这种操作？当然有，且看如下实例。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// PHP7 之前
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>function</span> <span class=nf>compare</span><span class=p>(</span><span class=nv>$a</span><span class=p>,</span> <span class=nv>$b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=nv>$a</span> <span class=o>==</span> <span class=nv>$b</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>(</span><span class=nv>$a</span> <span class=o>&gt;</span> <span class=nv>$b</span><span class=p>)</span> <span class=o>?</span> <span class=mi>1</span> <span class=o>:</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$a</span> <span class=o>=</span> <span class=nv>$b</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;e&#39;</span> <span class=o>=&gt;</span> <span class=mi>70</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;d&#39;</span> <span class=o>=&gt;</span> <span class=mi>10</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;b&#39;</span> <span class=o>=&gt;</span> <span class=mi>80</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;a&#39;</span> <span class=o>=&gt;</span> <span class=mi>20</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;c&#39;</span> <span class=o>=&gt;</span> <span class=mi>90</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>uasort</span><span class=p>(</span><span class=nv>$a</span><span class=p>,</span> <span class=s1>&#39;compare&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$a</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>d</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>a</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>20</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>e</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>70</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>b</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>80</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>c</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>90</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// PHP7
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>function</span> <span class=nf>after_compare</span><span class=p>(</span><span class=nv>$a</span><span class=p>,</span> <span class=nv>$b</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$a</span> <span class=o>&lt;=&gt;</span> <span class=nv>$b</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>uksort</span><span class=p>(</span><span class=nv>$b</span><span class=p>,</span> <span class=s1>&#39;after_compare&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$b</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>a</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>20</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>b</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>80</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>c</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>90</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>d</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>e</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>70</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=通过-define-定义常量数组>通过 define() 定义常量数组</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>define</span><span class=p>(</span><span class=s1>&#39;ROLES&#39;</span><span class=p>,</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;ADMIN&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;MANAGER&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;USER&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>ROLES</span><span class=p>[</span><span class=mi>0</span><span class=p>],</span> <span class=nx>ROLES</span><span class=p>[</span><span class=mi>1</span><span class=p>],</span> <span class=nx>ROLES</span><span class=p>[</span><span class=mi>2</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>string</span><span class=p>(</span><span class=mi>5</span><span class=p>)</span> <span class=s2>&#34;ADMIN&#34;</span>
+</span></span><span class=line><span class=cl><span class=nx>string</span><span class=p>(</span><span class=mi>7</span><span class=p>)</span> <span class=s2>&#34;MANAGER&#34;</span>
+</span></span><span class=line><span class=cl><span class=nx>string</span><span class=p>(</span><span class=mi>4</span><span class=p>)</span> <span class=s2>&#34;USER&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=匿名类>匿名类</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>interface</span> <span class=nx>Logger</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>log</span><span class=p>(</span><span class=nx>string</span> <span class=nv>$msg</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>App</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$logger</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>setLogger</span><span class=p>(</span><span class=nx>Logger</span> <span class=nv>$logger</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>logger</span> <span class=o>=</span> <span class=nv>$logger</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>getLogger</span><span class=p>()</span> <span class=o>:</span> <span class=nx>Logger</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>logger</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$app</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>App</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=nv>$app</span><span class=o>-&gt;</span><span class=na>setLogger</span><span class=p>(</span><span class=k>new</span> <span class=k>class</span> <span class=nc>implements</span> <span class=nx>Logger</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>log</span><span class=p>(</span><span class=nx>string</span> <span class=nv>$msg</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$msg</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nv>$app</span><span class=o>-&gt;</span><span class=na>getLogger</span><span class=p>()</span><span class=o>-&gt;</span><span class=na>log</span><span class=p>(</span><span class=s1>&#39;Hello World!&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>string</span><span class=p>(</span><span class=mi>12</span><span class=p>)</span> <span class=s2>&#34;Hello World!&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=unicode-codepoint-转译语法>Unicode codepoint 转译语法</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$😄</span> <span class=o>=</span> <span class=s1>&#39;愉快高兴&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nv>$🇨🇳</span> <span class=o>=</span> <span class=s1>&#39;我的祖国&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nv>$🌈</span> <span class=o>=</span> <span class=s1>&#39;雨后彩虹&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nv>$try</span> <span class=o>=</span> <span class=s2>&#34;^_^ \u{0050}\u{0048}\u{0050}\u{0037} - \u{1F64F}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$array</span> <span class=o>=</span> <span class=p>[</span><span class=nv>$😄</span><span class=p>,</span> <span class=nv>$🇨🇳</span><span class=p>,</span> <span class=nv>$🌈</span><span class=p>,</span> <span class=nv>$try</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>愉快高兴</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>我的祖国</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>雨后彩虹</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=o>^</span><span class=nx>_</span><span class=o>^</span> <span class=nx>PHP7</span> <span class=o>-</span> <span class=nx>🙏</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=closurecall>Closure::call()</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Object</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$name</span> <span class=o>=</span> <span class=s1>&#39;Object Name&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// PHP7 之前
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$beforeName</span> <span class=o>=</span> <span class=k>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nv>$beforeName</span><span class=o>-&gt;</span><span class=na>bindTo</span><span class=p>(</span><span class=k>new</span> <span class=nx>Object</span><span class=p>(),</span> <span class=s1>&#39;Object&#39;</span><span class=p>)());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>string</span><span class=p>(</span><span class=mi>11</span><span class=p>)</span> <span class=s2>&#34;Object Name&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// PHP7
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$afterName</span> <span class=o>=</span> <span class=k>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nv>$afterName</span><span class=o>-&gt;</span><span class=na>call</span><span class=p>(</span><span class=k>new</span> <span class=nx>Object</span><span class=p>()));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>string</span><span class=p>(</span><span class=mi>11</span><span class=p>)</span> <span class=s2>&#34;Object Name&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=为-unserialize-提供过滤>为 unserialize() 提供过滤</h2><blockquote><p>特性旨在提供更安全的方式解包不可靠的数据。它通过白名单的方式来防止潜在的代码注入。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Test</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=nv>$name</span> <span class=o>=</span> <span class=s1>&#39;test&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=nv>$weight</span> <span class=o>=</span> <span class=mi>60</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>private</span> <span class=nv>$age</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=fm>__construct</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>age</span> <span class=o>=</span> <span class=mi>18</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>getAge</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>age</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$test</span> <span class=o>=</span> <span class=nx>serialize</span><span class=p>(</span><span class=k>new</span> <span class=nx>Test</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 允许解析 class
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$a</span> <span class=o>=</span> <span class=nx>unserialize</span><span class=p>(</span><span class=nv>$test</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 将所有的对象都转换为 __PHP_Incomplete_Class 对象，不允许解析 class
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$b</span> <span class=o>=</span> <span class=nx>unserialize</span><span class=p>(</span><span class=nv>$test</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;allowed_classes&#39;</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 将除 Test 之外的所有对象都转换为 __PHP_Incomplete_Class 对象，允许解析 class
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$c</span> <span class=o>=</span> <span class=nx>unserialize</span><span class=p>(</span><span class=nv>$test</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;allowed_classes&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span><span class=s1>&#39;Test&#39;</span><span class=p>]]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 默认情况下所有的类都是可接受的，等同于省略第二个参数，允许解析 class
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$d</span> <span class=o>=</span> <span class=nx>unserialize</span><span class=p>(</span><span class=nv>$test</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;allowed_classes&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>([</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$a</span><span class=o>-&gt;</span><span class=na>getAge</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// $b-&gt;getAge(), // PHP Fatal error: main(): The script tried to execute a method or access a property of an incomplete object.
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nv>$c</span><span class=o>-&gt;</span><span class=na>getAge</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$d</span><span class=o>-&gt;</span><span class=na>getAge</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl><span class=p>]);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>18</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>18</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>18</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=intlchar>IntlChar</h2><blockquote><p>需要 <code>intl</code> 扩展。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$array</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;获取 UNICODE 版本&#39;</span> <span class=o>=&gt;</span> <span class=nx>IntlChar</span><span class=o>::</span><span class=na>UNICODE_VERSION</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;获取字符名称&#39;</span> <span class=o>=&gt;</span> <span class=nx>IntlChar</span><span class=o>::</span><span class=na>charName</span><span class=p>(</span><span class=s1>&#39;@&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;获取中括号匹配的闭合括号&#39;</span> <span class=o>=&gt;</span> <span class=nx>IntlChar</span><span class=o>::</span><span class=na>getBidiPairedBracket</span><span class=p>(</span><span class=s1>&#39;[&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;获取 A 字符的镜像字符&#39;</span> <span class=o>=&gt;</span> <span class=nx>IntlChar</span><span class=o>::</span><span class=na>charMirror</span><span class=p>(</span><span class=s1>&#39;&lt;&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;判断 ? 是否有镜像字符&#39;</span> <span class=o>=&gt;</span> <span class=nx>IntlChar</span><span class=o>::</span><span class=na>isMirrored</span><span class=p>(</span><span class=s1>&#39;?&#39;</span><span class=p>)</span> <span class=o>?</span> <span class=s1>&#39;OK&#39;</span> <span class=o>:</span> <span class=s1>&#39;NO&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;获取 codepoint 表示的字符&#39;</span> <span class=o>=&gt;</span> <span class=nx>IntlChar</span><span class=o>::</span><span class=na>chr</span><span class=p>(</span><span class=mi>65</span><span class=p>),</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>获取</span> <span class=nx>UNICODE</span> <span class=nx>版本</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mf>10.0</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>获取字符名称</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>COMMERCIAL</span> <span class=nx>AT</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>获取中括号匹配的闭合括号</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>获取</span> <span class=nx>A</span> <span class=nx>字符的镜像字符</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>判断</span> <span class=o>?</span> <span class=nx>是否有镜像字符</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>NO</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>获取</span> <span class=nx>codepoint</span> <span class=nx>表示的字符</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>A</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=预期>预期</h2><table><thead><tr><th>指示</th><th>默认值</th><th>可能的值</th></tr></thead><tbody><tr><td><code>zend.assertions</code></td><td><code>1</code></td><td>1 - 生成并执行代码（开发模式）。2 - 生成代码，但在运行时跳过它。-1 - 不生成代码（生产模式）</td></tr><tr><td><code>assert.exception</code></td><td><code>0</code></td><td>1 - 当断言失败时，抛出提供的异常作为异常，或者在示提供异常的情况下抛出新的 <code>AssertionError</code> 对象。0 - 如上所述使用或生成 <code>Throwable</code>，但只生成基于该对象的警告，而不是抛出它（与 <code>PHP5</code> 行为兼容）</td></tr></tbody></table><h3 id=zendassertions-为-1>zend.assertions 为 1</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>ini_set</span><span class=p>(</span><span class=s1>&#39;zend.assertions&#39;</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyException</span> <span class=k>extends</span> <span class=nx>AssertionError</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>assert</span><span class=p>(</span><span class=k>true</span> <span class=o>==</span> <span class=k>false</span><span class=p>,</span> <span class=k>new</span> <span class=nx>MyException</span><span class=p>(</span><span class=s1>&#39;Some error message&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=s1>&#39;this is a test&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>PHP</span> <span class=nx>Warning</span><span class=o>:</span>  <span class=nx>assert</span><span class=p>()</span><span class=o>:</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Warning</span><span class=o>:</span> <span class=nx>assert</span><span class=p>()</span><span class=o>:</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=k>this</span> <span class=nx>is</span> <span class=nx>a</span> <span class=nx>test</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=zendassertions-为-0>zend.assertions 为 0</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>ini_set</span><span class=p>(</span><span class=s1>&#39;zend.assertions&#39;</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyException</span> <span class=k>extends</span> <span class=nx>AssertionError</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>assert</span><span class=p>(</span><span class=k>true</span> <span class=o>==</span> <span class=k>false</span><span class=p>,</span> <span class=k>new</span> <span class=nx>MyException</span><span class=p>(</span><span class=s1>&#39;Some error message&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=s1>&#39;this is a test&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>this</span> <span class=nx>is</span> <span class=nx>a</span> <span class=nx>test</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=zendassertions-为--1>zend.assertions 为 -1</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>ini_set</span><span class=p>(</span><span class=s1>&#39;zend.assertions&#39;</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyException</span> <span class=k>extends</span> <span class=nx>AssertionError</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>assert</span><span class=p>(</span><span class=k>true</span> <span class=o>==</span> <span class=k>false</span><span class=p>,</span> <span class=k>new</span> <span class=nx>MyException</span><span class=p>(</span><span class=s1>&#39;Some error message&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=s1>&#39;this is a test&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>PHP</span> <span class=nx>Warning</span><span class=o>:</span>  <span class=nx>zend</span><span class=o>.</span><span class=nx>assertions</span> <span class=nx>may</span> <span class=nx>be</span> <span class=nx>completely</span> <span class=nx>enabled</span> <span class=k>or</span> <span class=nx>disabled</span> <span class=nx>only</span> <span class=nx>in</span> <span class=nx>php</span><span class=o>.</span><span class=nx>ini</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>PHP</span> <span class=nx>Warning</span><span class=o>:</span>  <span class=nx>assert</span><span class=p>()</span><span class=o>:</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Warning</span><span class=o>:</span> <span class=nx>zend</span><span class=o>.</span><span class=nx>assertions</span> <span class=nx>may</span> <span class=nx>be</span> <span class=nx>completely</span> <span class=nx>enabled</span> <span class=k>or</span> <span class=nx>disabled</span> <span class=nx>only</span> <span class=nx>in</span> <span class=nx>php</span><span class=o>.</span><span class=nx>ini</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Warning</span><span class=o>:</span> <span class=nx>assert</span><span class=p>()</span><span class=o>:</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=k>this</span> <span class=nx>is</span> <span class=nx>a</span> <span class=nx>test</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=assertexception-为-1>assert.exception 为 1</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>ini_set</span><span class=p>(</span><span class=s1>&#39;assert.exception&#39;</span><span class=p>,</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyException</span> <span class=k>extends</span> <span class=nx>AssertionError</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>assert</span><span class=p>(</span><span class=k>true</span> <span class=o>==</span> <span class=k>false</span><span class=p>,</span> <span class=k>new</span> <span class=nx>MyException</span><span class=p>(</span><span class=s1>&#39;Some error message&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=s1>&#39;this is a test&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>PHP</span> <span class=nx>Fatal</span> <span class=nx>error</span><span class=o>:</span>  <span class=nx>Uncaught</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Fatal</span> <span class=nx>error</span><span class=o>:</span> <span class=nx>Uncaught</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>注意：</span> <span class=k>this</span> <span class=nx>is</span> <span class=nx>a</span> <span class=nx>test</span> <span class=nx>是没有输出的</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=assertexception-为-0>assert.exception 为 0</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>ini_set</span><span class=p>(</span><span class=s1>&#39;assert.exception&#39;</span><span class=p>,</span> <span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MyException</span> <span class=k>extends</span> <span class=nx>AssertionError</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>assert</span><span class=p>(</span><span class=k>true</span> <span class=o>==</span> <span class=k>false</span><span class=p>,</span> <span class=k>new</span> <span class=nx>MyException</span><span class=p>(</span><span class=s1>&#39;Some error message&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=s1>&#39;this is a test&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>PHP</span> <span class=nx>Warning</span><span class=o>:</span>  <span class=nx>assert</span><span class=p>()</span><span class=o>:</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Warning</span><span class=o>:</span> <span class=nx>assert</span><span class=p>()</span><span class=o>:</span> <span class=nx>MyException</span><span class=o>:</span> <span class=nx>Some</span> <span class=nx>error</span> <span class=nx>message</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=k>this</span> <span class=nx>is</span> <span class=nx>a</span> <span class=nx>test</span>
+</span></span></code></pre></td></tr></table></div></div><table><thead><tr><th>版本</th><th>描述</th><th>备注</th></tr></thead><tbody><tr><td><code>7.2.0</code></td><td>当 <code>assertion</code> 被废弃时使用字符串。当 <code>assert.active</code> 和 <code>zend.assertions</code> 都设置为 <code>1</code> 时，它会发出 <code>E_DEPRECATED</code> 通知</td><td></td></tr><tr><td><code>7.0.0</code></td><td><code>assert()</code> 现在是一个语言构造而不是一个函数。<code>assertion</code> 现在可以是一个表达式。第二个参数现在被解释为 <code>exception</code>（如果给出 <code>Throwable</code> 对象），或者 <code>description</code> 从 <code>PHP 5.4.8</code> 起支持</td><td></td></tr><tr><td><code>5.4.8</code></td><td>添加了 <code>description</code> 参数。<code>description</code> 现在也提供给 <code>ASSERT_CALLBACK</code> 模式下的回调函数作为第四个参数</td><td></td></tr></tbody></table><h2 id=use-以组声明>use 以组声明</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// PHP7 之前的代码
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>use</span> <span class=nx>Some\Classes\ClassA</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=nx>Some\Classes\ClassB</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=nx>Some\Classes\ClassC</span> <span class=k>as</span> <span class=nx>C</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>function</span> <span class=nf>Some\Functions\funca</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>function</span> <span class=nf>Some\Functions\funcb</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>function</span> <span class=nf>Some\Functions\funcc</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>const</span> <span class=no>Some\Consts\ConstA</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>const</span> <span class=no>Some\Consts\ConstB</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>const</span> <span class=no>Some\Consts\ConstC</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// PHP7 及之后的代码
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>use</span> <span class=nx>Some\Classes\</span><span class=p>{</span><span class=nx>ClassA</span><span class=p>,</span> <span class=nx>ClassB</span><span class=p>,</span> <span class=nx>ClassC</span> <span class=k>as</span> <span class=nx>C</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>function</span> <span class=nf>Some\Functions\</span><span class=p>{</span><span class=nx>funca</span><span class=p>,</span> <span class=nx>funcb</span><span class=p>,</span> <span class=nx>funcc</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=k>use</span> <span class=k>const</span> <span class=no>Some\Functions\</span><span class=p>{</span><span class=nx>ConstA</span><span class=p>,</span> <span class=nx>ConstB</span><span class=p>,</span> <span class=nx>ConstC</span><span class=p>};</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=生成器可以返回表达式>生成器可以返回表达式</h2><blockquote><p>此特性基于 <code>PHP 5.5</code> 版本中引入的生成器特性构建的。 它允许在生成器函数中通过使用 <code>return</code> 语法来返回一个表达式（但是不允许返回引用值），可以通过调用 <code>Generator::getReturn()</code> 方法来获取生成器的返回值，但是这个方法只能在生成器完成产生工作以后调用一次。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$gen</span> <span class=o>=</span> <span class=p>(</span><span class=k>function</span> <span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=mi>3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>})();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>foreach</span> <span class=p>(</span><span class=nv>$gen</span> <span class=k>as</span> <span class=nv>$value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nv>$value</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=nv>$gen</span><span class=o>::</span><span class=na>getReturn</span><span class=p>(),</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=mi>2</span>
+</span></span><span class=line><span class=cl><span class=mi>3</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=生成器委托>生成器委托</h2><blockquote><p>只需在最外层生成其中使用 <code>yield from</code>，就可以把一个生成器自动委派给其他的生成器，<code>Traversable</code> 对象或者 <code>array</code>。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>gen</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=nx>from</span> <span class=nx>other</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>function</span> <span class=nf>other</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=mi>3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>yield</span> <span class=mi>4</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>foreach</span> <span class=p>(</span><span class=nx>gen</span><span class=p>()</span> <span class=k>as</span> <span class=nv>$value</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nv>$value</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=mi>2</span>
+</span></span><span class=line><span class=cl><span class=mi>3</span>
+</span></span><span class=line><span class=cl><span class=mi>4</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=整数除法函数-intdiv>整数除法函数 intdiv()</h2><blockquote><p>整型值可以使用十进制、十六进制、八进制或二进制表示，前面可以加上可选的符号（<code>-</code> 或者 <code>+</code>）。其中，二进制表达的 <code>integer</code> 自 <code>PHP 5.4.0</code> 起可用；要使用八进制表达，数字前必须加上 <code>0</code>（零）；要使用十六进制表达，数字前必须加上 <code>0x</code>；要使用二进制表达，数字前必须加上 <code>0b</code></p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$value</span> <span class=o>=</span> <span class=nx>intdiv</span><span class=p>(</span><span class=mi>1000</span><span class=p>,</span> <span class=mi>33</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nv>$value</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>int</span><span class=p>(</span><span class=mi>30</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=会话选项>会话选项</h2><blockquote><p>在调用 <code>session_start()</code> 的时候， 传入的选项参数中也支持 <code>session.lazy_write</code> 行为， 默认情况下这个配置项是打开的。它的作用是控制 <code>PHP</code> 只有在会话中的数据发生变化的时候才写入会话存储文件，如果会话中的数据没有发生改变，那么 <code>PHP</code> 会在读取完会话数据之后，立即关闭会话存储文件，不做任何修改，可以通过设置 <code>read_and_close</code> 来实现。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>session_start</span><span class=p>([</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;cache_limiter&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;private&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;read_and_close&#39;</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>]);</span>
+</span></span><span class=line><span class=cl><span class=nx>var_dump</span><span class=p>(</span><span class=nx>ini_get</span><span class=p>(</span><span class=s1>&#39;session.cache_limiter&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=nx>string</span><span class=p>(</span><span class=mi>7</span><span class=p>)</span> <span class=s2>&#34;private&#34;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=执行一个正则表达式搜索并且使用一个回调进行替换>执行一个正则表达式搜索并且使用一个回调进行替换</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 将字符串中的年份增加一年
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$text</span> <span class=o>=</span> <span class=s2>&#34;Fools day is 04/01/2017</span><span class=se>\n</span><span class=s2>Christmas day was 12/24/2017</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=nx>preg_replace_callback</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;|(\d{2}/\d{2}/)(\d{4})|&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=k>function</span> <span class=p>(</span><span class=nv>$match</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nv>$match</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>.</span> <span class=p>(</span><span class=nv>$match</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>+</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>},</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$text</span>
+</span></span><span class=line><span class=cl><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=nx>preg_replace_callback_array</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;|(\d{2}/\d{2}/)(\d{4})|&#39;</span> <span class=o>=&gt;</span> <span class=k>function</span> <span class=p>(</span><span class=nv>$match</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nv>$match</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>.</span> <span class=p>(</span><span class=nv>$match</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>+</span> <span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$text</span>
+</span></span><span class=line><span class=cl><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>Fools</span> <span class=nx>day</span> <span class=nx>is</span> <span class=mo>04</span><span class=o>/</span><span class=mo>01</span><span class=o>/</span><span class=mi>2018</span>
+</span></span><span class=line><span class=cl><span class=nx>Christmas</span> <span class=nx>day</span> <span class=nx>was</span> <span class=mi>12</span><span class=o>/</span><span class=mi>24</span><span class=o>/</span><span class=mi>2018</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>Fools</span> <span class=nx>day</span> <span class=nx>is</span> <span class=mo>04</span><span class=o>/</span><span class=mo>01</span><span class=o>/</span><span class=mi>2018</span>
+</span></span><span class=line><span class=cl><span class=nx>Christmas</span> <span class=nx>day</span> <span class=nx>was</span> <span class=mi>12</span><span class=o>/</span><span class=mi>24</span><span class=o>/</span><span class=mi>2018</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=伪随机数产生器-csprng>伪随机数产生器 CSPRNG</h2><blockquote><p><code>bin2hex()</code> - 函数把包含数据的二进制字符串转换为十六进制值。</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$array</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=nx>bin2hex</span><span class=p>(</span><span class=nx>random_bytes</span><span class=p>(</span><span class=mi>4</span><span class=p>)),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>bin2hex</span><span class=p>(</span><span class=nx>random_bytes</span><span class=p>(</span><span class=mi>16</span><span class=p>)),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>random_int</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span> <span class=mi>99</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=nx>random_int</span><span class=p>(</span><span class=mi>1000</span><span class=p>,</span> <span class=mi>9999</span><span class=p>),</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$array</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>49</span><span class=nx>a44caf</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>ae67bae0c8695dc6684dddb31364ea0e</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>59</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>6021</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=错误处理方式>错误处理方式</h2><blockquote><p>在 <code>PHP7</code> 中改变了大多数错误的报告方式。不再通过 <code>PHP5</code> 使用的传统错误报告机制来报告错误，现在大多数错误被作为 <code>Error</code> 异常抛出。这种 <code>Error</code> 异常可以像 <code>Exception</code> 异常一样被第一个匹配的 <code>try / catch</code> 块所捕获。如果没有匹配的 <code>catch</code> 块，则调用异常处理函数（事先通过 <code>set_exception_handler()</code> 注册）进行处理。如果尚未注册异常处理函数，则按照传统方式处理：被报告为一个致命错误（<code>Fatal Error</code>）。</p></blockquote><p>由于错误层次结构不从 <code>Exception</code> 扩展，因此使用 <code>catch（Exception $ e）{...}</code> 块处理 <code>PHP5</code> 中未捕获的异常的代码将不会处理此类错误。需要一个 <code>catch（Error $ e）{...}</code> 块或一个 <code>set_exception_handler()</code> 处理程序来处理致命错误。</p><p><img class=lazyload src=https://imajinyun.xyz/svg/loading.min.svg data-src=http://om804c7s2.bkt.clouddn.com/2018-01-20-1509440575356777.jpg data-srcset="http://om804c7s2.bkt.clouddn.com/2018-01-20-1509440575356777.jpg, http://om804c7s2.bkt.clouddn.com/2018-01-20-1509440575356777.jpg 1.5x, http://om804c7s2.bkt.clouddn.com/2018-01-20-1509440575356777.jpg 2x" data-sizes=auto alt=http://om804c7s2.bkt.clouddn.com/2018-01-20-1509440575356777.jpg title=2018-01-20-1509440575356777.jpg></p><p><code>Error</code> 层次结构</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>- Throwable
+</span></span><span class=line><span class=cl>    - Error
+</span></span><span class=line><span class=cl>        - ArithmeticError
+</span></span><span class=line><span class=cl>        - DivisionByZeroError
+</span></span><span class=line><span class=cl>        - AssertionError
+</span></span><span class=line><span class=cl>        - ParseError
+</span></span><span class=line><span class=cl>        - TypeError
+</span></span><span class=line><span class=cl>    - Exception
+</span></span><span class=line><span class=cl>        - ...
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Division</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>protected</span> <span class=nv>$value</span> <span class=o>=</span> <span class=mi>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>doDivision</span><span class=p>()</span> <span class=o>:</span> <span class=nx>string</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$value</span> <span class=o>=</span> <span class=nv>$this</span><span class=o>-&gt;</span><span class=na>value</span> <span class=o>%</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>DivisionByZeroError</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=nv>$e</span><span class=o>-&gt;</span><span class=na>getMessage</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$division</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>Division</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=k>print</span> <span class=nv>$division</span><span class=o>-&gt;</span><span class=na>doDivision</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>Modulo</span> <span class=nx>by</span> <span class=nx>zero</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=弃用的功能>弃用的功能</h2><h3 id=弃用-php4-风格的构造函数>弃用 PHP4 风格的构造函数</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Test</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>Test</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>print</span> <span class=no>__METHOD__</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=k>new</span> <span class=nx>Test</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>PHP</span> <span class=nx>Deprecated</span> <span class=o>:</span> <span class=nx>Methods</span> <span class=nx>with</span> <span class=nx>the</span> <span class=nx>same</span> <span class=nx>name</span> <span class=k>as</span> <span class=nx>their</span> <span class=k>class</span> <span class=nc>will</span>
+</span></span><span class=line><span class=cl><span class=k>not</span> <span class=nx>be</span> <span class=nx>constructors</span> <span class=nx>in</span> <span class=nx>a</span> <span class=nx>future</span> <span class=nx>version</span> <span class=nx>of</span> <span class=nx>PHP</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nx>Test</span> <span class=nx>has</span> <span class=nx>a</span> <span class=nx>deprecated</span> <span class=nx>constructor</span> <span class=nx>in</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>Deprecated</span> <span class=o>:</span> <span class=nx>Methods</span> <span class=nx>with</span> <span class=nx>the</span> <span class=nx>same</span> <span class=nx>name</span> <span class=k>as</span> <span class=nx>their</span> <span class=k>class</span> <span class=nc>will</span>
+</span></span><span class=line><span class=cl><span class=k>not</span> <span class=nx>be</span> <span class=nx>constructors</span> <span class=nx>in</span> <span class=nx>a</span> <span class=nx>future</span> <span class=nx>version</span> <span class=nx>of</span> <span class=nx>PHP</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nx>Test</span> <span class=nx>has</span> <span class=nx>a</span> <span class=nx>deprecated</span> <span class=nx>constructor</span> <span class=nx>in</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>Test</span><span class=o>::</span><span class=na>Test</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=弃用了静态调用非静态方法>弃用了静态调用非静态方法</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Test</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>public</span> <span class=k>function</span> <span class=nf>get</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>print</span> <span class=s1>&#39;non-static call.&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>Test</span><span class=o>::</span><span class=na>get</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>PHP</span> <span class=nx>Deprecated</span><span class=o>:</span>  <span class=nx>Non</span><span class=o>-</span><span class=k>static</span> <span class=nx>method</span> <span class=nx>Test</span><span class=o>::</span><span class=na>get</span><span class=p>()</span> <span class=nx>should</span> <span class=k>not</span> <span class=nx>be</span> <span class=nx>called</span> <span class=nx>statically</span> <span class=nx>in</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>Deprecated</span><span class=o>:</span> <span class=nx>Non</span><span class=o>-</span><span class=k>static</span> <span class=nx>method</span> <span class=nx>Test</span><span class=o>::</span><span class=na>get</span><span class=p>()</span> <span class=nx>should</span> <span class=k>not</span> <span class=nx>be</span> <span class=nx>called</span> <span class=nx>statically</span> <span class=nx>in</span> <span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=nx>non</span><span class=o>-</span><span class=k>static</span> <span class=nx>call</span><span class=o>.</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=password_hash-salt-选项被弃用>password_hash() salt 选项被弃用</h3><p>函数原 <code>salt</code> 不再需要由开发者提供了。函数内部默认带有 <code>salt</code> 能力，无需开发者提供 <code>salt</code> 值</p><h3 id=capture_session_meta-ssl-上下文选项被弃用>capture_session_meta SSL 上下文选项被弃用</h3><p>该 <code>capture_session_meta</code> <code>SSL</code> 上下文选项已被弃用。现在，通过 <code>stream_get_meta_data()</code> 函数使用 <code>SSL</code> 元数据</p><h3 id=移除的扩展>移除的扩展</h3><ul><li><code>ereg</code></li><li><code>mssql</code></li><li><code>mysql</code></li><li><code>sybase_ct</code></li></ul><h3 id=移除的-sapi>移除的 SAPI</h3><blockquote><p><code>PHP7+</code> 版本移除了以下 <code>SAPI</code>。</p></blockquote><ul><li>aolserver</li><li>apache</li><li>apache_hooks</li><li>apache2filter</li><li>caudium</li><li>continuity</li><li>isapi</li><li>milter</li><li>nsapi</li><li>phttpd</li><li>pi3web</li><li>roxen</li><li>thttpd</li><li>tux</li><li>webjames</li></ul><h3 id=移除的函数列表>移除的函数列表</h3><ul><li>从 <code>PHP-4.1.0</code> 开始被废弃了 <code>call_user_func()</code> 和 <code>call_user_func_array()</code>；</li><li>已废弃的 <code>mcrypt_generic_end()</code> 函数已被移除，可以使用 <code>mcrypt_generic_deinit()</code> 代替；</li><li>已废弃的 <code>mcrypt_ecb()</code>、<code>mcrypt_cbc()</code>、 <code>mcrypt_cfb()</code> 和 <code>mcrypt_ofb()</code> 函数已被移除；</li><li><code>set_magic_quotes_runtime()</code> （别名：<code>magic_quotes_runtime()</code>）已被移除；它们在 <code>PHP5.3.0</code> 中已经被废弃，并且在 <code>PHP5.4.0</code> 也由于魔术引号的废弃而失去功能；</li><li>已废弃的 <code>set_socket_blocking()</code> 函数已被移除，您可以使用 <code>stream_set_blocking()</code> 代替；</li><li>在 <code>PHP-FPM</code> 不再使用 <code>dl()</code>，在 <code>CLI</code> 和 <code>embed SAPIs</code> 中仍可用；</li><li><code>GD</code> 库中下列函数被移除：<code>imagepsbbox()</code>、<code>imagepsencodefont()</code>、<code>imagepsextendfont()</code>、<code>imagepsfreefont()</code>、<code>imagepsloadfont()</code>、<code>imagepsslantfont()</code>、<code>imagepstext()</code>；</li><li>在配置文件 <code>php.ini</code> 中，<code>always_populate_raw_post_data</code>、<code>asp_tags</code>、<code>xsl.security_prefs</code> 被移除了；</li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-01-19</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/post/php-php7-new-features/ data-title="PHP7 新特性" data-hashtags=PHP><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/post/php-php7-new-features/ data-hashtag=PHP><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/post/php-php7-new-features/ data-title="PHP7 新特性"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/post/php-php7-new-features/ data-title="PHP7 新特性"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/post/php-php7-new-features/ data-title="PHP7 新特性"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/php/>PHP</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/post/mysql-max-min-query/ class=prev rel=prev title="MySQL 最值查询"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>MySQL 最值查询</a>
+<a href=https://imajinyun.xyz/post/mysql-keywords-query/ class=next rel=next title="MySQL 关键字查询">MySQL 关键字查询<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6cf2973a936acbed3d32667888ea2f37",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>

@@ -1,0 +1,884 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>PHP 中发送 HTTP 请求的方式 - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="PHP 中发送 HTTP 请求的方式"><meta property="og:description" content="通常情况下，我们发送 HTTP 请求采用 PHP 封装的 cURL 扩展函数来实现。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/post/php-send-http-request/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2018-06-21T20:30:21+08:00"><meta property="article:modified_time" content="2018-06-21T20:30:21+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-src-learning2/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-src-learning1/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-array-sort/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-some-ingenious-ways/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-php74-new-features/"><meta property="og:see_also" content="https://imajinyun.xyz/post/php-swoole-get-started/"><meta name=twitter:card content="summary"><meta name=twitter:title content="PHP 中发送 HTTP 请求的方式"><meta name=twitter:description content="通常情况下，我们发送 HTTP 请求采用 PHP 封装的 cURL 扩展函数来实现。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/post/php-send-http-request/><link rel=prev href=https://imajinyun.xyz/post/php-functional-programming/><link rel=next href=https://imajinyun.xyz/post/php-traversing-directory-files/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"PHP 中发送 HTTP 请求的方式","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/post\/php-send-http-request\/"},"genre":"posts","keywords":"PHP","wordcount":2274,"url":"https:\/\/imajinyun.xyz\/post\/php-send-http-request\/","datePublished":"2018-06-21T20:30:21+08:00","dateModified":"2018-06-21T20:30:21+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">PHP 中发送 HTTP 请求的方式</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/php/><i class="far fa-folder fa-fw" aria-hidden=true></i>PHP</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2018-06-21>2018-06-21</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 2274 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 5 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#curl-方式>cURL 方式</a><ul><li><a href=#扩展函数实现>扩展函数实现</a></li><li><a href=#扩展包实现>扩展包实现</a><ul><li><a href=#特性>特性</a></li><li><a href=#安装>安装</a></li><li><a href=#请求>请求</a></li></ul></li></ul></li><li><a href=#stream-方式>Stream 方式</a><ul><li><a href=#php-内置的-stream-包装类>PHP 内置的 Stream 包装类</a><ul><li><a href=#获取已注册的套接字传输协议列表>获取已注册的套接字传输协议列表</a></li><li><a href=#获取已注册的流类型>获取已注册的流类型</a></li><li><a href=#获取已注册的数据流过滤器列表>获取已注册的数据流过滤器列表</a></li></ul></li><li><a href=#流上下文>流上下文</a></li><li><a href=#流过滤器>流过滤器</a></li></ul></li><li><a href=#socket-方式>Socket 方式</a><ul><li><a href=#简单请求>简单请求</a></li><li><a href=#简单通信>简单通信</a></li></ul></li></ul></nav></div></div><div class=content id=content><p>通常情况下，我们发送 <code>HTTP</code> 请求采用 <code>PHP</code> 封装的 <code>cURL</code> 扩展函数来实现。</p><h2 id=curl-方式>cURL 方式</h2><h3 id=扩展函数实现>扩展函数实现</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 初始化一个 cURL 资源对象。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$curl</span> <span class=o>=</span> <span class=nx>curl_init</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$options</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// True 将 curl_exec() 获取的信息以字符串返回，而不是直接输出。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_RETURNTRANSFER</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 禁用时不会将头文件的信息作为数据流输出。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_HEADER</span>         <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// True 时将会根据服务器返回 HTTP 头中的 &#34;Location: &#34; 重定向。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_FOLLOWLOCATION</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 如果为空字符串 &#34;&#34;，会发送所有支持的编码类型。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_ENCODING</span>       <span class=o>=&gt;</span> <span class=s1>&#39;&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 在 HTTP 请求中包含一个 &#34;User-Agent: &#34; 头的字符串。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_USERAGENT</span>      <span class=o>=&gt;</span> <span class=s1>&#39;spider&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// True 时将根据 Location: 重定向时，自动设置 Header 中的 Referer: 信息。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_AUTOREFERER</span>    <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 在尝试连接时等待的秒数。设置为 0，则无限等待。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_CONNECTTIMEOUT</span> <span class=o>=&gt;</span> <span class=mi>120</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 允许 cURL 函数执行的最长秒数。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_TIMEOUT</span>        <span class=o>=&gt;</span> <span class=mi>120</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 指定最多的 HTTP 重定向次数，这个选项是和 CURLOPT_FOLLOWLOCATION 一起使用的。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_MAXREDIRS</span>      <span class=o>=&gt;</span> <span class=mi>10</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 全部数据使用 HTTP 协议中的 &#34;POST&#34; 操作来发送。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_POSTFIELDS</span>     <span class=o>=&gt;</span> <span class=s1>&#39;phone=your-phone&amp;password=your-password&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// True 时会发送 POST 请求，类型为：application/x-www-form-urlencoded，是 HTML 表单提交时最常见的一种。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_POST</span>           <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 启用 cURL 验证对等证书。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_SSL_VERIFYPEER</span> <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 不检查服务器 SSL 证书中的公用名。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_SSL_VERIFYHOST</span> <span class=o>=&gt;</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// False 禁止 cURL 验证对等证书。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_SSL_VERIFYPEER</span> <span class=o>=&gt;</span> <span class=k>false</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// True 会输出所有的信息，写入到 STDERR，或在 CURLOPT_STDERR 中指定的文件。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_VERBOSE</span>        <span class=o>=&gt;</span> <span class=k>true</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 设置你需要抓取的 URL。
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=nx>CURLOPT_URL</span>            <span class=o>=&gt;</span> <span class=s1>&#39;http://www.example.com/users/login&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 设置多个 cURL 传输选项。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>curl_setopt_array</span><span class=p>(</span><span class=nv>$curl</span><span class=p>,</span> <span class=nv>$options</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 运行 cURL，请求网页。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$content</span> <span class=o>=</span> <span class=nx>curl_exec</span><span class=p>(</span><span class=nv>$curl</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$response</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;errno&#39;</span>   <span class=o>=&gt;</span> <span class=nx>curl_errno</span><span class=p>(</span><span class=nv>$curl</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;errmsg&#39;</span>  <span class=o>=&gt;</span> <span class=nx>curl_error</span><span class=p>(</span><span class=nv>$curl</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;header&#39;</span>  <span class=o>=&gt;</span> <span class=nx>curl_getinfo</span><span class=p>(</span><span class=nv>$curl</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;content&#39;</span> <span class=o>=&gt;</span> <span class=nv>$content</span><span class=p>,</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 关闭 cURL 请求。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>curl_close</span><span class=p>(</span><span class=nv>$curl</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$response</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=o>*</span>   <span class=nx>Trying</span> <span class=mf>101.201</span><span class=o>.</span><span class=nx>xxx</span><span class=o>.</span><span class=nx>xxx</span><span class=o>...</span>
+</span></span><span class=line><span class=cl><span class=o>*</span> <span class=nx>TCP_NODELAY</span> <span class=nx>set</span>
+</span></span><span class=line><span class=cl><span class=o>*</span> <span class=nx>Connected</span> <span class=nx>to</span> <span class=nx>www</span><span class=o>.</span><span class=nx>example</span><span class=o>.</span><span class=nx>com</span> <span class=p>(</span><span class=mf>101.201</span><span class=o>.</span><span class=nx>xxx</span><span class=o>.</span><span class=nx>xxx</span><span class=p>)</span> <span class=nx>port</span> <span class=mi>80</span> <span class=p>(</span><span class=c1>#0)
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=o>&gt;</span> <span class=nx>POST</span> <span class=o>/</span><span class=nx>users</span><span class=o>/</span><span class=nx>login</span> <span class=nx>HTTP</span><span class=o>/</span><span class=mf>1.1</span>
+</span></span><span class=line><span class=cl><span class=nx>Host</span><span class=o>:</span> <span class=nx>www</span><span class=o>.</span><span class=nx>example</span><span class=o>.</span><span class=nx>com</span>
+</span></span><span class=line><span class=cl><span class=nx>User</span><span class=o>-</span><span class=nx>Agent</span><span class=o>:</span> <span class=nx>spider</span>
+</span></span><span class=line><span class=cl><span class=nx>Accept</span><span class=o>:</span> <span class=o>*/*</span>
+</span></span><span class=line><span class=cl><span class=nx>Accept</span><span class=o>-</span><span class=nx>Encoding</span><span class=o>:</span> <span class=nx>deflate</span><span class=p>,</span> <span class=nx>gzip</span>
+</span></span><span class=line><span class=cl><span class=nx>Content</span><span class=o>-</span><span class=nx>Length</span><span class=o>:</span> <span class=mi>41</span>
+</span></span><span class=line><span class=cl><span class=nx>Content</span><span class=o>-</span><span class=nx>Type</span><span class=o>:</span> <span class=nx>application</span><span class=o>/</span><span class=nx>x</span><span class=o>-</span><span class=nx>www</span><span class=o>-</span><span class=nx>form</span><span class=o>-</span><span class=nx>urlencoded</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>*</span> <span class=nx>upload</span> <span class=nx>completely</span> <span class=nx>sent</span> <span class=nx>off</span><span class=o>:</span> <span class=mi>41</span> <span class=nx>out</span> <span class=nx>of</span> <span class=mi>41</span> <span class=nx>bytes</span>
+</span></span><span class=line><span class=cl><span class=k>array</span><span class=p>(</span><span class=mi>26</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;url&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>string</span><span class=p>(</span><span class=mi>37</span><span class=p>)</span> <span class=s2>&#34;http://www.example.com/users/login&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;content_type&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>string</span><span class=p>(</span><span class=mi>24</span><span class=p>)</span> <span class=s2>&#34;text/html; charset=UTF-8&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;http_code&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>200</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;header_size&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>463</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;request_size&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>231</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;filetime&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;ssl_verify_result&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;redirect_count&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;total_time&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mf>0.224392</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;namelookup_time&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mf>0.015103</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;connect_time&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mf>0.030847</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;pretransfer_time&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mf>0.03103</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;size_upload&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mi>41</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;size_download&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mi>98</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;speed_download&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mi>436</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;speed_upload&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mi>182</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;download_content_length&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;upload_content_length&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mi>41</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;starttransfer_time&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mf>0.224266</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;redirect_time&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>float</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;redirect_url&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>string</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span> <span class=s2>&#34;&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;primary_ip&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>string</span><span class=p>(</span><span class=mi>15</span><span class=p>)</span> <span class=s2>&#34;101.201.xxx.xxx&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;certinfo&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=k>array</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;primary_port&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>80</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;local_ip&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>string</span><span class=p>(</span><span class=mi>14</span><span class=p>)</span> <span class=s2>&#34;192.168.xxx.xxx&#34;</span>
+</span></span><span class=line><span class=cl>  <span class=p>[</span><span class=s2>&#34;local_port&#34;</span><span class=p>]</span><span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>  <span class=nx>int</span><span class=p>(</span><span class=mi>52637</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>HTTP</span><span class=o>/</span><span class=mf>1.1</span> <span class=mi>200</span> <span class=nx>OK</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Server</span><span class=o>:</span> <span class=nx>nginx</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Date</span><span class=o>:</span> <span class=nx>Fri</span><span class=p>,</span> <span class=mi>22</span> <span class=nx>Jun</span> <span class=mi>2018</span> <span class=mo>01</span><span class=o>:</span><span class=mi>43</span><span class=o>:</span><span class=mi>45</span> <span class=nx>GMT</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Content</span><span class=o>-</span><span class=nx>Type</span><span class=o>:</span> <span class=nx>text</span><span class=o>/</span><span class=nx>html</span><span class=p>;</span> <span class=nx>charset</span><span class=o>=</span><span class=nx>UTF</span><span class=o>-</span><span class=mi>8</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Transfer</span><span class=o>-</span><span class=nx>Encoding</span><span class=o>:</span> <span class=nx>chunked</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Connection</span><span class=o>:</span> <span class=nx>keep</span><span class=o>-</span><span class=nx>alive</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Vary</span><span class=o>:</span> <span class=nx>Accept</span><span class=o>-</span><span class=nx>Encoding</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Set</span><span class=o>-</span><span class=nx>Cookie</span><span class=o>:</span> <span class=nx>SESSID</span><span class=o>=</span><span class=nx>pau0p79qdallgaee2kcj963n16</span><span class=p>;</span> <span class=nx>expires</span><span class=o>=</span><span class=nx>Fri</span><span class=p>,</span> <span class=mi>22</span><span class=o>-</span><span class=nx>Jun</span><span class=o>-</span><span class=mi>2018</span> <span class=mo>02</span><span class=o>:</span><span class=mi>13</span><span class=o>:</span><span class=mi>45</span> <span class=nx>GMT</span><span class=p>;</span> <span class=nx>Max</span><span class=o>-</span><span class=nx>Age</span><span class=o>=</span><span class=mi>1800</span><span class=p>;</span> <span class=nx>path</span><span class=o>=/</span><span class=p>;</span> <span class=nx>HttpOnly</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Expires</span><span class=o>:</span> <span class=nx>Thu</span><span class=p>,</span> <span class=mi>19</span> <span class=nx>Nov</span> <span class=mi>1981</span> <span class=mi>08</span><span class=o>:</span><span class=mi>52</span><span class=o>:</span><span class=mo>00</span> <span class=nx>GMT</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Cache</span><span class=o>-</span><span class=nx>Control</span><span class=o>:</span> <span class=nx>no</span><span class=o>-</span><span class=nx>store</span><span class=p>,</span> <span class=nx>no</span><span class=o>-</span><span class=nx>cache</span><span class=p>,</span> <span class=nx>must</span><span class=o>-</span><span class=nx>revalidate</span><span class=p>,</span> <span class=nx>post</span><span class=o>-</span><span class=nx>check</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=nx>pre</span><span class=o>-</span><span class=nx>check</span><span class=o>=</span><span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Pragma</span><span class=o>:</span> <span class=nx>no</span><span class=o>-</span><span class=nx>cache</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span> <span class=nx>Content</span><span class=o>-</span><span class=nx>Encoding</span><span class=o>:</span> <span class=nx>gzip</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span>
+</span></span><span class=line><span class=cl><span class=o>*</span> <span class=nx>Connection</span> <span class=c1>#0 to host www.example.com left intact
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl><span class=nx>Process</span> <span class=nx>finished</span> <span class=nx>with</span> <span class=k>exit</span> <span class=nx>code</span> <span class=mi>0</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=扩展包实现>扩展包实现</h3><blockquote><ul><li><a href=https://github.com/guzzle/guzzle target=_blank rel="noopener noreffer">Guzzle GitHub</a></li><li><a href=http://guzzlephp.org/ target=_blank rel="noopener noreffer">Guzzle Documentation</a></li></ul></blockquote><p>这里推荐使用 <code>Guzzle</code> 扩展包，诚实的说，也没有理由不使用它。<code>Guzzle</code> 是一个 <code>PHP HTTP</code> 客户端，可以轻松发送 <code>HTTP</code> 请求，并且可以轻松集成 <code>Web</code>服务。</p><h4 id=特性>特性</h4><ul><li>用于构建查询字符串，<code>POST</code> 请求，流式传输大型上传，流式传输大型下载，使用 <code>HTTP cookie</code>，上传 <code>JSON</code> 数据等的简单接口，等等……</li><li>可以使用相同的接口发送同步和异步请求。</li><li>为请求，响应和流选择 <code>PSR-7</code> 接口。 这使您可以与 <code>Guzzle</code> 一起使用其他 <code>PSR-7</code> 兼容库。</li><li>抽象出底层的 <code>HTTP</code> 传输，允许您编写环境和传输不可知的代码; 即不依赖于 <code>cURL</code>，<code>PHP</code> 流，套接字或非阻塞事件循环。</li><li>中间件系统允许您增强和组合客户端行为。</li></ul><h4 id=安装>安装</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ composer require guzzlehttp/guzzle
+</span></span></code></pre></td></tr></table></div></div><h4 id=请求>请求</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>require</span> <span class=s1>&#39;../vendor/autoload.php&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>try</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$client</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>\GuzzleHttp\Client</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$request</span> <span class=o>=</span> <span class=nv>$client</span><span class=o>-&gt;</span><span class=na>request</span><span class=p>(</span><span class=s1>&#39;GET&#39;</span><span class=p>,</span> <span class=s1>&#39;https://api.github.com/repos/guzzle/guzzle&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>\GuzzleHttp\Exception\GuzzleException</span> <span class=nv>$e</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nv>$e</span><span class=o>-&gt;</span><span class=na>getMessage</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$response</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;status_code&#39;</span>  <span class=o>=&gt;</span> <span class=nv>$request</span><span class=o>-&gt;</span><span class=na>getStatusCode</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;content_type&#39;</span> <span class=o>=&gt;</span> <span class=nv>$request</span><span class=o>-&gt;</span><span class=na>getHeaderLine</span><span class=p>(</span><span class=s1>&#39;content-type&#39;</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;body&#39;</span>         <span class=o>=&gt;</span> <span class=nv>$request</span><span class=o>-&gt;</span><span class=na>getBody</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$response</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 发送一个异步请求。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$request</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>\GuzzleHttp\Psr7\Request</span><span class=p>(</span><span class=s1>&#39;GET&#39;</span><span class=p>,</span> <span class=s1>&#39;https://www.baidu.com&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nv>$promise</span> <span class=o>=</span> <span class=nv>$client</span><span class=o>-&gt;</span><span class=na>sendAsync</span><span class=p>(</span><span class=nv>$request</span><span class=p>)</span><span class=o>-&gt;</span><span class=na>then</span><span class=p>(</span><span class=k>function</span> <span class=p>(</span><span class=nv>$response</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nx>PHP_EOL</span><span class=p>,</span> <span class=s1>&#39;I completed! &#39;</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>,</span> <span class=nv>$response</span><span class=o>-&gt;</span><span class=na>getBody</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>});</span>
+</span></span><span class=line><span class=cl><span class=nv>$promise</span><span class=o>-&gt;</span><span class=na>wait</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>status_code</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>200</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>content_type</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>application</span><span class=o>/</span><span class=nx>json</span><span class=p>;</span> <span class=nx>charset</span><span class=o>=</span><span class=nx>utf</span><span class=o>-</span><span class=mi>8</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>body</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>GuzzleHttp\Psr7\Stream</span> <span class=nx>Object</span>
+</span></span><span class=line><span class=cl>        <span class=p>(</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=nx>stream</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>Resource</span> <span class=nx>id</span> <span class=c1>#42
+</span></span></span><span class=line><span class=cl><span class=c1></span>            <span class=p>[</span><span class=nx>size</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=nx>seekable</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=nx>readable</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=nx>writable</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=nx>uri</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>php</span><span class=o>://</span><span class=nx>temp</span>
+</span></span><span class=line><span class=cl>            <span class=p>[</span><span class=nx>customMetadata</span><span class=o>:</span><span class=nx>GuzzleHttp\Psr7\Stream</span><span class=o>:</span><span class=k>private</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=k>Array</span>
+</span></span><span class=line><span class=cl>                <span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>I</span> <span class=nx>completed</span><span class=o>!</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span><span class=nx>html</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span><span class=nx>head</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>	<span class=o>&lt;</span><span class=nx>script</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>		<span class=nx>location</span><span class=o>.</span><span class=nx>replace</span><span class=p>(</span><span class=nx>location</span><span class=o>.</span><span class=nx>href</span><span class=o>.</span><span class=nx>replace</span><span class=p>(</span><span class=s2>&#34;https://&#34;</span><span class=p>,</span><span class=s2>&#34;http://&#34;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>	<span class=o>&lt;/</span><span class=nx>script</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;/</span><span class=nx>head</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span><span class=nx>body</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl>	<span class=o>&lt;</span><span class=nx>noscript</span><span class=o>&gt;&lt;</span><span class=nx>meta</span> <span class=nx>http</span><span class=o>-</span><span class=nx>equiv</span><span class=o>=</span><span class=s2>&#34;refresh&#34;</span> <span class=nx>content</span><span class=o>=</span><span class=s2>&#34;0;url=http://www.baidu.com/&#34;</span><span class=o>&gt;&lt;/</span><span class=nx>noscript</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;/</span><span class=nx>body</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;/</span><span class=nx>html</span><span class=o>&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=stream-方式>Stream 方式</h2><blockquote><p><a href=http://laravelacademy.org/post/7459.html target=_blank rel="noopener noreffer">Stream 的概述与使用详解</a></p></blockquote><h3 id=php-内置的-stream-包装类>PHP 内置的 Stream 包装类</h3><h4 id=获取已注册的套接字传输协议列表>获取已注册的套接字传输协议列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nx>stream_get_transports</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>tcp</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>udp</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>unix</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>udg</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>4</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>ssl</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>5</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>tls</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>6</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>tlsv1</span><span class=o>.</span><span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>7</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>tlsv1</span><span class=o>.</span><span class=mi>1</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>8</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>tlsv1</span><span class=o>.</span><span class=mi>2</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=获取已注册的流类型>获取已注册的流类型</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nx>stream_get_wrappers</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>https</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>ftps</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>compress</span><span class=o>.</span><span class=nx>zlib</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>compress</span><span class=o>.</span><span class=nx>bzip2</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>4</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>php</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>5</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>file</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>6</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>glob</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>7</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>data</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>8</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>http</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>9</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>ftp</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>10</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>phar</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>11</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>zip</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=获取已注册的数据流过滤器列表>获取已注册的数据流过滤器列表</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nx>stream_get_filters</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>0</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>zlib</span><span class=o>.*</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>1</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>bzip2</span><span class=o>.*</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>2</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>convert</span><span class=o>.</span><span class=nx>iconv</span><span class=o>.*</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>3</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>string</span><span class=o>.</span><span class=nx>rot13</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>4</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>string</span><span class=o>.</span><span class=nx>toupper</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>5</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>string</span><span class=o>.</span><span class=nx>tolower</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>6</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>string</span><span class=o>.</span><span class=nx>strip_tags</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>7</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>convert</span><span class=o>.*</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>8</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>consumed</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=mi>9</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>dechunk</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=流上下文>流上下文</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$data</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;phone&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;your-phone&#39;</span><span class=p>,</span> <span class=s1>&#39;password&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;your-password&#39;</span><span class=p>,</span> <span class=s1>&#39;sign&#39;</span> <span class=o>=&gt;</span> <span class=s1>&#39;your-sign&#39;</span><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nv>$data</span> <span class=o>=</span> <span class=nx>http_build_query</span><span class=p>(</span><span class=nv>$data</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nv>$options</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;http&#39;</span> <span class=o>=&gt;</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;method&#39;</span>  <span class=o>=&gt;</span> <span class=s1>&#39;POST&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;header&#39;</span>  <span class=o>=&gt;</span> <span class=s1>&#39;Content-type: application/x-www-form-urlencoded\r\nContent-length:&#39;</span> <span class=o>.</span> <span class=nx>mb_strlen</span><span class=p>(</span><span class=nv>$data</span><span class=p>)</span> <span class=o>.</span> <span class=s2>&#34;</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;content&#39;</span> <span class=o>=&gt;</span> <span class=nv>$data</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>],</span>
+</span></span><span class=line><span class=cl><span class=p>];</span>
+</span></span><span class=line><span class=cl><span class=nv>$context</span> <span class=o>=</span> <span class=nx>stream_context_create</span><span class=p>(</span><span class=nv>$options</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nv>$result</span> <span class=o>=</span> <span class=nx>file_get_contents</span><span class=p>(</span><span class=s1>&#39;http://www.example.com/users/login&#39;</span><span class=p>,</span> <span class=k>false</span><span class=p>,</span> <span class=nv>$context</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nv>$result</span> <span class=o>=</span> <span class=nx>json_decode</span><span class=p>(</span><span class=nv>$result</span><span class=p>,</span> <span class=k>true</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>print_r</span><span class=p>(</span><span class=nv>$result</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=k>Array</span>
+</span></span><span class=line><span class=cl><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>status</span><span class=p>]</span> <span class=o>=&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>msg</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=nx>账号不存在或被禁用</span>
+</span></span><span class=line><span class=cl>    <span class=p>[</span><span class=nx>data</span><span class=p>]</span> <span class=o>=&gt;</span> <span class=k>Array</span>
+</span></span><span class=line><span class=cl>        <span class=p>(</span>
+</span></span><span class=line><span class=cl>        <span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=流过滤器>流过滤器</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ touch test.txt
+</span></span><span class=line><span class=cl>$ vim test.txt
+</span></span><span class=line><span class=cl>HELLO
+</span></span><span class=line><span class=cl>WORLD
+</span></span><span class=line><span class=cl>THIS IS A TEST
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$handle</span> <span class=o>=</span> <span class=nx>fopen</span><span class=p>(</span><span class=s1>&#39;./test.txt&#39;</span><span class=p>,</span> <span class=s1>&#39;rb&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=nx>stream_filter_append</span><span class=p>(</span><span class=nv>$handle</span><span class=p>,</span> <span class=s1>&#39;string.tolower&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=k>while</span> <span class=p>(</span><span class=nx>feof</span><span class=p>(</span><span class=nv>$handle</span><span class=p>)</span> <span class=o>!==</span> <span class=k>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=nx>fgets</span><span class=p>(</span><span class=nv>$handle</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>fclose</span><span class=p>(</span><span class=nv>$handle</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>hello</span>
+</span></span><span class=line><span class=cl><span class=nx>world</span>
+</span></span><span class=line><span class=cl><span class=k>this</span> <span class=nx>is</span> <span class=nx>a</span> <span class=nx>test</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=socket-方式>Socket 方式</h2><h3 id=简单请求>简单请求</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$fp</span> <span class=o>=</span> <span class=nx>fsockopen</span><span class=p>(</span><span class=s1>&#39;www.baidu.com&#39;</span><span class=p>,</span> <span class=mi>80</span><span class=p>,</span> <span class=nv>$errno</span><span class=p>,</span> <span class=nv>$errstr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=o>!</span> <span class=nv>$fp</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=s2>&#34;</span><span class=si>$errstr</span><span class=s2> (</span><span class=si>$errno</span><span class=s2>)&lt;br /&gt;</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$out</span> <span class=o>=</span> <span class=s2>&#34;GET / HTTP/1.1</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$out</span> <span class=o>.=</span> <span class=s2>&#34;Host: www.baidu.com</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nv>$out</span> <span class=o>.=</span> <span class=s2>&#34;Connection: Close</span><span class=se>\r\n\r\n</span><span class=s2>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fwrite</span><span class=p>(</span><span class=nv>$fp</span><span class=p>,</span> <span class=nv>$out</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span><span class=o>!</span> <span class=nx>feof</span><span class=p>(</span><span class=nv>$fp</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>echo</span> <span class=nx>fgets</span><span class=p>(</span><span class=nv>$fp</span><span class=p>,</span> <span class=mi>128</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>fclose</span><span class=p>(</span><span class=nv>$fp</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 结果
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>HTTP</span><span class=o>/</span><span class=mf>1.1</span> <span class=mi>200</span> <span class=nx>OK</span>
+</span></span><span class=line><span class=cl><span class=nx>Accept</span><span class=o>-</span><span class=nx>Ranges</span><span class=o>:</span> <span class=nx>bytes</span>
+</span></span><span class=line><span class=cl><span class=nx>Cache</span><span class=o>-</span><span class=nx>Control</span><span class=o>:</span> <span class=nx>no</span><span class=o>-</span><span class=nx>cache</span>
+</span></span><span class=line><span class=cl><span class=nx>Content</span><span class=o>-</span><span class=nx>Length</span><span class=o>:</span> <span class=mi>14615</span>
+</span></span><span class=line><span class=cl><span class=nx>Content</span><span class=o>-</span><span class=nx>Type</span><span class=o>:</span> <span class=nx>text</span><span class=o>/</span><span class=nx>html</span>
+</span></span><span class=line><span class=cl><span class=nx>Date</span><span class=o>:</span> <span class=nx>Fri</span><span class=p>,</span> <span class=mi>22</span> <span class=nx>Jun</span> <span class=mi>2018</span> <span class=mo>03</span><span class=o>:</span><span class=mo>07</span><span class=o>:</span><span class=mi>09</span> <span class=nx>GMT</span>
+</span></span><span class=line><span class=cl><span class=nx>Last</span><span class=o>-</span><span class=nx>Modified</span><span class=o>:</span> <span class=nx>Mon</span><span class=p>,</span> <span class=mi>11</span> <span class=nx>Jun</span> <span class=mi>2018</span> <span class=mi>11</span><span class=o>:</span><span class=mi>19</span><span class=o>:</span><span class=mo>00</span> <span class=nx>GMT</span>
+</span></span><span class=line><span class=cl><span class=nx>P3p</span><span class=o>:</span> <span class=nx>CP</span><span class=o>=</span><span class=s2>&#34; OTI DSP COR IVA OUR IND COM &#34;</span>
+</span></span><span class=line><span class=cl><span class=nx>Pragma</span><span class=o>:</span> <span class=nx>no</span><span class=o>-</span><span class=nx>cache</span>
+</span></span><span class=line><span class=cl><span class=nx>Server</span><span class=o>:</span> <span class=nx>BWS</span><span class=o>/</span><span class=mf>1.1</span>
+</span></span><span class=line><span class=cl><span class=nx>Set</span><span class=o>-</span><span class=nx>Cookie</span><span class=o>:</span> <span class=nx>BAIDUID</span><span class=o>=</span><span class=nx>CB118091B64A7DB3972039E431BB631D</span><span class=o>:</span><span class=nx>FG</span><span class=o>=</span><span class=mi>1</span><span class=p>;</span> <span class=nx>expires</span><span class=o>=</span><span class=nx>Thu</span><span class=p>,</span> <span class=mi>31</span><span class=o>-</span><span class=nx>Dec</span><span class=o>-</span><span class=mi>37</span> <span class=mi>23</span><span class=o>:</span><span class=mi>55</span><span class=o>:</span><span class=mi>55</span> <span class=nx>GMT</span><span class=p>;</span> <span class=nx>max</span><span class=o>-</span><span class=nx>age</span><span class=o>=</span><span class=mi>2147483647</span><span class=p>;</span> <span class=nx>path</span><span class=o>=/</span><span class=p>;</span> <span class=nx>domain</span><span class=o>=.</span><span class=nx>baidu</span><span class=o>.</span><span class=nx>com</span>
+</span></span><span class=line><span class=cl><span class=nx>Set</span><span class=o>-</span><span class=nx>Cookie</span><span class=o>:</span> <span class=nx>BIDUPSID</span><span class=o>=</span><span class=nx>CB118091B64A7DB3972039E431BB631D</span><span class=p>;</span> <span class=nx>expires</span><span class=o>=</span><span class=nx>Thu</span><span class=p>,</span> <span class=mi>31</span><span class=o>-</span><span class=nx>Dec</span><span class=o>-</span><span class=mi>37</span> <span class=mi>23</span><span class=o>:</span><span class=mi>55</span><span class=o>:</span><span class=mi>55</span> <span class=nx>GMT</span><span class=p>;</span> <span class=nx>max</span><span class=o>-</span><span class=nx>age</span><span class=o>=</span><span class=mi>2147483647</span><span class=p>;</span> <span class=nx>path</span><span class=o>=/</span><span class=p>;</span> <span class=nx>domain</span><span class=o>=.</span><span class=nx>baidu</span><span class=o>.</span><span class=nx>com</span>
+</span></span><span class=line><span class=cl><span class=nx>Set</span><span class=o>-</span><span class=nx>Cookie</span><span class=o>:</span> <span class=nx>PSTM</span><span class=o>=</span><span class=mi>1529636829</span><span class=p>;</span> <span class=nx>expires</span><span class=o>=</span><span class=nx>Thu</span><span class=p>,</span> <span class=mi>31</span><span class=o>-</span><span class=nx>Dec</span><span class=o>-</span><span class=mi>37</span> <span class=mi>23</span><span class=o>:</span><span class=mi>55</span><span class=o>:</span><span class=mi>55</span> <span class=nx>GMT</span><span class=p>;</span> <span class=nx>max</span><span class=o>-</span><span class=nx>age</span><span class=o>=</span><span class=mi>2147483647</span><span class=p>;</span> <span class=nx>path</span><span class=o>=/</span><span class=p>;</span> <span class=nx>domain</span><span class=o>=.</span><span class=nx>baidu</span><span class=o>.</span><span class=nx>com</span>
+</span></span><span class=line><span class=cl><span class=nx>Vary</span><span class=o>:</span> <span class=nx>Accept</span><span class=o>-</span><span class=nx>Encoding</span>
+</span></span><span class=line><span class=cl><span class=nx>X</span><span class=o>-</span><span class=nx>Ua</span><span class=o>-</span><span class=nx>Compatible</span><span class=o>:</span> <span class=nx>IE</span><span class=o>=</span><span class=nx>Edge</span><span class=p>,</span><span class=nx>chrome</span><span class=o>=</span><span class=mi>1</span>
+</span></span><span class=line><span class=cl><span class=nx>Connection</span><span class=o>:</span> <span class=nx>close</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=o>&lt;!</span><span class=nx>DOCTYPE</span> <span class=nx>html</span><span class=o>&gt;&lt;!--</span><span class=nx>STATUS</span> <span class=nx>OK</span><span class=o>--&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span><span class=nx>html</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span><span class=nx>head</span><span class=o>&gt;...&lt;/</span><span class=nx>head</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;</span><span class=nx>body</span><span class=o>&gt;...&lt;/</span><span class=nx>body</span><span class=o>&gt;</span>
+</span></span><span class=line><span class=cl><span class=o>&lt;/</span><span class=nx>html</span><span class=o>&gt;</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=简单通信>简单通信</h3><p>创建 TCP Socket 服务器</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-php data-lang=php><span class=line><span class=cl><span class=o>&lt;?</span><span class=nx>php</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>error_reporting</span><span class=p>(</span><span class=k>E_ALL</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>set_time_limit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>ob_implicit_flush</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$host</span> <span class=o>=</span> <span class=s1>&#39;127.0.0.1&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=nv>$port</span> <span class=o>=</span> <span class=mi>9004</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 创建一个 TCP Socket。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nv>$socket</span> <span class=o>=</span> <span class=nx>socket_create</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>    <span class=nx>AF_INET</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>SOCK_STREAM</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=nx>SOL_TCP</span>
+</span></span><span class=line><span class=cl><span class=p>)</span> <span class=k>or</span> <span class=k>die</span><span class=p>(</span><span class=s1>&#39;socket_create() failed: &#39;</span> <span class=o>.</span> <span class=nx>socket_strerror</span><span class=p>(</span><span class=nx>socket_last_error</span><span class=p>()));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 在套接字资源上设置阻塞模式。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>socket_set_block</span><span class=p>(</span><span class=nv>$socket</span><span class=p>)</span> <span class=k>or</span> <span class=k>die</span><span class=p>(</span><span class=s1>&#39;socket_set_block() failed: &#39;</span> <span class=o>.</span> <span class=nx>socket_strerror</span><span class=p>(</span><span class=nx>socket_last_error</span><span class=p>(</span><span class=nv>$socket</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 给套接字绑定名字。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>socket_bind</span><span class=p>(</span><span class=nv>$socket</span><span class=p>,</span> <span class=nv>$host</span><span class=p>,</span> <span class=nv>$port</span><span class=p>)</span> <span class=k>or</span> <span class=k>die</span><span class=p>(</span><span class=s1>&#39;socket_bind() failed: &#39;</span> <span class=o>.</span> <span class=nx>socket_strerror</span><span class=p>(</span><span class=nx>socket_last_error</span><span class=p>(</span><span class=nv>$socket</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 侦听套接字上的连接。
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=nx>socket_listen</span><span class=p>(</span><span class=nv>$socket</span><span class=p>,</span> <span class=mi>5</span><span class=p>)</span> <span class=k>or</span> <span class=k>die</span><span class=p>(</span><span class=s1>&#39;socket_listen() failed: &#39;</span> <span class=o>.</span> <span class=nx>socket_strerror</span><span class=p>(</span><span class=nx>socket_last_error</span><span class=p>(</span><span class=nv>$socket</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>echo</span> <span class=s2>&#34;Listening the socket on </span><span class=si>$host</span><span class=s2>:</span><span class=si>$port</span><span class=s2> ... &#34;</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nv>$clientId</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>while</span> <span class=p>(</span><span class=k>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>((</span><span class=nv>$client</span> <span class=o>=</span> <span class=nx>socket_accept</span><span class=p>(</span><span class=nv>$socket</span><span class=p>))</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>echo</span> <span class=s1>&#39;socket_accept() failed: &#39;</span> <span class=o>.</span> <span class=nx>socket_strerror</span><span class=p>(</span><span class=nx>socket_last_error</span><span class=p>(</span><span class=nv>$client</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nv>$clientId</span><span class=o>++</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>echo</span> <span class=s1>&#39;Client #&#39;</span> <span class=o>.</span> <span class=nv>$clientId</span> <span class=o>.</span> <span class=s1>&#39;: Connect&#39;</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nv>$welcome</span> <span class=o>=</span> <span class=s2>&#34;</span><span class=se>\n</span><span class=s2>Welcome to the PHP Socket Server. </span><span class=se>\n</span><span class=s2>&#34;</span> <span class=o>.</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;To quit client type &#39;quit&#39;. To shut down the server type &#39;shutdown&#39;.</span><span class=se>\n</span><span class=s2>&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=nx>socket_write</span><span class=p>(</span><span class=nv>$client</span><span class=p>,</span> <span class=nv>$welcome</span><span class=p>,</span> <span class=nx>strlen</span><span class=p>(</span><span class=nv>$welcome</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nv>$curBuf</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=k>while</span> <span class=p>(</span><span class=k>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=k>false</span> <span class=o>===</span> <span class=p>(</span><span class=nv>$buf</span> <span class=o>=</span> <span class=nx>socket_read</span><span class=p>(</span><span class=nv>$client</span><span class=p>,</span> <span class=mi>2048</span><span class=p>)))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>echo</span> <span class=s1>&#39;socket_read() failed: &#39;</span> <span class=o>.</span> <span class=nx>socket_strerror</span><span class=p>(</span><span class=nx>socket_last_error</span><span class=p>(</span><span class=nv>$client</span><span class=p>))</span> <span class=o>.</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>break</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nv>$buf</span> <span class=o>===</span> <span class=s2>&#34;</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=nv>$curBuf</span> <span class=o>===</span> <span class=s2>&#34;quit</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>echo</span> <span class=s1>&#39;Client #&#39;</span> <span class=o>.</span> <span class=nv>$clientId</span> <span class=o>.</span> <span class=s1>&#39;: Disconnect&#39;</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>elseif</span> <span class=p>(</span><span class=nv>$curBuf</span> <span class=o>===</span> <span class=s2>&#34;shutdown</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>echo</span> <span class=s1>&#39;Client #&#39;</span> <span class=o>.</span> <span class=nv>$clientId</span> <span class=o>.</span> <span class=s1>&#39;: Shutdown server&#39;</span><span class=p>,</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=nx>socket_close</span><span class=p>(</span><span class=nv>$client</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span> <span class=mi>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=nv>$buffer</span> <span class=o>=</span> <span class=s1>&#39;Output: &#39;</span> <span class=o>.</span> <span class=nx>ucwords</span><span class=p>(</span><span class=nx>str_replace</span><span class=p>(</span><span class=s2>&#34;</span><span class=se>\r\n</span><span class=s2>&#34;</span><span class=p>,</span> <span class=s1>&#39; &#39;</span><span class=p>,</span> <span class=nv>$curBuf</span><span class=p>))</span> <span class=o>.</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=nx>socket_write</span><span class=p>(</span><span class=nv>$client</span><span class=p>,</span> <span class=nv>$buffer</span><span class=p>,</span> <span class=nx>strlen</span><span class=p>(</span><span class=nv>$buffer</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>echo</span> <span class=s1>&#39;Client #&#39;</span> <span class=o>.</span> <span class=nv>$clientId</span> <span class=o>.</span> <span class=s1>&#39;: &#39;</span> <span class=o>.</span> <span class=nv>$curBuf</span> <span class=o>.</span> <span class=nx>PHP_EOL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$curBuf</span> <span class=o>=</span> <span class=s1>&#39;&#39;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nv>$curBuf</span> <span class=o>.=</span> <span class=nv>$buf</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=nx>socket_close</span><span class=p>(</span><span class=nv>$client</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nx>socket_close</span><span class=p>(</span><span class=nv>$socket</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>运行：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>$ php server.php
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 重启一个终端窗口，安装 telnet
+</span></span><span class=line><span class=cl>$ brew install telnet
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 使用 telnet 进行测试
+</span></span><span class=line><span class=cl>$ telnet 127.0.0.1 <span class=m>9004</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2018-06-21</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/post/php-send-http-request/ data-title="PHP 中发送 HTTP 请求的方式" data-hashtags=PHP><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/post/php-send-http-request/ data-hashtag=PHP><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/post/php-send-http-request/ data-title="PHP 中发送 HTTP 请求的方式"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/post/php-send-http-request/ data-title="PHP 中发送 HTTP 请求的方式"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/post/php-send-http-request/ data-title="PHP 中发送 HTTP 请求的方式"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/php/>PHP</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/post/php-functional-programming/ class=prev rel=prev title="PHP 中的函数式编程"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>PHP 中的函数式编程</a>
+<a href=https://imajinyun.xyz/post/php-traversing-directory-files/ class=next rel=next title="PHP 遍历目录下的文件">PHP 遍历目录下的文件<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.111.3">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:50},comment:{},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6cf2973a936acbed3d32667888ea2f37",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>
