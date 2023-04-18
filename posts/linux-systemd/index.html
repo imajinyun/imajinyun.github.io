@@ -1,4 +1,4 @@
-<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Linux Systemd - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Linux Systemd"><meta property="og:description" content="Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/posts/linux-systemd/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-04-17T13:53:02+08:00"><meta property="article:modified_time" content="2023-04-17T13:53:02+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Linux Systemd"><meta name=twitter:description content="Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/posts/linux-systemd/><link rel=prev href=https://imajinyun.xyz/posts/linux-ssh-password-free-login/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Linux Systemd","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/posts\/linux-systemd\/"},"genre":"posts","keywords":"Linux","wordcount":5738,"url":"https:\/\/imajinyun.xyz\/posts\/linux-systemd\/","datePublished":"2023-04-17T13:53:02+08:00","dateModified":"2023-04-17T13:53:02+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Linux Systemd - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Linux Systemd"><meta property="og:description" content="Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/posts/linux-systemd/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-04-17T13:53:02+08:00"><meta property="article:modified_time" content="2023-04-17T13:53:02+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Linux Systemd"><meta name=twitter:description content="Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/posts/linux-systemd/><link rel=prev href=https://imajinyun.xyz/posts/linux-ssh-password-free-login/><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Linux Systemd","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/posts\/linux-systemd\/"},"genre":"posts","keywords":"Linux","wordcount":6242,"url":"https:\/\/imajinyun.xyz\/posts\/linux-systemd\/","datePublished":"2023-04-17T13:53:02+08:00","dateModified":"2023-04-17T13:53:02+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
 <input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
 <a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
@@ -7,9 +7,9 @@
 <a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
 <a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
 <span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
-<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Linux Systemd</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/linux/><i class="far fa-folder fa-fw" aria-hidden=true></i>Linux</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2023-04-17>2023-04-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 5738 字&nbsp;
-<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 12 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
-<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#systemd-背景>Systemd 背景</a></li><li><a href=#systemd-概述>Systemd 概述</a></li><li><a href=#systemd-工具>Systemd 工具</a><ul><li><a href=#systemctl>systemctl</a></li><li><a href=#systemd-analyze>systemd-analyze</a></li><li><a href=#hostnamectl>hostnamectl</a></li><li><a href=#localectl>localectl</a></li><li><a href=#timedatectl>timedatectl</a></li><li><a href=#loginctl>loginctl</a></li></ul></li><li><a href=#unit>Unit</a><ul><li><a href=#unit-类型>Unit 类型</a></li><li><a href=#unit-状态>Unit 状态</a></li><li><a href=#unit-操作>Unit 操作</a></li><li><a href=#unit-配置>Unit 配置</a><ul><li><a href=#service-unit-service>Service unit (.service)</a></li><li><a href=#socket-unit-socket>Socket unit (.socket)</a></li><li><a href=#timer-unit-timer>Timer unit (.timer)</a></li></ul></li></ul></li><li><a href=#target>Target</a></li></ul></nav></div></div><div class=content id=content><p>Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。</p><h2 id=systemd-背景>Systemd 背景</h2><p>在操作系统中，<code>init</code> 进程是一个特殊的进程，它是系统启动后运行的第一个进程。<code>init</code> 进程负责启动和管理其他系统进程，并在系统运行期间一直存在。它是操作系统中所有其他进程的祖先。</p><p>关于 <code>init</code> 进程的一些信息：</p><ul><li><strong>进程标识符</strong>：<code>init</code> 进程始终具有进程标识符 (PID) 为 <strong>1</strong> 的属性。这使得其他进程可以轻松地将其子进程传递给 <code>init</code> 进程进行管理，从而避免产生僵尸进程。</li><li><strong>启动其他进程</strong>：<code>init</code> 进程负责启动其他系统进程，例如：守护进程、服务、用户空间应用程序等。通常，<code>init</code> 进程根据系统的初始化脚本或配置文件来启动这些进程。</li><li><strong>管理孤儿进程</strong>：当一个父进程终止，而其子进程仍在运行时，这些子进程会成为孤儿进程。<code>init</code> 进程会自动采纳这些孤儿进程，并负责回收它们的资源，防止系统出现僵尸进程。</li><li><strong>系统关机与重启</strong>：<code>init</code> 进程在系统关机或重启时负责正确地终止其他进程。它会按照预定顺序发送信号，通知进程执行清理操作并安全退出。</li><li><strong>不同的 <code>init</code> 系统</strong>：随着时间的推移，有多种 <code>init</code> 系统出现，包括 <code>System V init</code>、<code>Upstart</code> 和 <code>systemd</code>。其中，<code>System V init</code> 是最早的 <code>init</code> 系统，而 <code>systemd</code> 目前是许多 Linux 发行版中的默认 <code>init</code> 系统，因为它提供了许多先进功能，如并行启动、进程监控和日志管理。</li></ul><p><code>System V init</code> 的缺点：</p><ul><li><strong>启动速度</strong>：<code>System V init</code> 使用串行启动过程，即一个进程启动完成后，才能启动下一个进程。这导致了系统启动速度较慢。现代的 <code>init</code> 系统，如 <code>systemd</code>，采用并行启动策略，可以大大提高系统启动速度。</li><li><strong>依赖管理</strong>：<code>System V init</code> 对进程间的依赖关系管理不足。如果一个服务依赖于另一个服务，<code>System V init</code> 无法确保依赖项已启动。这可能导致启动失败或错误。相比之下，<code>systemd</code> 等现代 <code>init</code> 系统具有更好的依赖管理。</li><li><strong>进程监控</strong>：<code>System V init</code> 在进程崩溃时无法自动重启进程。这可能导致系统不稳定，需要手动干预。<code>systemd</code> 等替代方案提供了自动进程监控和重启功能，以提高系统的可靠性。</li><li><strong>日志管理</strong>：<code>System V init</code> 缺乏统一的日志管理。每个进程可能有自己的日志记录方式，这使得日志分析和故障排查变得困难。<code>systemd</code> 引入了 <code>journald</code>，提供了统一的日志管理，方便管理员分析问题。</li><li><strong>配置复杂</strong>：<code>System V init</code> 使用启动脚本来管理服务，这些脚本可能难以编写和维护。<code>systemd</code> 使用更简单的配置文件来管理服务，降低了维护成本。</li></ul><h2 id=systemd-概述>Systemd 概述</h2><p><code>systemd</code> 是一种现代化的 <code>init</code> 系统，用于启动、监视和管理 Linux 操作系统中的进程。它在许多主流 Linux 发行版中替代了传统的 <code>System V init</code> 系统，提供了许多改进和新功能。</p><p><code>systemd</code> 的特点：</p><ul><li><strong>并行启动</strong>：<code>systemd</code> 支持并行启动服务，这意味着它可以同时启动多个服务和进程，从而加快系统启动速度。</li><li><strong>依赖管理</strong>：<code>systemd</code> 可以自动处理服务和进程之间的依赖关系，确保按照正确的顺序启动它们。这有助于减少启动错误和服务启动失败的可能性。</li><li><strong>进程监控与自动重启</strong>：<code>systemd</code> 可以监控进程的运行状态，并在它们意外崩溃时自动重启它们。这有助于提高系统的可靠性和稳定性。</li><li><strong>资源管理</strong>：<code>systemd</code> 与 Linux 的 <strong>CGroups</strong> 功能紧密集成，允许对进程进行资源限制、隔离和管理。这有助于确保系统资源的公平分配，从而提高系统的稳定性。</li><li><strong>集中式日志管理</strong>：通过 <code>journald</code>，<code>systemd</code> 提供了一个集中式日志管理系统。<code>journald</code> 可以收集、存储和管理系统日志，方便管理员分析问题和故障排查。</li><li><strong>简化的服务配置</strong>：<code>systemd</code> 使用名为 <strong>Unit</strong> 文件的简单配置文件来管理服务。这些文件易于编写和维护，并提供了丰富的选项来定义服务的行为和属性。</li><li><strong>命令行工具</strong>：<code>systemd</code> 提供了一组强大的命令行工具，如 <code>systemctl</code> 和 <code>journalctl</code>，用于管理和查询系统服务和日志。这些工具使管理员能够轻松地控制系统服务和获取相关信息。</li><li><strong>向后兼容性</strong>：尽管 <code>systemd</code> 引入了许多新功能和改进，但它仍然保持了对传统 <code>System V init</code> 脚本的支持。这使得在过渡到 <code>systemd</code> 的过程中，现有的服务仍可以继续运行。</li></ul><p>简单来说，<code>systemd</code> 是一个工具集，涉及到系统管理的方方面面。</p><h2 id=systemd-工具>Systemd 工具</h2><h3 id=systemctl>systemctl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Linux Systemd</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/linux/><i class="far fa-folder fa-fw" aria-hidden=true></i>Linux</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2023-04-17>2023-04-17</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 6242 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 13 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#systemd-背景>Systemd 背景</a></li><li><a href=#systemd-概述>Systemd 概述</a></li><li><a href=#systemd-工具>Systemd 工具</a><ul><li><a href=#systemctl>systemctl</a></li><li><a href=#systemd-analyze>systemd-analyze</a></li><li><a href=#hostnamectl>hostnamectl</a></li><li><a href=#localectl>localectl</a></li><li><a href=#timedatectl>timedatectl</a></li><li><a href=#loginctl>loginctl</a></li><li><a href=#journalctl>journalctl</a></li></ul></li><li><a href=#unit>Unit</a><ul><li><a href=#unit-类型>Unit 类型</a></li><li><a href=#unit-状态>Unit 状态</a></li><li><a href=#unit-操作>Unit 操作</a></li><li><a href=#unit-配置>Unit 配置</a><ul><li><a href=#service-unit-service>Service unit (.service)</a></li><li><a href=#socket-unit-socket>Socket unit (.socket)</a></li><li><a href=#timer-unit-timer>Timer unit (.timer)</a></li></ul></li></ul></li><li><a href=#target>Target</a></li></ul></nav></div></div><div class=content id=content><p>Systemd 是 Linux 系统工具，是用来启动守护进程的，已经成为大多数发行版的标配了。每次用起来我能顺手的也就启动重启停止，其它的都要查，烦死了，还不如干脆记录一下。</p><h2 id=systemd-背景>Systemd 背景</h2><p>在操作系统中，<code>init</code> 进程是一个特殊的进程，它是系统启动后运行的第一个进程。<code>init</code> 进程负责启动和管理其他系统进程，并在系统运行期间一直存在。它是操作系统中所有其他进程的祖先。</p><p>关于 <code>init</code> 进程的一些信息：</p><ul><li><strong>进程标识符</strong>：<code>init</code> 进程始终具有进程标识符 (PID) 为 <strong>1</strong> 的属性。这使得其他进程可以轻松地将其子进程传递给 <code>init</code> 进程进行管理，从而避免产生僵尸进程。</li><li><strong>启动其他进程</strong>：<code>init</code> 进程负责启动其他系统进程，例如：守护进程、服务、用户空间应用程序等。通常，<code>init</code> 进程根据系统的初始化脚本或配置文件来启动这些进程。</li><li><strong>管理孤儿进程</strong>：当一个父进程终止，而其子进程仍在运行时，这些子进程会成为孤儿进程。<code>init</code> 进程会自动采纳这些孤儿进程，并负责回收它们的资源，防止系统出现僵尸进程。</li><li><strong>系统关机与重启</strong>：<code>init</code> 进程在系统关机或重启时负责正确地终止其他进程。它会按照预定顺序发送信号，通知进程执行清理操作并安全退出。</li><li><strong>不同的 <code>init</code> 系统</strong>：随着时间的推移，有多种 <code>init</code> 系统出现，包括 <code>System V init</code>、<code>Upstart</code> 和 <code>systemd</code>。其中，<code>System V init</code> 是最早的 <code>init</code> 系统，而 <code>systemd</code> 目前是许多 Linux 发行版中的默认 <code>init</code> 系统，因为它提供了许多先进功能，如并行启动、进程监控和日志管理。</li></ul><p><code>System V init</code> 的缺点：</p><ul><li><strong>启动速度</strong>：<code>System V init</code> 使用串行启动过程，即一个进程启动完成后，才能启动下一个进程。这导致了系统启动速度较慢。现代的 <code>init</code> 系统，如 <code>systemd</code>，采用并行启动策略，可以大大提高系统启动速度。</li><li><strong>依赖管理</strong>：<code>System V init</code> 对进程间的依赖关系管理不足。如果一个服务依赖于另一个服务，<code>System V init</code> 无法确保依赖项已启动。这可能导致启动失败或错误。相比之下，<code>systemd</code> 等现代 <code>init</code> 系统具有更好的依赖管理。</li><li><strong>进程监控</strong>：<code>System V init</code> 在进程崩溃时无法自动重启进程。这可能导致系统不稳定，需要手动干预。<code>systemd</code> 等替代方案提供了自动进程监控和重启功能，以提高系统的可靠性。</li><li><strong>日志管理</strong>：<code>System V init</code> 缺乏统一的日志管理。每个进程可能有自己的日志记录方式，这使得日志分析和故障排查变得困难。<code>systemd</code> 引入了 <code>journald</code>，提供了统一的日志管理，方便管理员分析问题。</li><li><strong>配置复杂</strong>：<code>System V init</code> 使用启动脚本来管理服务，这些脚本可能难以编写和维护。<code>systemd</code> 使用更简单的配置文件来管理服务，降低了维护成本。</li></ul><h2 id=systemd-概述>Systemd 概述</h2><p><code>systemd</code> 是一种现代化的 <code>init</code> 系统，用于启动、监视和管理 Linux 操作系统中的进程。它在许多主流 Linux 发行版中替代了传统的 <code>System V init</code> 系统，提供了许多改进和新功能。</p><p><code>systemd</code> 的特点：</p><ul><li><strong>并行启动</strong>：<code>systemd</code> 支持并行启动服务，这意味着它可以同时启动多个服务和进程，从而加快系统启动速度。</li><li><strong>依赖管理</strong>：<code>systemd</code> 可以自动处理服务和进程之间的依赖关系，确保按照正确的顺序启动它们。这有助于减少启动错误和服务启动失败的可能性。</li><li><strong>进程监控与自动重启</strong>：<code>systemd</code> 可以监控进程的运行状态，并在它们意外崩溃时自动重启它们。这有助于提高系统的可靠性和稳定性。</li><li><strong>资源管理</strong>：<code>systemd</code> 与 Linux 的 <strong>CGroups</strong> 功能紧密集成，允许对进程进行资源限制、隔离和管理。这有助于确保系统资源的公平分配，从而提高系统的稳定性。</li><li><strong>集中式日志管理</strong>：通过 <code>journald</code>，<code>systemd</code> 提供了一个集中式日志管理系统。<code>journald</code> 可以收集、存储和管理系统日志，方便管理员分析问题和故障排查。</li><li><strong>简化的服务配置</strong>：<code>systemd</code> 使用名为 <strong>Unit</strong> 文件的简单配置文件来管理服务。这些文件易于编写和维护，并提供了丰富的选项来定义服务的行为和属性。</li><li><strong>命令行工具</strong>：<code>systemd</code> 提供了一组强大的命令行工具，如 <code>systemctl</code> 和 <code>journalctl</code>，用于管理和查询系统服务和日志。这些工具使管理员能够轻松地控制系统服务和获取相关信息。</li><li><strong>向后兼容性</strong>：尽管 <code>systemd</code> 引入了许多新功能和改进，但它仍然保持了对传统 <code>System V init</code> 脚本的支持。这使得在过渡到 <code>systemd</code> 的过程中，现有的服务仍可以继续运行。</li></ul><p>简单来说，<code>systemd</code> 是一个工具集，涉及到系统管理的方方面面。</p><h2 id=systemd-工具>Systemd 工具</h2><h3 id=systemctl>systemctl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
@@ -129,6 +129,146 @@
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl>// 列出显示指定用户的信息
 </span></span><span class=line><span class=cl>$ loginctl show-user ubuntu
+</span></span></code></pre></td></tr></table></div></div><h3 id=journalctl>journalctl</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>// 查看所有日志（默认情况下，仅保存本次启动的日志）
+</span></span><span class=line><span class=cl>$ sudo journalctl
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看内核日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -k
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看系统本次启动的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -b -0
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看上一次启动的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -b -1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看指定时间的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl --since<span class=o>=</span><span class=s2>&#34;2023-04-18 12:13:14&#34;</span>
+</span></span><span class=line><span class=cl>$ sudo journalctl --since <span class=s2>&#34;30 min ago&#34;</span>
+</span></span><span class=line><span class=cl>$ sudo journalctl --since yesterday
+</span></span><span class=line><span class=cl>$ sudo journalctl --since <span class=s2>&#34;2017-12-31&#34;</span> --until <span class=s2>&#34;2019-12-20&#34;</span>
+</span></span><span class=line><span class=cl>$ sudo journalctl --since 5:30 --until <span class=s2>&#34;3 hour ago&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示结尾的最近 <span class=m>10</span> 行日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -n
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示结尾的指定行数的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -n <span class=m>50</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示最新实时滚动的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -f
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看指定服务的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl /usr/sbin/nginx
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看指定进程的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl <span class=nv>_PID</span><span class=o>=</span><span class=m>1</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看某个路径的脚本的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl /usr/bin/bash
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看指定用户的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl <span class=nv>_UID</span><span class=o>=</span><span class=m>104</span> --since today
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看某个 Unit 的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -u nginx.service
+</span></span><span class=line><span class=cl>$ sudo journalctl -u nginx.service --since today
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示某个 Unit 的实时滚动最新日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -u nginx.service -f
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 合并显示多个 Unit 的日志
+</span></span><span class=line><span class=cl>$ sudo journalctl -u sshd.service -u nginx.service --since today
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 查看指定优先级的日志（0:emerg 1:alert 2:crit 3:err 4:warning 5:notice 6:info 7:debug）
+</span></span><span class=line><span class=cl>$ sudo journalctl -p err -b
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 日志默认分页输出
+</span></span><span class=line><span class=cl>$ sudo journalctl --no-pager
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 日志以 JSON 单行格式输出
+</span></span><span class=line><span class=cl>$ sudo journalctl -b -u nginx.service -o json
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 日志以 JSON 多行格式输出
+</span></span><span class=line><span class=cl>$ sudo journalctl -b -u nginx.service -o json-pretty
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示日志占据的磁盘空间
+</span></span><span class=line><span class=cl>$ sudo journalctl --disk-usage
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 显示指定日志文件占据的最大空间
+</span></span><span class=line><span class=cl>$ sudo journalctl --vacuum-size<span class=o>=</span>1G
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>// 指定日志文件保存多久
+</span></span><span class=line><span class=cl>$ sudo journalctl --vacuum-time<span class=o>=</span>1years
 </span></span></code></pre></td></tr></table></div></div><h2 id=unit>Unit</h2><p><a href=https://www.freedesktop.org/software/systemd/man/systemd.unit.html target=_blank rel="noopener noreffer">systemd.unit — Unit configuration</a></p><h3 id=unit-类型>Unit 类型</h3><table><thead><tr><th>类型</th><th>扩展名</th><th>说明</th></tr></thead><tbody><tr><td><code>Service</code></td><td><code>.service</code></td><td>表示系统服务，用于管理系统服务，如启动、停止、重启等操作。</td></tr><tr><td><code>Socket</code></td><td><code>.socket</code></td><td>表示套接字，描述 IPC（进程间通信）或网络套接字，使服务按需启动。</td></tr><tr><td><code>Device</code></td><td><code>.device</code></td><td>表示硬件设备，描述系统设备，通常由 <code>udev</code> 或 <code>systemd</code> 自动生成。</td></tr><tr><td><code>Mount</code></td><td><code>.mount</code></td><td>表示文件系统挂载点。描述文件系统挂载点，用于挂载、卸载、管理文件系统。</td></tr><tr><td><code>Automount</code></td><td><code>.automount</code></td><td>表示自动挂载点，描述文件系统自动挂载点，用于按需挂载文件系统。</td></tr><tr><td><code>Timer</code></td><td><code>.timer</code></td><td>表示定时器，描述定时任务，基于时间或日历事件触发相关 Unit 启动。</td></tr><tr><td><code>Swap</code></td><td><code>.swap</code></td><td>表示交换分区或交换文件。描述交换分区或交换文件，用于激活、停用交换空间。</td></tr><tr><td><code>Path</code></td><td><code>.path</code></td><td>表示文件系统路径。描述文件系统路径的监控，用于触发服务启动。</td></tr><tr><td><code>Slice</code></td><td><code>.slice</code></td><td>表示一组 Unit 的层次结构，用于对资源进行分组和管理。描述分层资源分配，用于 <code>systemd</code> 进程资源控制。</td></tr><tr><td><code>Scope</code></td><td><code>.scope</code></td><td>表示运行时创建的一组相关进程。描述动态创建的外部进程，用于将一组相关进程归为一组资源管理。</td></tr><tr><td><code>Target</code></td><td><code>.target</code></td><td>表示同步点或系统状态。定义系统状态节点，用于对一组相关的 Unit 进行分组和同步。</td></tr></tbody></table><h3 id=unit-状态>Unit 状态</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
@@ -389,7 +529,7 @@
 </span></span><span class=line><span class=cl>
 </span></span><span class=line><span class=cl><span class=o>[</span>Install<span class=o>]</span>
 </span></span><span class=line><span class=cl><span class=nv>WantedBy</span><span class=o>=</span>timers.target
-</span></span></code></pre></td></tr></table></div></div><h2 id=target>Target</h2><p>在 Systemd 中，Target（目标）的作用是将一组相关的 Unit（单元）组织到一起，为它们提供一个统一的同步点。Target 本身并不执行任何操作，但它们定义了系统中不同服务和组件之间的关系，提供了一个有序的启动和停止方式。这有点类似于 System V init 系统中的运行级别（runlevels），但比运行级别更灵活。</p><p>Target可以帮助管理系统的不同状态和功能，例如：</p><ul><li>将系统从单用户模式切换到多用户模式。</li><li>在系统启动过程中，确保基本系统服务（如日志记录、网络配置等）已启动，然后再启动其他服务。</li><li>根据需要启动和停止一组相关服务，而不是逐个启动和停止它们。</li></ul><p>通过使用 Target，系统管理员可以轻松地按需启动、停止和管理服务，以及在不同的系统状态之间进行切换。一些常见的 Target 示例包括无图形界面多用户模式（<code>multi-user.target</code>）、图形模式（<code>graphical.target</code>）和引导系统重启的目标（<code>reboot.target</code>）等。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span></span></code></pre></td></tr></table></div></div><h2 id=target>Target</h2><ul><li><a href=https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/configuring_basic_system_settings/working-with-systemd-targets_configuring-basic-system-settings target=_blank rel="noopener noreffer">Working with systemd targets</a></li></ul><p>在 Systemd 中，Target（目标）的作用是将一组相关的 Unit（单元）组织到一起，为它们提供一个统一的同步点。Target 本身并不执行任何操作，但它们定义了系统中不同服务和组件之间的关系，提供了一个有序的启动和停止方式。这有点类似于 System V init 系统中的运行级别（runlevels），但比运行级别更灵活。</p><p>Target可以帮助管理系统的不同状态和功能，例如：</p><ul><li>将系统从单用户模式切换到多用户模式。</li><li>在系统启动过程中，确保基本系统服务（如日志记录、网络配置等）已启动，然后再启动其他服务。</li><li>根据需要启动和停止一组相关服务，而不是逐个启动和停止它们。</li></ul><p>通过使用 Target，系统管理员可以轻松地按需启动、停止和管理服务，以及在不同的系统状态之间进行切换。一些常见的 Target 示例包括无图形界面多用户模式（<code>multi-user.target</code>）、图形模式（<code>graphical.target</code>）和引导系统重启的目标（<code>reboot.target</code>）等。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
 </span><span class=lnt> 2
 </span><span class=lnt> 3
 </span><span class=lnt> 4
