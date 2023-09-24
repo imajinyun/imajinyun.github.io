@@ -61,9 +61,11 @@
 graph TD
 A[开始] --> B{request<sub>i</sub><=need?}
 B -- Y --> C{request<sub>i</sub><=available?}
-C -- Y --> D[available=available-request<sub>i</sub>\\nallocation<sub>i</sub>=allocation<sub>i</sub>+request<sub>i</sub>\\nneed<sub>i</sub>=need<sub>i</sub>-request<sub>i</sub>]
+C -- Y --> D["available=available-request<sub>i</sub>
+allocation<sub>i</sub>=allocation<sub>i</sub>+request<sub>i</sub>
+need<sub>i</sub>=need<sub>i</sub>-request<sub>i</sub>"]
 D --> E[调用安全检测过程]
-E -- Y --> F{本次分配安全吗?}
+E -- Y --> F{"本次分配安全吗？"}
 F -- Y --> F1[分配资源]
 F -- N --> F2[阻塞 pi]
 B -- N --> Z[出错]`,"id-2":`%%{
@@ -77,16 +79,12 @@ B -- N --> Z[出错]`,"id-2":`%%{
 
 graph TD
 
-newLines1["\`for i=0 to i=n-1 do
-finish<sub>i</sub>=false\`"]
-
-newLines2["\`while 存在一个 p<sub>i</sub> 且 finish<sub>i</sub>=false 且 need<sub>i</sub><=work do
-work=work+allocation<sub>i</sub>进程运行完可以释放资源，使可分配资源增加
-end do\`"]
-
 A[开始] --> B[work=available]
-B --> C[newLines1]
-C --> D[newLines2]
+B --> C["for i=0 to i=n-1 do
+finish<sub>i</sub>=false"]
+C --> D["while 存在一个 p<sub>i</sub> 且 finish<sub>i</sub>=false 且 need<sub>i</sub><=work do
+work=work+allocation<sub>i</sub>进程运行完可以释放资源，使可分配资源增加
+end do"]
 D --> E{所有 finish<sub>i</sub>=true}
 E -- Y --> F1[返回安全的标志]
 E -- N --> F2[返回不安全标志]`},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6343a8bc3a547e45d8ea9b9c340842fc",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>
