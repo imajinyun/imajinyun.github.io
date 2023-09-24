@@ -82,8 +82,8 @@ flowchart TD
 
 A[开始] --> B[work=available]
 B --> C["\`for i=0 to i=n-1 do
-finish<sub>i</sub>=false"]
-C --> D["while 存在一个 p<sub>i</sub> 且 finish<sub>i</sub>=false 且 need<sub>i</sub><=work do
+finish<sub>i</sub>=false\`"]
+C --> D["\`while 存在一个 p<sub>i</sub> 且 finish<sub>i</sub>=false 且 need<sub>i</sub><=work do
 work=work+allocation<sub>i</sub>进程运行完可以释放资源，使可分配资源增加
 end do\`"]
 D --> E{所有 finish<sub>i</sub>=true}
