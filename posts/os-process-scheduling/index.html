@@ -63,7 +63,7 @@ A[开始] --> B{request<sub>i</sub><=need?}
 B -- Y --> C{request<sub>i</sub><=available?}
 C -- Y --> D[available=available-request<sub>i</sub>\\nallocation<sub>i</sub>=allocation<sub>i</sub>+request<sub>i</sub>\\nneed<sub>i</sub>=need<sub>i</sub>-request<sub>i</sub>]
 D --> E[调用安全检测过程]
-E -- Y --> F{本次分配安全吗？}
+E -- Y --> F{本次分配安全吗?}
 F -- Y --> F1[分配资源]
 F -- N --> F2[阻塞 pi]
 B -- N --> Z[出错]`,"id-2":`%%{
