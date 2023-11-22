@@ -1,0 +1,813 @@
+<!doctype html><html lang=zh-CN><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>Go HTTP Server - Jinyun's Notes</title><meta name=Description content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta property="og:title" content="Go HTTP Server"><meta property="og:description" content="Go 源码中的一些标记： //go:linkname syscall_rawSyscall syscall.rawSyscall 是特殊编译器指令。linkname 指令用于将当前包内的一个标识符链接到另一个包的符号。换言之，这允许你跳过导出规则"><meta property="og:type" content="article"><meta property="og:url" content="https://imajinyun.xyz/posts/go-lib/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-10-31T08:02:02+08:00"><meta property="article:modified_time" content="2023-10-31T08:02:02+08:00"><meta property="og:site_name" content="Jinyun's Notes"><meta name=twitter:card content="summary"><meta name=twitter:title content="Go HTTP Server"><meta name=twitter:description content="Go 源码中的一些标记： //go:linkname syscall_rawSyscall syscall.rawSyscall 是特殊编译器指令。linkname 指令用于将当前包内的一个标识符链接到另一个包的符号。换言之，这允许你跳过导出规则"><meta name=application-name content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=apple-mobile-web-app-title content="进一寸有进一寸的欢喜，退一步有退一步的从容"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel=icon href=https://inotes.oss-cn-beijing.aliyuncs.com/common/201812/logo.svg><link rel=apple-touch-icon sizes=180x180 href=https://imajinyun.xyz/apple-touch-icon.png><link rel=mask-icon href=https://imajinyun.xyz/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=https://imajinyun.xyz/site.webmanifest><link rel=canonical href=https://imajinyun.xyz/posts/go-lib/><link rel=prev href=https://imajinyun.xyz/posts/os-file-system/><link rel=preload href=https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/style.css></noscript><link rel=stylesheet href=https://imajinyun.xyz/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"Go HTTP Server","inLanguage":"zh-CN","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/imajinyun.xyz\/posts\/go-lib\/"},"genre":"posts","keywords":"Go","wordcount":2673,"url":"https:\/\/imajinyun.xyz\/posts\/go-lib\/","datePublished":"2023-10-31T08:02:02+08:00","dateModified":"2023-10-31T08:02:02+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"作者"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu><div class=menu-inner><a class=menu-item href=https://imajinyun.xyz/posts/><i class='fa-solid fa-sun'></i> 笔记 </a><a class=menu-item href=https://imajinyun.xyz/tags/><i class='fa-solid fa-tags'></i> 标签 </a><a class=menu-item href=https://imajinyun.xyz/categories/><i class='fa-solid fa-layer-group'></i> 分类 </a><a class=menu-item href=https://imajinyun.xyz/docs/><i class='fa-solid fa-file-word'></i> 文档 </a><a class=menu-item href=https://imajinyun.xyz/links/><i class='fa fa-link'></i> 友链 </a><a class=menu-item href=https://imajinyun.xyz/about/><i class='fa fa-paper-plane'></i> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder="🐶 Enter keyword search..." id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span>
+</span><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=https://imajinyun.xyz/ title="Jinyun's Notes"><span class=header-title-pre><i class='fa fa-charging-station'></i></span>Jinyun's Notes</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder="🐶 Enter keyword search..." id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i></a>
+<a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i></a>
+<span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=https://imajinyun.xyz/posts/ title><i class='fa-solid fa-sun'></i>笔记</a><a class=menu-item href=https://imajinyun.xyz/tags/ title><i class='fa-solid fa-tags'></i>标签</a><a class=menu-item href=https://imajinyun.xyz/categories/ title><i class='fa-solid fa-layer-group'></i>分类</a><a class=menu-item href=https://imajinyun.xyz/docs/ title><i class='fa-solid fa-file-word'></i>文档</a><a class=menu-item href=https://imajinyun.xyz/links/ title><i class='fa fa-link'></i>友链</a><a class=menu-item href=https://imajinyun.xyz/about/ title><i class='fa fa-paper-plane'></i>关于</a><a href=javascript:void(0); class="menu-item theme-switch" title=切换主题>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目录</h2><div class=toc-content id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Go HTTP Server</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=https://imajinyun.xyz/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>作者</a></span>&nbsp;<span class=post-category>收录于 <a href=https://imajinyun.xyz/categories/go/><i class="far fa-folder fa-fw" aria-hidden=true></i>Go</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2023-10-31>2023-10-31</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;约 2673 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;预计阅读 6 分钟&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目录</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#go-源码中的一些标记>Go 源码中的一些标记：</a></li><li><a href=#gin-框架-http-server-分析>Gin 框架 HTTP Server 分析</a></li></ul></nav></div></div><div class=content id=content><h2 id=go-源码中的一些标记>Go 源码中的一些标记：</h2><ul><li><code>//go:linkname syscall_rawSyscall syscall.rawSyscall</code> 是特殊编译器指令。<code>linkname</code> 指令用于将当前包内的一个标识符链接到另一个包的符号。换言之，这允许你跳过导出规则，达到直接调用私有函数/变量的目的。在此例中，它将当前函数命名为 <code>syscall_rawSyscall</code>，并将其链接到 <code>syscall</code> 包的 <code>rawSyscall</code> 函数。这意味着你可以在其他地方使用 <code>syscall_rawSyscall</code> 这个名字来执行 <code>syscall</code> 包中的 <code>rawSyscall</code> 函数。</li><li><code>//go:nosplit</code> 同样是特殊编译器指令，它禁止编译器在该函数的入口插入用于栈分裂（Stack Splitting）的代码。通常情况下，Go 运行时会自动处理栈的生长和收缩，但当函数需要更大的栈空间时，Go 运行时就可能触发所谓的「栈分裂」，在堆上创建一个新的、更大的栈覆盖原来的栈。然而，某些操作（如系统调用）不能在分裂的栈中进行，因此需要使用 <code>//go:nosplit</code> 指令来防止栈分裂发生。</li></ul><h2 id=gin-框架-http-server-分析>Gin 框架 HTTP Server 分析</h2><ul><li>Gin 框架中的 HTTP Server 是利用了 Go 标准库的 <code>net/http</code> 包来实现的。一个简单的 Gin 框架的 HTTP 服务代码：</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kd>func</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=c1>// Create a new Gin router
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>router</span> <span class=o>:=</span> <span class=nx>gin</span><span class=p>.</span><span class=nf>Default</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Define routes
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>router</span><span class=p>.</span><span class=nf>GET</span><span class=p>(</span><span class=s>&#34;/&#34;</span><span class=p>,</span> <span class=kd>func</span><span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>gin</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nf>JSON</span><span class=p>(</span><span class=mi>200</span><span class=p>,</span> <span class=nx>gin</span><span class=p>.</span><span class=nx>H</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=s>&#34;message&#34;</span><span class=p>:</span> <span class=s>&#34;Hello, World!&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>		<span class=p>})</span>
+</span></span><span class=line><span class=cl>	<span class=p>})</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// Run the server
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=nx>router</span><span class=p>.</span><span class=nf>Run</span><span class=p>(</span><span class=s>&#34;:8080&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>请求流程图：</p><div class=mermaid id=id-1></div><div class=mermaid id=id-2></div><p>而 Gin 框架的 <code>router.Run()</code> 代码如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// Run attaches the router to a http.Server and starts listening and serving HTTP requests.
+</span></span></span><span class=line><span class=cl><span class=c1>// It is a shortcut for http.ListenAndServe(addr, router)
+</span></span></span><span class=line><span class=cl><span class=c1>// Note: this method will block the calling goroutine indefinitely unless an error happens.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>engine</span> <span class=o>*</span><span class=nx>Engine</span><span class=p>)</span> <span class=nf>Run</span><span class=p>(</span><span class=nx>addr</span> <span class=o>...</span><span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>err</span> <span class=kt>error</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span> <span class=nf>debugPrintError</span><span class=p>(</span><span class=nx>err</span><span class=p>)</span> <span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>engine</span><span class=p>.</span><span class=nf>isUnsafeTrustedProxies</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nf>debugPrint</span><span class=p>(</span><span class=s>&#34;[WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.\n&#34;</span> <span class=o>+</span>
+</span></span><span class=line><span class=cl>			<span class=s>&#34;Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>address</span> <span class=o>:=</span> <span class=nf>resolveAddress</span><span class=p>(</span><span class=nx>addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nf>debugPrint</span><span class=p>(</span><span class=s>&#34;Listening and serving HTTP on %s\n&#34;</span><span class=p>,</span> <span class=nx>address</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>err</span> <span class=p>=</span> <span class=nx>http</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>(</span><span class=nx>address</span><span class=p>,</span> <span class=nx>engine</span><span class=p>.</span><span class=nf>Handler</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>可以看到 <code>Run()</code> 函数中调用了 go 标准库的 <code>net/http</code> 包的 <code>ListenAndServe()</code> 方法。</p><p><code>net/http</code> 包中提供的方法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>go</span> <span class=nx>doc</span> <span class=nx>net</span><span class=o>/</span><span class=nx>http</span> <span class=p>|</span> <span class=nx>grep</span> <span class=s>&#34;^func&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>CanonicalHeaderKey</span><span class=p>(</span><span class=nx>s</span> <span class=kt>string</span><span class=p>)</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>DetectContentType</span><span class=p>(</span><span class=nx>data</span> <span class=p>[]</span><span class=kt>byte</span><span class=p>)</span> <span class=kt>string</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Error</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=kt>error</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>code</span> <span class=kt>int</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Get</span><span class=p>(</span><span class=nx>url</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>resp</span> <span class=o>*</span><span class=nx>Response</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Handle</span><span class=p>(</span><span class=nx>pattern</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>HandleFunc</span><span class=p>(</span><span class=nx>pattern</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=kd>func</span><span class=p>(</span><span class=nx>ResponseWriter</span><span class=p>,</span> <span class=o>*</span><span class=nx>Request</span><span class=p>))</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Head</span><span class=p>(</span><span class=nx>url</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>resp</span> <span class=o>*</span><span class=nx>Response</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ListenAndServe</span><span class=p>(</span><span class=nx>addr</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ListenAndServeTLS</span><span class=p>(</span><span class=nx>addr</span><span class=p>,</span> <span class=nx>certFile</span><span class=p>,</span> <span class=nx>keyFile</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>MaxBytesReader</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=nx>io</span><span class=p>.</span><span class=nx>ReadCloser</span><span class=p>,</span> <span class=nx>n</span> <span class=kt>int64</span><span class=p>)</span> <span class=nx>io</span><span class=p>.</span><span class=nx>ReadCloser</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>NewRequest</span><span class=p>(</span><span class=nx>method</span><span class=p>,</span> <span class=nx>url</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>body</span> <span class=nx>io</span><span class=p>.</span><span class=nx>Reader</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>NewRequestWithContext</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>,</span> <span class=nx>method</span><span class=p>,</span> <span class=nx>url</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>body</span> <span class=nx>io</span><span class=p>.</span><span class=nx>Reader</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>NotFound</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>Request</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ParseHTTPVersion</span><span class=p>(</span><span class=nx>vers</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>major</span><span class=p>,</span> <span class=nx>minor</span> <span class=kt>int</span><span class=p>,</span> <span class=nx>ok</span> <span class=kt>bool</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ParseTime</span><span class=p>(</span><span class=nx>text</span> <span class=kt>string</span><span class=p>)</span> <span class=p>(</span><span class=nx>t</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Post</span><span class=p>(</span><span class=nx>url</span><span class=p>,</span> <span class=nx>contentType</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>body</span> <span class=nx>io</span><span class=p>.</span><span class=nx>Reader</span><span class=p>)</span> <span class=p>(</span><span class=nx>resp</span> <span class=o>*</span><span class=nx>Response</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>PostForm</span><span class=p>(</span><span class=nx>url</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>data</span> <span class=nx>url</span><span class=p>.</span><span class=nx>Values</span><span class=p>)</span> <span class=p>(</span><span class=nx>resp</span> <span class=o>*</span><span class=nx>Response</span><span class=p>,</span> <span class=nx>err</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ProxyFromEnvironment</span><span class=p>(</span><span class=nx>req</span> <span class=o>*</span><span class=nx>Request</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>url</span><span class=p>.</span><span class=nx>URL</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ProxyURL</span><span class=p>(</span><span class=nx>fixedURL</span> <span class=o>*</span><span class=nx>url</span><span class=p>.</span><span class=nx>URL</span><span class=p>)</span> <span class=kd>func</span><span class=p>(</span><span class=o>*</span><span class=nx>Request</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>url</span><span class=p>.</span><span class=nx>URL</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ReadRequest</span><span class=p>(</span><span class=nx>b</span> <span class=o>*</span><span class=nx>bufio</span><span class=p>.</span><span class=nx>Reader</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ReadResponse</span><span class=p>(</span><span class=nx>r</span> <span class=o>*</span><span class=nx>bufio</span><span class=p>.</span><span class=nx>Reader</span><span class=p>,</span> <span class=nx>req</span> <span class=o>*</span><span class=nx>Request</span><span class=p>)</span> <span class=p>(</span><span class=o>*</span><span class=nx>Response</span><span class=p>,</span> <span class=kt>error</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Redirect</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=nx>url</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>code</span> <span class=kt>int</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Serve</span><span class=p>(</span><span class=nx>l</span> <span class=nx>net</span><span class=p>.</span><span class=nx>Listener</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ServeContent</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>req</span> <span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=nx>name</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>modtime</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ServeFile</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=nx>name</span> <span class=kt>string</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ServeTLS</span><span class=p>(</span><span class=nx>l</span> <span class=nx>net</span><span class=p>.</span><span class=nx>Listener</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>,</span> <span class=nx>certFile</span><span class=p>,</span> <span class=nx>keyFile</span> <span class=kt>string</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>SetCookie</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>cookie</span> <span class=o>*</span><span class=nx>Cookie</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>StatusText</span><span class=p>(</span><span class=nx>code</span> <span class=kt>int</span><span class=p>)</span> <span class=kt>string</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中包括的 Serve 类方法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>go</span> <span class=nx>doc</span> <span class=nx>net</span><span class=o>/</span><span class=nx>http</span> <span class=p>|</span> <span class=nx>grep</span> <span class=s>&#34;^func&#34;</span> <span class=p>|</span> <span class=nx>grep</span> <span class=s>&#34;Serve&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ListenAndServe</span><span class=p>(</span><span class=nx>addr</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ListenAndServeTLS</span><span class=p>(</span><span class=nx>addr</span><span class=p>,</span> <span class=nx>certFile</span><span class=p>,</span> <span class=nx>keyFile</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>Serve</span><span class=p>(</span><span class=nx>l</span> <span class=nx>net</span><span class=p>.</span><span class=nx>Listener</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ServeContent</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>req</span> <span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=nx>name</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>modtime</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>,</span> <span class=o>...</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ServeFile</span><span class=p>(</span><span class=nx>w</span> <span class=nx>ResponseWriter</span><span class=p>,</span> <span class=nx>r</span> <span class=o>*</span><span class=nx>Request</span><span class=p>,</span> <span class=nx>name</span> <span class=kt>string</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=kd>func</span> <span class=nf>ServeTLS</span><span class=p>(</span><span class=nx>l</span> <span class=nx>net</span><span class=p>.</span><span class=nx>Listener</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>,</span> <span class=nx>certFile</span><span class=p>,</span> <span class=nx>keyFile</span> <span class=kt>string</span><span class=p>)</span> <span class=kt>error</span>
+</span></span></code></pre></td></tr></table></div></div><p>结构定义：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=k>go</span> <span class=nx>doc</span> <span class=nx>net</span><span class=o>/</span><span class=nx>http</span> <span class=p>|</span> <span class=nx>grep</span> <span class=s>&#34;^type&#34;</span> <span class=p>|</span> <span class=nx>grep</span> <span class=s>&#34;struct&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Client</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Cookie</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>MaxBytesError</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>ProtocolError</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>PushOptions</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Request</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Response</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>ResponseController</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>ServeMux</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Server</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=kd>type</span> <span class=nx>Transport</span> <span class=kd>struct</span><span class=p>{</span> <span class=o>...</span> <span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>http.ListenAndServe()</code> 方法：创建一个 <code>Server</code> 数据结构，调用 <code>server.ListenAndServe()</code> 方法对外提供服务。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// ListenAndServe listens on the TCP network address addr and then calls
+</span></span></span><span class=line><span class=cl><span class=c1>// Serve with handler to handle requests on incoming connections.
+</span></span></span><span class=line><span class=cl><span class=c1>// Accepted connections are configured to enable TCP keep-alives.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// The handler is typically nil, in which case the DefaultServeMux is used.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// ListenAndServe always returns a non-nil error.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=nf>ListenAndServe</span><span class=p>(</span><span class=nx>addr</span> <span class=kt>string</span><span class=p>,</span> <span class=nx>handler</span> <span class=nx>Handler</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=nx>server</span> <span class=o>:=</span> <span class=o>&amp;</span><span class=nx>Server</span><span class=p>{</span><span class=nx>Addr</span><span class=p>:</span> <span class=nx>addr</span><span class=p>,</span> <span class=nx>Handler</span><span class=p>:</span> <span class=nx>handler</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>server</span><span class=p>.</span><span class=nf>ListenAndServe</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>server.ListenAndServe()</code> 方法：主要调用 <code>net.Listen()</code> 方法，<code>net.Listen()</code> 方法的第一个参数仅接受 <code>tcp / tcp4 / tcp6 / udp / udp4 / udp6 / unix / unixgram / unixpacket</code> 中的一个，然后调用 <code>Serve()</code> 方法。</p><ul><li><code>net.Listen()</code> 中调用</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// ListenAndServe listens on the TCP network address srv.Addr and then
+</span></span></span><span class=line><span class=cl><span class=c1>// calls Serve to handle requests on incoming connections.
+</span></span></span><span class=line><span class=cl><span class=c1>// Accepted connections are configured to enable TCP keep-alives.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// If srv.Addr is blank, &#34;:http&#34; is used.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// ListenAndServe always returns a non-nil error. After Shutdown or Close,
+</span></span></span><span class=line><span class=cl><span class=c1>// the returned error is ErrServerClosed.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>srv</span> <span class=o>*</span><span class=nx>Server</span><span class=p>)</span> <span class=nf>ListenAndServe</span><span class=p>()</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>shuttingDown</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>ErrServerClosed</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>addr</span> <span class=o>:=</span> <span class=nx>srv</span><span class=p>.</span><span class=nx>Addr</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>addr</span> <span class=o>==</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>addr</span> <span class=p>=</span> <span class=s>&#34;:http&#34;</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ln</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>net</span><span class=p>.</span><span class=nf>Listen</span><span class=p>(</span><span class=s>&#34;tcp&#34;</span><span class=p>,</span> <span class=nx>addr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>return</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>Serve</span><span class=p>(</span><span class=nx>ln</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>srv.Serve()</code> 方法：接受 <code>l net.Listener</code> 上传入的连接，为每个连接创建一个新的服务 Goroutine。服务 Goroutines 读取请求，然后调用 <code>srv.Handler()</code> 来响应它们。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// Serve accepts incoming connections on the Listener l, creating a
+</span></span></span><span class=line><span class=cl><span class=c1>// new service goroutine for each. The service goroutines read requests and
+</span></span></span><span class=line><span class=cl><span class=c1>// then call srv.Handler to reply to them.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// HTTP/2 support is only enabled if the Listener returns *tls.Conn
+</span></span></span><span class=line><span class=cl><span class=c1>// connections and they were configured with &#34;h2&#34; in the TLS
+</span></span></span><span class=line><span class=cl><span class=c1>// Config.NextProtos.
+</span></span></span><span class=line><span class=cl><span class=c1>//
+</span></span></span><span class=line><span class=cl><span class=c1>// Serve always returns a non-nil error and closes l.
+</span></span></span><span class=line><span class=cl><span class=c1>// After Shutdown or Close, the returned error is ErrServerClosed.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>srv</span> <span class=o>*</span><span class=nx>Server</span><span class=p>)</span> <span class=nf>Serve</span><span class=p>(</span><span class=nx>l</span> <span class=nx>net</span><span class=p>.</span><span class=nx>Listener</span><span class=p>)</span> <span class=kt>error</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>fn</span> <span class=o>:=</span> <span class=nx>testHookServerServe</span><span class=p>;</span> <span class=nx>fn</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nf>fn</span><span class=p>(</span><span class=nx>srv</span><span class=p>,</span> <span class=nx>l</span><span class=p>)</span> <span class=c1>// call hook with unwrapped listener
+</span></span></span><span class=line><span class=cl><span class=c1></span>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>origListener</span> <span class=o>:=</span> <span class=nx>l</span>
+</span></span><span class=line><span class=cl>	<span class=nx>l</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>onceCloseListener</span><span class=p>{</span><span class=nx>Listener</span><span class=p>:</span> <span class=nx>l</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>l</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>setupHTTP2_Serve</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=p>!</span><span class=nx>srv</span><span class=p>.</span><span class=nf>trackListener</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>l</span><span class=p>,</span> <span class=kc>true</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>return</span> <span class=nx>ErrServerClosed</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>trackListener</span><span class=p>(</span><span class=o>&amp;</span><span class=nx>l</span><span class=p>,</span> <span class=kc>false</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>baseCtx</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>Background</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>srv</span><span class=p>.</span><span class=nx>BaseContext</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>baseCtx</span> <span class=p>=</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>BaseContext</span><span class=p>(</span><span class=nx>origListener</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>baseCtx</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nb>panic</span><span class=p>(</span><span class=s>&#34;BaseContext returned a nil context&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>tempDelay</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Duration</span> <span class=c1>// how long to sleep on accept failure
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>WithValue</span><span class=p>(</span><span class=nx>baseCtx</span><span class=p>,</span> <span class=nx>ServerContextKey</span><span class=p>,</span> <span class=nx>srv</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>rw</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>l</span><span class=p>.</span><span class=nf>Accept</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>shuttingDown</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=nx>ErrServerClosed</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>ne</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>err</span><span class=p>.(</span><span class=nx>net</span><span class=p>.</span><span class=nx>Error</span><span class=p>);</span> <span class=nx>ok</span> <span class=o>&amp;&amp;</span> <span class=nx>ne</span><span class=p>.</span><span class=nf>Temporary</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=k>if</span> <span class=nx>tempDelay</span> <span class=o>==</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>					<span class=nx>tempDelay</span> <span class=p>=</span> <span class=mi>5</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Millisecond</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>					<span class=nx>tempDelay</span> <span class=o>*=</span> <span class=mi>2</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span>
+</span></span><span class=line><span class=cl>				<span class=k>if</span> <span class=nx>max</span> <span class=o>:=</span> <span class=mi>1</span> <span class=o>*</span> <span class=nx>time</span><span class=p>.</span><span class=nx>Second</span><span class=p>;</span> <span class=nx>tempDelay</span> <span class=p>&gt;</span> <span class=nx>max</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>					<span class=nx>tempDelay</span> <span class=p>=</span> <span class=nx>max</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span>
+</span></span><span class=line><span class=cl>				<span class=nx>srv</span><span class=p>.</span><span class=nf>logf</span><span class=p>(</span><span class=s>&#34;http: Accept error: %v; retrying in %v&#34;</span><span class=p>,</span> <span class=nx>err</span><span class=p>,</span> <span class=nx>tempDelay</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=nx>time</span><span class=p>.</span><span class=nf>Sleep</span><span class=p>(</span><span class=nx>tempDelay</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=k>continue</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span> <span class=nx>err</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>connCtx</span> <span class=o>:=</span> <span class=nx>ctx</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>cc</span> <span class=o>:=</span> <span class=nx>srv</span><span class=p>.</span><span class=nx>ConnContext</span><span class=p>;</span> <span class=nx>cc</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>connCtx</span> <span class=p>=</span> <span class=nf>cc</span><span class=p>(</span><span class=nx>connCtx</span><span class=p>,</span> <span class=nx>rw</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>connCtx</span> <span class=o>==</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nb>panic</span><span class=p>(</span><span class=s>&#34;ConnContext returned nil&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>tempDelay</span> <span class=p>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span> <span class=o>:=</span> <span class=nx>srv</span><span class=p>.</span><span class=nf>newConn</span><span class=p>(</span><span class=nx>rw</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nf>setState</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=nx>StateNew</span><span class=p>,</span> <span class=nx>runHooks</span><span class=p>)</span> <span class=c1>// before Serve can return
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=k>go</span> <span class=nx>c</span><span class=p>.</span><span class=nf>serve</span><span class=p>(</span><span class=nx>connCtx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p><code>c.serve()</code> 方法：判断传入的请求是否需要升级为 HTTPs，接着创建文本的</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=c1>// Serve a new connection.
+</span></span></span><span class=line><span class=cl><span class=c1></span><span class=kd>func</span> <span class=p>(</span><span class=nx>c</span> <span class=o>*</span><span class=nx>conn</span><span class=p>)</span> <span class=nf>serve</span><span class=p>(</span><span class=nx>ctx</span> <span class=nx>context</span><span class=p>.</span><span class=nx>Context</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>ra</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>RemoteAddr</span><span class=p>();</span> <span class=nx>ra</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nx>remoteAddr</span> <span class=p>=</span> <span class=nx>ra</span><span class=p>.</span><span class=nf>String</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span> <span class=p>=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>WithValue</span><span class=p>(</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>LocalAddrContextKey</span><span class=p>,</span> <span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>LocalAddr</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>	<span class=kd>var</span> <span class=nx>inFlightResponse</span> <span class=o>*</span><span class=nx>response</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=kd>func</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nb>recover</span><span class=p>();</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=o>&amp;&amp;</span> <span class=nx>err</span> <span class=o>!=</span> <span class=nx>ErrAbortHandler</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=kd>const</span> <span class=nx>size</span> <span class=p>=</span> <span class=mi>64</span> <span class=o>&lt;&lt;</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>			<span class=nx>buf</span> <span class=o>:=</span> <span class=nb>make</span><span class=p>([]</span><span class=kt>byte</span><span class=p>,</span> <span class=nx>size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=nx>buf</span> <span class=p>=</span> <span class=nx>buf</span><span class=p>[:</span><span class=nx>runtime</span><span class=p>.</span><span class=nf>Stack</span><span class=p>(</span><span class=nx>buf</span><span class=p>,</span> <span class=kc>false</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nf>logf</span><span class=p>(</span><span class=s>&#34;http: panic serving %v: %v\n%s&#34;</span><span class=p>,</span> <span class=nx>c</span><span class=p>.</span><span class=nx>remoteAddr</span><span class=p>,</span> <span class=nx>err</span><span class=p>,</span> <span class=nx>buf</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>inFlightResponse</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>inFlightResponse</span><span class=p>.</span><span class=nf>cancelCtx</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>!</span><span class=nx>c</span><span class=p>.</span><span class=nf>hijacked</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>inFlightResponse</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>inFlightResponse</span><span class=p>.</span><span class=nx>conn</span><span class=p>.</span><span class=nx>r</span><span class=p>.</span><span class=nf>abortPendingRead</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>				<span class=nx>inFlightResponse</span><span class=p>.</span><span class=nx>reqBody</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nb>close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nf>setState</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=nx>StateClosed</span><span class=p>,</span> <span class=nx>runHooks</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>if</span> <span class=nx>tlsConn</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.(</span><span class=o>*</span><span class=nx>tls</span><span class=p>.</span><span class=nx>Conn</span><span class=p>);</span> <span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>tlsTO</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nf>tlsHandshakeTimeout</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>tlsTO</span> <span class=p>&gt;</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>dl</span> <span class=o>:=</span> <span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>Add</span><span class=p>(</span><span class=nx>tlsTO</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetReadDeadline</span><span class=p>(</span><span class=nx>dl</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetWriteDeadline</span><span class=p>(</span><span class=nx>dl</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>tlsConn</span><span class=p>.</span><span class=nf>HandshakeContext</span><span class=p>(</span><span class=nx>ctx</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=c1>// If the handshake failed due to the client not speaking
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=c1>// TLS, assume they&#39;re speaking plaintext HTTP and write a
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=c1>// 400 response on the TLS conn&#39;s underlying net.Conn.
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=k>if</span> <span class=nx>re</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>err</span><span class=p>.(</span><span class=nx>tls</span><span class=p>.</span><span class=nx>RecordHeaderError</span><span class=p>);</span> <span class=nx>ok</span> <span class=o>&amp;&amp;</span> <span class=nx>re</span><span class=p>.</span><span class=nx>Conn</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=o>&amp;&amp;</span> <span class=nf>tlsRecordHeaderLooksLikeHTTP</span><span class=p>(</span><span class=nx>re</span><span class=p>.</span><span class=nx>RecordHeader</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>io</span><span class=p>.</span><span class=nf>WriteString</span><span class=p>(</span><span class=nx>re</span><span class=p>.</span><span class=nx>Conn</span><span class=p>,</span> <span class=s>&#34;HTTP/1.0 400 Bad Request\r\n\r\nClient sent an HTTP request to an HTTPS server.\n&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=nx>re</span><span class=p>.</span><span class=nx>Conn</span><span class=p>.</span><span class=nf>Close</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nf>logf</span><span class=p>(</span><span class=s>&#34;http: TLS handshake error from %s: %v&#34;</span><span class=p>,</span> <span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>RemoteAddr</span><span class=p>(),</span> <span class=nx>err</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=c1>// Restore Conn-level deadlines.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=k>if</span> <span class=nx>tlsTO</span> <span class=p>&gt;</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetReadDeadline</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetWriteDeadline</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nx>tlsState</span> <span class=p>=</span> <span class=nb>new</span><span class=p>(</span><span class=nx>tls</span><span class=p>.</span><span class=nx>ConnectionState</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=o>*</span><span class=nx>c</span><span class=p>.</span><span class=nx>tlsState</span> <span class=p>=</span> <span class=nx>tlsConn</span><span class=p>.</span><span class=nf>ConnectionState</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>proto</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>tlsState</span><span class=p>.</span><span class=nx>NegotiatedProtocol</span><span class=p>;</span> <span class=nf>validNextProto</span><span class=p>(</span><span class=nx>proto</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>fn</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nx>TLSNextProto</span><span class=p>[</span><span class=nx>proto</span><span class=p>];</span> <span class=nx>fn</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>h</span> <span class=o>:=</span> <span class=nx>initALPNRequest</span><span class=p>{</span><span class=nx>ctx</span><span class=p>,</span> <span class=nx>tlsConn</span><span class=p>,</span> <span class=nx>serverHandler</span><span class=p>{</span><span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>}}</span>
+</span></span><span class=line><span class=cl>				<span class=c1>// Mark freshly created HTTP/2 as active and prevent any server state hooks
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// from being run on these connections. This prevents closeIdleConns from
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// closing such connections. See issue https://golang.org/issue/39776.
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=nx>c</span><span class=p>.</span><span class=nf>setState</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=nx>StateActive</span><span class=p>,</span> <span class=nx>skipHooks</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=nf>fn</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>,</span> <span class=nx>tlsConn</span><span class=p>,</span> <span class=nx>h</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=c1>// HTTP/1.x from here on.
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>	<span class=nx>ctx</span><span class=p>,</span> <span class=nx>cancelCtx</span> <span class=o>:=</span> <span class=nx>context</span><span class=p>.</span><span class=nf>WithCancel</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span><span class=p>.</span><span class=nx>cancelCtx</span> <span class=p>=</span> <span class=nx>cancelCtx</span>
+</span></span><span class=line><span class=cl>	<span class=k>defer</span> <span class=nf>cancelCtx</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span><span class=p>.</span><span class=nx>r</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>connReader</span><span class=p>{</span><span class=nx>conn</span><span class=p>:</span> <span class=nx>c</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span><span class=p>.</span><span class=nx>bufr</span> <span class=p>=</span> <span class=nf>newBufioReader</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>r</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>	<span class=nx>c</span><span class=p>.</span><span class=nx>bufw</span> <span class=p>=</span> <span class=nf>newBufioWriterSize</span><span class=p>(</span><span class=nx>checkConnErrorWriter</span><span class=p>{</span><span class=nx>c</span><span class=p>},</span> <span class=mi>4</span><span class=o>&lt;&lt;</span><span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=k>for</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nf>readRequest</span><span class=p>(</span><span class=nx>ctx</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>c</span><span class=p>.</span><span class=nx>r</span><span class=p>.</span><span class=nx>remain</span> <span class=o>!=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nf>initialReadLimitSize</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=c1>// If we read any bytes off the wire, we&#39;re active.
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=nx>c</span><span class=p>.</span><span class=nf>setState</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=nx>StateActive</span><span class=p>,</span> <span class=nx>runHooks</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=kd>const</span> <span class=nx>errorHeaders</span> <span class=p>=</span> <span class=s>&#34;\r\nContent-Type: text/plain; charset=utf-8\r\nConnection: close\r\n\r\n&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			<span class=k>switch</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=nx>err</span> <span class=o>==</span> <span class=nx>errTooLarge</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>				<span class=c1>// Their HTTP client may or may not be
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// able to read this if we&#39;re
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// responding to them and hanging up
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// while they&#39;re still writing their
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// request. Undefined behavior.
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=kd>const</span> <span class=nx>publicErr</span> <span class=p>=</span> <span class=s>&#34;431 Request Header Fields Too Large&#34;</span>
+</span></span><span class=line><span class=cl>				<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprintf</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=s>&#34;HTTP/1.1 &#34;</span><span class=o>+</span><span class=nx>publicErr</span><span class=o>+</span><span class=nx>errorHeaders</span><span class=o>+</span><span class=nx>publicErr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=nx>c</span><span class=p>.</span><span class=nf>closeWriteAndWait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=nf>isUnsupportedTEError</span><span class=p>(</span><span class=nx>err</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>				<span class=c1>// Respond as per RFC 7230 Section 3.3.1 which says,
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>//      A server that receives a request message with a
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>//      transfer coding it does not understand SHOULD
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>//      respond with 501 (Unimplemented).
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=nx>code</span> <span class=o>:=</span> <span class=nx>StatusNotImplemented</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>				<span class=c1>// We purposefully aren&#39;t echoing back the transfer-encoding&#39;s value,
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=c1>// so as to mitigate the risk of cross side scripting by an attacker.
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprintf</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=s>&#34;HTTP/1.1 %d %s%sUnsupported transfer encoding&#34;</span><span class=p>,</span> <span class=nx>code</span><span class=p>,</span> <span class=nf>StatusText</span><span class=p>(</span><span class=nx>code</span><span class=p>),</span> <span class=nx>errorHeaders</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			<span class=k>case</span> <span class=nf>isCommonNetReadError</span><span class=p>(</span><span class=nx>err</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span> <span class=c1>// don&#39;t reply
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>			<span class=k>default</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>				<span class=k>if</span> <span class=nx>v</span><span class=p>,</span> <span class=nx>ok</span> <span class=o>:=</span> <span class=nx>err</span><span class=p>.(</span><span class=nx>statusError</span><span class=p>);</span> <span class=nx>ok</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>					<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprintf</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=s>&#34;HTTP/1.1 %d %s: %s%s%d %s: %s&#34;</span><span class=p>,</span> <span class=nx>v</span><span class=p>.</span><span class=nx>code</span><span class=p>,</span> <span class=nf>StatusText</span><span class=p>(</span><span class=nx>v</span><span class=p>.</span><span class=nx>code</span><span class=p>),</span> <span class=nx>v</span><span class=p>.</span><span class=nx>text</span><span class=p>,</span> <span class=nx>errorHeaders</span><span class=p>,</span> <span class=nx>v</span><span class=p>.</span><span class=nx>code</span><span class=p>,</span> <span class=nf>StatusText</span><span class=p>(</span><span class=nx>v</span><span class=p>.</span><span class=nx>code</span><span class=p>),</span> <span class=nx>v</span><span class=p>.</span><span class=nx>text</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>					<span class=k>return</span>
+</span></span><span class=line><span class=cl>				<span class=p>}</span>
+</span></span><span class=line><span class=cl>				<span class=nx>publicErr</span> <span class=o>:=</span> <span class=s>&#34;400 Bad Request&#34;</span>
+</span></span><span class=line><span class=cl>				<span class=nx>fmt</span><span class=p>.</span><span class=nf>Fprintf</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=s>&#34;HTTP/1.1 &#34;</span><span class=o>+</span><span class=nx>publicErr</span><span class=o>+</span><span class=nx>errorHeaders</span><span class=o>+</span><span class=nx>publicErr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>				<span class=k>return</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=c1>// Expect 100 Continue support
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>req</span> <span class=o>:=</span> <span class=nx>w</span><span class=p>.</span><span class=nx>req</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>req</span><span class=p>.</span><span class=nf>expectsContinue</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>req</span><span class=p>.</span><span class=nf>ProtoAtLeast</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span> <span class=o>&amp;&amp;</span> <span class=nx>req</span><span class=p>.</span><span class=nx>ContentLength</span> <span class=o>!=</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=c1>// Wrap the Body reader with one that replies on the connection
+</span></span></span><span class=line><span class=cl><span class=c1></span>				<span class=nx>req</span><span class=p>.</span><span class=nx>Body</span> <span class=p>=</span> <span class=o>&amp;</span><span class=nx>expectContinueReader</span><span class=p>{</span><span class=nx>readCloser</span><span class=p>:</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Body</span><span class=p>,</span> <span class=nx>resp</span><span class=p>:</span> <span class=nx>w</span><span class=p>}</span>
+</span></span><span class=line><span class=cl>				<span class=nx>w</span><span class=p>.</span><span class=nx>canWriteContinue</span><span class=p>.</span><span class=nf>Store</span><span class=p>(</span><span class=kc>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=nx>req</span><span class=p>.</span><span class=nx>Header</span><span class=p>.</span><span class=nf>get</span><span class=p>(</span><span class=s>&#34;Expect&#34;</span><span class=p>)</span> <span class=o>!=</span> <span class=s>&#34;&#34;</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>w</span><span class=p>.</span><span class=nf>sendExpectationFailed</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nx>curReq</span><span class=p>.</span><span class=nf>Store</span><span class=p>(</span><span class=nx>w</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nf>requestBodyRemains</span><span class=p>(</span><span class=nx>req</span><span class=p>.</span><span class=nx>Body</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nf>registerOnHitEOF</span><span class=p>(</span><span class=nx>req</span><span class=p>.</span><span class=nx>Body</span><span class=p>,</span> <span class=nx>w</span><span class=p>.</span><span class=nx>conn</span><span class=p>.</span><span class=nx>r</span><span class=p>.</span><span class=nx>startBackgroundRead</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>w</span><span class=p>.</span><span class=nx>conn</span><span class=p>.</span><span class=nx>r</span><span class=p>.</span><span class=nf>startBackgroundRead</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=c1>// HTTP cannot have multiple simultaneous active requests.[*]
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// Until the server replies to this request, it can&#39;t read another,
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// so we might as well run the handler in this goroutine.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// [*] Not strictly true: HTTP pipelining. We could let them all process
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// in parallel even if their responses need to be serialized.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// But we&#39;re not going to implement HTTP pipelining because it
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// was never deployed in the wild and the answer is HTTP/2.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=nx>inFlightResponse</span> <span class=p>=</span> <span class=nx>w</span>
+</span></span><span class=line><span class=cl>		<span class=nx>serverHandler</span><span class=p>{</span><span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>}.</span><span class=nf>ServeHTTP</span><span class=p>(</span><span class=nx>w</span><span class=p>,</span> <span class=nx>w</span><span class=p>.</span><span class=nx>req</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>inFlightResponse</span> <span class=p>=</span> <span class=kc>nil</span>
+</span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>.</span><span class=nf>cancelCtx</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>c</span><span class=p>.</span><span class=nf>hijacked</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>w</span><span class=p>.</span><span class=nf>finishRequest</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetWriteDeadline</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>!</span><span class=nx>w</span><span class=p>.</span><span class=nf>shouldReuseConnection</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>if</span> <span class=nx>w</span><span class=p>.</span><span class=nx>requestBodyLimitHit</span> <span class=o>||</span> <span class=nx>w</span><span class=p>.</span><span class=nf>closedRequestBodyEarly</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>				<span class=nx>c</span><span class=p>.</span><span class=nf>closeWriteAndWait</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>			<span class=p>}</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nf>setState</span><span class=p>(</span><span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>,</span> <span class=nx>StateIdle</span><span class=p>,</span> <span class=nx>runHooks</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nx>curReq</span><span class=p>.</span><span class=nf>Store</span><span class=p>(</span><span class=kc>nil</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=p>!</span><span class=nx>w</span><span class=p>.</span><span class=nx>conn</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nf>doKeepAlives</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=c1>// We&#39;re in shutdown mode. We might&#39;ve replied
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=c1>// to the user without &#34;Connection: close&#34; and
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=c1>// they might think they can send another
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=c1>// request, but such is life with HTTP/1.1.
+</span></span></span><span class=line><span class=cl><span class=c1></span>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>if</span> <span class=nx>d</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>server</span><span class=p>.</span><span class=nf>idleTimeout</span><span class=p>();</span> <span class=nx>d</span> <span class=o>!=</span> <span class=mi>0</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetReadDeadline</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nf>Now</span><span class=p>().</span><span class=nf>Add</span><span class=p>(</span><span class=nx>d</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetReadDeadline</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=c1>// Wait for the connection to become readable again before trying to
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// read the next request. This prevents a ReadHeaderTimeout or
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// ReadTimeout from starting until the first bytes of the next request
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=c1>// have been received.
+</span></span></span><span class=line><span class=cl><span class=c1></span>		<span class=k>if</span> <span class=nx>_</span><span class=p>,</span> <span class=nx>err</span> <span class=o>:=</span> <span class=nx>c</span><span class=p>.</span><span class=nx>bufr</span><span class=p>.</span><span class=nf>Peek</span><span class=p>(</span><span class=mi>4</span><span class=p>);</span> <span class=nx>err</span> <span class=o>!=</span> <span class=kc>nil</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=k>return</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=nx>c</span><span class=p>.</span><span class=nx>rwc</span><span class=p>.</span><span class=nf>SetReadDeadline</span><span class=p>(</span><span class=nx>time</span><span class=p>.</span><span class=nx>Time</span><span class=p>{})</span>
+</span></span><span class=line><span class=cl>	<span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新于 2023-10-31</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://imajinyun.xyz/posts/go-lib/ data-title="Go HTTP Server" data-hashtags=Go><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://imajinyun.xyz/posts/go-lib/ data-hashtag=Go><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Hacker News" data-sharer=hackernews data-url=https://imajinyun.xyz/posts/go-lib/ data-title="Go HTTP Server"><i class="fab fa-hacker-news fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Line" data-sharer=line data-url=https://imajinyun.xyz/posts/go-lib/ data-title="Go HTTP Server"><i data-svg-src=https://cdn.jsdelivr.net/npm/simple-icons@7.3.0/icons/line.svg aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 微博" data-sharer=weibo data-url=https://imajinyun.xyz/posts/go-lib/ data-title="Go HTTP Server"><i class="fab fa-weibo fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=https://imajinyun.xyz/tags/go/>Go</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=https://imajinyun.xyz/>主页</a></span></section></div><div class=post-nav><a href=https://imajinyun.xyz/posts/os-file-system/ class=prev rel=prev title="OS 文件系统"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>OS 文件系统</a></div></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.119.0">Hugo</a> 强力驱动 | 主题 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2018 - 2023</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=https://imajinyun.xyz/ target=_blank></a></span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到顶部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看评论><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/mermaid@9.1.3/dist/mermaid.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"复制到剪贴板",maxShownLines:80},comment:{},data:{"id-1":`%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'fontSize': '12px',
+    }
+  }
+}%%
+
+flowchart LR
+  A[router.Run] ==> B(http.ListenAndServe)
+  B --> B1("&Server")
+  B --> B2(http.ListenAndServe)
+  B2 --> D(net.Listen)
+  B2 --> E(srv.Serve)
+  E --> E1(srv.setupHTTP2_Serve)
+  E --> E2(srv.trackListener)
+  E --> E3(context.WithValue)
+  E --> E4(for)
+  E4 --> M1(l.Accept)
+  E4 --> M2(srv.newConn)
+  E4 --> M3(c.setState)
+  E4 --> M4("go c.serve(connCtx)")
+  style M4 fill:#f9f,stroke:#333,stroke-width:4px`,"id-2":`flowchart LR
+  A["go c.serve(connCtx)"]
+  A ==> B("tlsConn, ok := c.rwc.(*tls.Conn);")
+  B --> C1(c.rwc.SetReadDeadline)
+  B --> C2(c.rwc.SetWriteDeadline)
+  B --> C3(tlsConn.HandshakeContext)
+  B --> C4(tlsConn.ConnectionState)
+  B --> C5("fn(c.server, tlsConn, h)")
+  A ==> C(newBufioReader)
+  A ==> D(newBufioWriterSize)
+  A ==> E(for)
+  E --> E1("c.readRequest(ctx)")
+  E --> E2("req.expectsContinue")
+  E --> E3("requestBodyRemains(req.Body)")
+  E --> E4("serverHandler{c.server}.ServeHTTP(w, w.req)")
+  E --> E5("w.finishRequest()")`},search:{algoliaAppID:"MY71JUZ8GH",algoliaIndex:"prod-notes",algoliaSearchKey:"6343a8bc3a547e45d8ea9b9c340842fc",highlightTag:"em",maxResultLength:10,noResultsFound:"没有找到结果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=https://imajinyun.xyz/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4TWZ0BV77P",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4TWZ0BV77P" async></script></body></html>
